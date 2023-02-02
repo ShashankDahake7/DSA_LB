@@ -1,0 +1,102 @@
+// Reverse Array
+
+class Solution {
+public:
+    int reverse(int x) {
+        int ans=0;
+        while(x!=0){
+        int digit=x%10;
+        if(ans>INT_MAX/10 || ans<INT_MIN/10){
+            return 0;
+        }
+        ans=(ans*10)+digit;
+        x=x/10;
+        }
+        return ans;
+    }
+};
+
+// Complement of base 10 integer
+
+class Solution {
+public:
+    int bitwiseComplement(int n) {
+        int m=n;
+        int mask=0;
+        if(n==0){
+            return 1;
+        }
+        while(m!=0){
+            mask=(mask<<1)|1;
+            m=m>>1;
+        }
+        int ans=(~n)&mask;
+        return ans;
+    }
+};
+
+// Power of Two
+
+class Solution {
+public:
+    bool isPowerOfTwo(int n) {
+        int ans=1;
+        for(int i=0;i<=30;i++){
+            if(ans==n){
+                return true;
+            }
+            if(ans<INT_MAX/2){
+            ans=ans*2;
+            }
+        }
+        return false;
+    }
+};
+
+// Unique number
+
+int findUnique(int *arr, int size)
+{
+    int ans=0;
+    for(int i=0;i<size;i++){
+        ans=ans^arr[i];
+    }
+    return ans;
+}
+
+// Duplicate number
+
+int findDuplicate(vector<int> &arr) 
+{
+    int ans=0;
+    for(int i=0;i<arr.size();i++){
+        ans=ans^arr[i];
+    }
+    for(int i=0;i<arr.size();i++){
+        ans=ans^i;
+    }
+    return ans;
+}
+
+// Array Intersection
+
+#include <bits/stdc++.h> 
+vector<int> findArrayIntersection(vector<int> &arr1, int n, vector<int> &arr2, int m)
+{
+	int i=0,j=0;
+	vector<int> ans;
+	while(i<n && j<m){
+		if(arr1[i]==arr2[j]){
+			ans.push_back(arr1[i]);
+			i++;
+			j++;
+		}
+		else if(arr1[i]<arr2[j]){
+			i++;
+		}
+		else{
+			j++;
+		}
+	}
+	return ans;
+}
