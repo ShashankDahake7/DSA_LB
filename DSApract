@@ -121,3 +121,409 @@ vector<vector<int>> pairSum(vector<int> &arr, int s){
    sort(ans.begin(),ans.end());
    return ans;
 }
+
+// Triplet Sum
+
+#include <bits/stdc++.h>
+vector<vector<int>> findTriplets(vector<int> arr, int n, int K) {
+  sort(arr.begin(), arr.end());
+  set<vector<int>> s;
+  vector<vector<int>> ans;
+  for (int i = 0; i < n; ++i)
+  {
+    int j = i + 1;
+    int k = n - 1;
+    while (j < k)
+    {
+      int sum = arr[i] + arr[j] + arr[k];
+      if (sum == K)
+      {
+        s.insert({arr[i], arr[j], arr[k]});
+        j++;
+        k--;
+      }
+      else if (sum < K)
+      {
+        j++;
+      }
+      else
+      {
+        k--;
+      }
+    }
+  }
+  for (auto x : s)
+  {
+    ans.push_back(x);
+  }
+  return ans;
+}
+
+// Sort 0,1 and 2
+
+#include <bits/stdc++.h>
+
+void swap(int &x,int &y){
+   int temp=x;
+   x=y;
+   y=temp;
+}
+
+void sort012(int *arr, int n)
+{
+   int a0=0,b1=0,c2=n-1;
+   while(b1<=c2){
+      if(arr[b1]==0){
+         swap(arr[a0],arr[b1]);
+         a0++;
+         b1++;
+      }
+      else if(arr[b1]==1){
+         b1++;
+      }
+      else{
+         swap(arr[b1],arr[c2]);
+         c2--;
+      }
+   }
+}
+
+// Unique Number Of Occurences
+
+class Solution {
+public:
+    bool uniqueOccurrences(vector<int>& arr) {
+        int i = 0;
+        sort(arr.begin(),arr.end());
+        vector<int> ans;
+        while (i < arr.size()){
+            int count = 1;
+            for (int j = i+1; j< arr.size(); j++){
+                if (arr[i] == arr[j])
+                    count++;
+            }
+            ans.push_back(count);
+            i = i + count;
+        }
+        sort(ans.begin(),ans.end());
+        for (int i = 0; i < ans.size() - 1; i++){
+            if (ans[i] == ans [i+1])
+                return false;
+        }
+        return true;
+    }
+};
+
+// All Duplicates in an Array
+
+class Solution {
+public:
+    vector<int> findDuplicates(vector<int>& nums) {
+        vector<int> ans; 
+        sort(nums.begin(),nums.end());
+            for(int i=0 ; i<nums.size()-1 ; ){
+                if(nums[i]==nums[i+1]){
+                    ans.push_back(nums[i]);
+                    i=i+2;
+                }
+                else{
+                  i++;  
+                } 
+            }
+        return ans;
+    }
+};
+
+// Find Pivot Index
+
+class Solution {
+public:
+    int pivotIndex(vector<int>& nums) {
+        int sum1=0,sum2=0;
+        for(int i=0;i<nums.size();i++){
+            sum1+=nums[i];
+        }
+        for(int i=0;i<nums.size();i++){
+            sum1-=nums[i];
+            if(sum1==sum2){
+                return i;
+            }
+            sum2+=nums[i];
+        }
+        return -1;
+    }
+};
+
+// First and Last Occurence
+
+#include <bits/stdc++.h> 
+
+int FirstOccurence(vector<int>& arr, int n, int k){
+    int i=0,j=n-1,mid=i+(j-i)/2;
+    int ans=-1;
+    while(i<=j){
+        if(arr[mid]<k){
+            i=mid+1;
+        }
+        else if(arr[mid]==k){
+            ans=mid;
+            j=mid-1;
+        }
+        else{
+            j=mid-1;
+        }
+        mid=i+(j-i)/2;
+    }
+    return ans;
+}
+
+int LastOccurence(vector<int>& arr, int n, int k){
+    int i=0,j=n-1,mid=i+(j-i)/2;
+    int ans=-1;
+    while(i<=j){
+        if(arr[mid]<k){
+            i=mid+1;
+        }
+        else if(arr[mid]==k){
+            ans=mid;
+            i=mid+1;
+        }
+        else{
+            j=mid-1;
+        }
+        mid=i+(j-i)/2;
+    }
+    return ans;
+}
+
+pair<int, int> firstAndLastPosition(vector<int>& arr, int n, int k)
+{
+    pair<int,int> p;
+    p.first=FirstOccurence(arr,n,k);
+    p.second=LastOccurence(arr,n,k);
+    return p;
+}
+
+// Peak Index in a Mountain Array
+
+class Solution {
+public:
+    int peakIndexInMountainArray(vector<int>& arr) {
+        int n=arr.size();
+        int i=0,j=n-1,mid=i+(j-i)/2;
+        while(i<j){
+            if(arr[mid]<arr[mid+1]){
+                i=mid+1;
+            }
+            else{
+                j=mid;
+            }
+            mid=i+(j-i)/2;
+        }
+        return i;
+    }
+};
+
+// Search in Rotated Sorted Array
+
+#include <bits/stdc++.h> 
+int pivotIndex(vector<int> arr,int n){
+   int start = 0;
+   int end = n-1;
+   int mid = start + (end-start)/2;
+   
+   while(start<end){
+       if(arr[mid]>=arr[0]){
+           start = mid+1;
+       }
+       else{
+           end = mid;
+       }
+       mid = start + (end-start)/2;
+   }
+   return start;
+}
+int binarySearch(vector<int> arr,int start,int end,int key){
+   int mid = start + (end-start)/2;
+   
+   while(start<=end){
+       if(arr[mid]==key){
+           return mid;
+       }
+       else if(arr[mid]>key){
+           end = mid -1;
+       }
+       else{
+           start = mid+1;
+       }
+       mid = start+(end-start)/2;
+   }
+   return -1;
+}
+int findPosition(vector<int>& arr, int n, int k)
+{
+   int pivot = pivotIndex(arr,n);
+   if(k>=arr[pivot] && k<=arr[n-1]){
+       return binarySearch(arr,pivot,n-1,k);
+   }
+   else{
+       return binarySearch(arr,0,pivot-1,k);
+   }
+}
+
+// Square root of an integer
+
+#include <bits/stdc++.h> 
+
+int sqrtN(long long int N)
+{
+   if(N < 2) return N;
+   long long int s = 0, e = N;
+   long long int mid = s + (e - s) / 2;
+   long long ans = -1;
+   while (s <= e)
+   {
+       if (mid  == (N/mid)) // same as mid*mid == N, to avoid range overlow
+           return mid;
+       else if (mid > (N/mid))
+           e = mid - 1;
+       else
+       {
+           ans = mid;
+           s = mid + 1;
+       }
+       mid = s + (e - s) / 2;
+   }
+   return ans;
+}
+
+// Allocate Books
+
+#include <bits/stdc++.h>  
+
+bool isPossible(int n, int m, vector<int> time,long long int mid){
+
+   long long int studentCount=1 , chapterSum=0;     
+   for(int i=0;i<m;i++){   
+      if(chapterSum + time[i] <= mid){  
+         chapterSum+= time[i];
+       } 
+      else  {
+           studentCount++;  
+           if(studentCount > n || time[i] > mid){
+                return false;
+           }        
+           chapterSum = time[i];
+       } 
+      if(studentCount>n){  
+         return false;  
+     }
+   }
+   return true; 
+}
+ long long ayushGivesNinjatest(int n, int m, vector<int> time)  {
+  
+  long long int start=0, sum=0;   
+  for(int i=0;i<m;i++){
+       sum=sum+time[i];    
+  }
+  long long int end=sum, ans=-1, mid=start+(end-start)/2;
+      while(start<=end){ 
+      if(isPossible(n,m,time,mid)){
+           ans=mid;
+           end=mid-1;
+       }
+       else {
+           start=mid+1;   
+        }
+       mid=start+(end-start)/2;
+   }   
+   return ans; 
+}
+
+// Aggressive Cows
+
+bool isPossible(vector<int> &stalls, int k, int mid, int n) {
+    
+    int cowCount = 1;
+    int lastPos = stalls[0];
+    
+    for(int i=0; i<n; i++ ){
+        
+        if(stalls[i]-lastPos >= mid){
+            cowCount++;
+            if(cowCount==k)
+            {
+                return true;
+            }
+            lastPos = stalls[i];
+        }
+    }
+    return false;
+}
+
+int aggressiveCows(vector<int> &stalls, int k)
+{
+    sort(stalls.begin(), stalls.end());
+   	int s = 0;
+    int n = stalls.size();
+    int e=stalls[n-1];
+    int ans = -1;
+    int mid = s + (e-s)/2;
+    
+    while(s<=e) {
+        if(isPossible(stalls, k, mid, n)) {
+            ans = mid;
+            s = mid + 1;
+        }
+        else
+        {
+            e = mid - 1;
+        }
+        mid = s + (e-s)/2;
+    }
+    return ans;
+}
+
+// Painter's Partiton Problem
+
+bool isPossible(vector<int> &boards, int n, int k, int mid) {
+  int PainterCount = 1;
+  int blockCount = 0;
+  for (int i = 0; i < n; ++i) {
+    if (blockCount + boards[i] <= mid) {
+      blockCount += boards[i];
+    } 
+    else {
+      PainterCount++;
+      if (PainterCount > k || boards[i] > mid) {
+        return false;
+      }
+      blockCount = boards[i];
+    }
+  }
+  return true;
+}
+int findLargestMinDistance(vector<int> &boards, int k) {
+  int n = boards.size();
+  int s = 0;
+  int sum = 0;
+  for (int i = 0; i < n; ++i) {
+    sum += boards[i];
+  }
+  int e = sum;
+  int ans = -1;
+  int mid = s + (e - s) / 2;
+  while (s <= e) {
+    if (isPossible(boards, n, k, mid)) {
+      ans = mid;
+      // Left wale bhaag jaenge
+      e = mid - 1;
+    } 
+    else {
+      s = mid + 1;
+    }
+    mid = s + (e - s) / 2;
+  }
+  return ans;
+}
