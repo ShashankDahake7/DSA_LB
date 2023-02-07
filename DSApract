@@ -597,4 +597,120 @@ vector<int> findArraySum(vector<int>&a, int n, vector<int>&b, int m) {
 		return reverse(ans);		
 }
 
+// Check if the string is a palindrome
+
+#include <bits/stdc++.h> 
+
+string toLowerCase(string s){
+    int i=0,j=s.size()-1;
+    string str="";
+
+    while(i<=j){
+        if((s[i]>='a' && s[i]<='z') || (s[i]>='0' && s[i]<='9')){
+            str+=s[i++];
+        }
+        else if((s[i]>='A' && s[i]<='Z')){
+            str+=s[i++]-'A'+'a';
+        }
+        else{
+            i++;
+        }
+    }
+    return str;
+}
+
+bool checkPalindrome(string s)
+{
+    string str=toLowerCase(s);
+    int n=str.size();
+    int i=0,j=n-1;
+    bool ans=true;
+    while(i<=j){
+        if(str[i]==str[j]){
+            i++;
+            j--;
+        }
+        else{
+            ans=false;
+            break;
+        }
+    }
+    return ans;
+}
+
+// Valid palindrome
+// Reverse words in a string II
+// Maximum occuring character
+
+//{ Driver Code Starts
+#include<bits/stdc++.h>
+using namespace std;
+
+
+// } Driver Code Ends
+
+
+class Solution
+{
+    public:
+    char getMaxOccuringChar(string str)
+    {
+        int arr[26] = {0};
+        for (int i = 0; i < str.length(); i++)
+        {
+            char ch = str[i];
+            int number = 0;
+            number = ch - 'a';
+            arr[number]++;
+        }
+        int maxi = -1, ans = 0;
+        for (int i = 0; i < 26; i++)
+        {
+            if (maxi < arr[i])
+            {
+                ans = i;
+                maxi = arr[i];
+            }
+        }
+        return 'a' + ans;
+    }
+
+};
+
+//{ Driver Code Starts.
+
+int main()
+{
+   
+    int t;
+    cin >> t;
+    while(t--)
+    {
+        string str;
+        cin >> str;
+    	Solution obj;
+        cout<< obj.getMaxOccuringChar(str)<<endl;
+    }
+}
+// } Driver Code Ends
+
+// Remove all occurrences of substring
+
+#include <bits/stdc++.h> 
+string replaceSpaces(string &str){
+	string ch="@40";
+	int i=0;
+	while(i<=str.length()){
+		if(str[i]==' '){
+			str.replace(i,1,ch);
+		}
+		i++;
+	}
+	return str;
+}
+
+// Remove all adjacent duplicates
+// String Compression 
+// Permutation in Strings
+// Remove adjacent Duplicates 
 
