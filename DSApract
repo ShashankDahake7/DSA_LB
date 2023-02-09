@@ -545,9 +545,71 @@ void reverseArray(vector<int> &arr , int m)
 }
 
 // Merge two sorted arrays 
+
+class Solution {
+public:
+    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        while(nums1.size()>m){
+            nums1.pop_back();
+        }
+        for(int j=0; j<n; j++){
+            nums1.push_back(nums2[j]);
+        }
+        sort(nums1.begin(), nums1.end());
+    }
+};
+
 // Move zeroes to end
+
+class Solution {
+public:
+    void moveZeroes(vector<int>& nums) {
+        int i=0;
+        for(int j=0;j<nums.size();j++){
+            if(nums[j]!=0){
+                swap(nums[j],nums[i]);
+                i++;
+            }
+        }
+    }
+};
+
 // Rotate the array by k
+
+class Solution {
+public:
+    void rotate(vector<int>& nums, int k) {
+        int n = nums.size();
+        k %= n;
+        reverse(nums.begin(), nums.end());
+        reverse(nums.begin(), nums.begin()+k);
+        reverse(nums.begin()+k, nums.end());
+        return;
+    }
+};
+
 // Check if Array is sorted and rotated
+
+class Solution {
+public:
+    bool check(vector<int>& nums) {
+        int count = 0;
+        for(int i=0;i<nums.size()-1;i++)
+        {
+            if(nums[i]>nums[i+1] )
+            count++;
+        }
+        if(nums[nums.size()-1] > nums[0]){
+            count++;
+        }
+        if(count <= 1){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+};
 
 // Sum of two arrays
 
@@ -639,7 +701,47 @@ bool checkPalindrome(string s)
 }
 
 // Valid palindrome
+
+class Solution {
+public:
+    bool isPalindrome(string s) {
+        string str="";
+        for(int i=0;i<s.size();i++){
+            if(isalnum(s[i])) 
+                str+=tolower(s[i]);
+        }
+        string y=str;
+        reverse(str.begin(),str.end());
+        int i=0,j=0;
+        while(i<str.size() && j<y.size()){
+            if(str[i]!=y[j]){
+                return false;
+            }
+            else{
+                i++;
+                j++;
+            }
+        }
+        return true;
+    }
+};
+
 // Reverse words in a string II
+
+class Solution {
+public:
+    void reverseWords(vector<char>& s) {
+        int i = 0, N = s.size();
+        while (i < N) {
+            int start = i;
+            while (i < N && s[i] != ' ') ++i;
+            reverse(begin(s) + start, begin(s) + i);
+            ++i;
+        }
+        reverse(begin(s), end(s));
+    }
+};
+
 // Maximum occuring character
 
 //{ Driver Code Starts
@@ -710,7 +812,97 @@ string replaceSpaces(string &str){
 }
 
 // Remove all adjacent duplicates
-// String Compression 
+
+class Solution {
+public:
+    string removeDuplicates(string s) {
+        string ans = "";
+        for(int i = 0; i < s.length(); i++){
+            if(ans == ""){
+                ans.push_back(s[i]);
+            }
+            else if(ans.back()==s[i]){
+                ans.pop_back();
+            }
+            else{
+                ans.push_back(s[i]);
+            }
+        }
+        return ans;
+    }
+};
+
+
+// String Compression
+
+class Solution {
+public:
+    int compress(vector<char>& chars) {
+        int n=chars.size();
+        int i=0,j=0;
+        while(j<n){
+            int c=0;
+            char current_char=chars[j];
+            while(j<n && chars[j]==current_char){
+                c++;
+                j++;
+            }
+            chars[i++]=current_char;
+            if(c>1){
+                string count=to_string(c);
+                for(auto p:count){
+                    chars[i++]=p;
+                }
+            }
+
+        }
+         return i;
+    }
+};
+
 // Permutation in Strings
+
+class Solution {
+public:
+    bool checkInclusion(string s1, string s2) {
+        int s1_len=s1.size();
+        int s2_len=s2.size();
+        if(s1_len>s2_len)
+        {
+            return false;
+        }
+        sort(s1.begin(),s1.end());
+        for(int i=0;i<=(s2_len-s1_len);i++)
+        {
+            string p=s2.substr(i,s1_len);
+            sort(p.begin(),p.end());
+            if(p==s1)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+};
+
 // Remove adjacent Duplicates 
+
+class Solution {
+public:
+    string removeDuplicates(string s) {
+        string ans = "";
+        for(int i = 0; i < s.length(); i++){
+            if(ans == ""){
+                ans.push_back(s[i]);
+            }
+            else if(ans.back()==s[i]){
+                ans.pop_back();
+            }
+            else{
+                ans.push_back(s[i]);
+            }
+        }
+        return ans;
+    }
+};
 
