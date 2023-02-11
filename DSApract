@@ -906,3 +906,249 @@ public:
     }
 };
 
+// Linear Search
+
+#include<iostream>
+using namespace std;
+int main(){
+    int n;
+    cin>>n;
+    int arr[n];
+    for (int i = 0; i < n; i++)
+    {
+        cin>>arr[i];
+    }
+    int search;
+    cin>>search;
+    for (int i = 0; i < n; i++)
+    {
+        if(arr[i]==search){
+            cout<<search<<" element is found"<<" at "<< i <<" index"<<endl;
+        }
+    }
+    return 0;
+}
+
+// Row-wise sum
+
+#include<iostream>
+using namespace std;
+int main(){
+    int n,m;
+    cin>>n>>m;
+    int arr[n][m];
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            cin>>arr[i][j];
+        }
+    }
+    for (int i = 0; i < n; i++)
+    {
+        int sum=0;
+        for (int j = 0; j < m; j++)
+        {
+            sum+=arr[i][j];
+        } 
+        cout<<sum<<" ";
+    }
+    cout<<endl;
+    return 0;
+}
+
+// Column-wise sum
+
+#include<iostream>
+using namespace std;
+int main(){
+    int n,m;
+    cin>>n>>m;
+    int arr[n][m];
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            cin>>arr[i][j];
+        }
+    }
+    for (int j = 0; j < m; j++)
+    {
+        int sum=0;
+        for (int i = 0; i < n; i++)
+        {
+            sum+=arr[i][j];
+        } 
+        cout<<sum<<" ";
+    }
+    cout<<endl;
+    return 0;
+}
+
+// Largest Row Sum
+
+#include<iostream>
+#include<climits>
+using namespace std;
+int main(){
+    int n,m;
+    cin>>n>>m;
+    int arr[n][m];
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            cin>>arr[i][j];
+        }
+    }
+    int max=INT_MIN;
+    int RowIndex=-1;
+    for (int i = 0; i < n; i++)
+    {
+        int sum=0;
+        for (int j = 0; j < m; j++)
+        {
+            sum+=arr[i][j];
+        }
+        if(sum>max){
+            max=sum;
+            RowIndex=i;
+        }
+    }
+    cout<<max<<endl;
+    cout<<RowIndex<<endl;
+    return 0;
+}
+
+// Wave Print
+
+#include <bits/stdc++.h> 
+vector<int> wavePrint(vector<vector<int>> arr, int nRows, int mCols)
+{
+    vector<int> ans;
+    for(int j=0;j<mCols;j++){
+        if(j&1){
+            for(int i=nRows-1;i>=0;i--)
+                ans.push_back(arr[i][j]);
+        }
+        else{
+            for(int i=0;i<nRows;i++)
+                ans.push_back(arr[i][j]);
+        }
+    }
+    return ans;
+}
+
+// Spiral Matrix
+
+class Solution {
+public:
+    vector<int> spiralOrder(vector<vector<int>>& matrix) {
+        vector<int> ans;
+        int row=matrix.size();
+        int col=matrix[0].size();
+        int count=0;
+        int total=row*col;
+        // Indexes
+        int startingRow=0;
+        int startingCol=0;
+        int endingRow=row-1;
+        int endingCol=col-1;
+        while(count<total){
+            for (int index = startingCol; count<total && index <= endingCol ; index++)
+            {
+                ans.push_back(matrix[startingRow][index]);
+                count++;
+            }
+            startingRow++;
+            for (int index = startingRow; count<total && index <= endingRow ; index++)
+            {
+                ans.push_back(matrix[index][endingCol]);
+                count++;
+            }
+            endingCol--;
+            for (int index = endingCol; count<total && index >= startingCol ; index--)
+            {
+                ans.push_back(matrix[endingRow][index]);
+                count++;
+            }
+            endingRow--;
+            for (int index = endingRow; count<total && index >= startingRow ; index--)
+            {
+                ans.push_back(matrix[index][startingCol]);
+                count++;
+            }
+            startingCol++;
+        }
+        return ans;
+    }
+};
+
+// Rotate Image
+
+class Solution {
+public:
+    void rotate(vector<vector<int>>& matrix) {
+        int n = matrix.size();
+        for (int i = 0; i < n; i++) {
+            for (int j = i+1; j < n; j++) {
+                swap(matrix[i][j], matrix[j][i]);
+            }
+        }
+        for(int k=0;k<n;k++){
+            reverse(matrix[k].begin(), matrix[k].end());
+        }
+    }
+};
+
+// Search in a 2D Matrix
+
+class Solution {
+public:
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        int row=matrix.size();
+        int col=matrix[0].size();
+        int start=0,end=(row*col)-1,mid=start+(end-start)/2;
+        while(start<=end){
+            int element=matrix[mid/col][mid%col];
+            if(element<target){
+                start=mid+1;
+            }
+            else if(element==target){
+                return 1;
+            }
+            else{
+                end=mid-1;
+            }
+            mid=start+(end-start)/2;
+        }
+        return 0;
+    }
+};
+
+// Search in a 2D Matrix II
+
+class Solution {
+public:
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        int row=matrix.size();
+        int col=matrix[0].size();
+        
+        int RowIndex=0;
+        int ColIndex=col-1;
+        
+        while(RowIndex<row && ColIndex>=0){
+            int element=matrix[RowIndex][ColIndex];
+            if(element<target){
+                RowIndex++;
+            }
+            else if(element==target){
+                return 1;
+            }
+            else{
+                ColIndex--;
+            }
+        }
+        return 0;
+    }
+};
