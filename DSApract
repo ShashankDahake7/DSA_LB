@@ -1385,4 +1385,872 @@ public:
     }
 };
 
-// 
+// Factorial using recursion
+
+// #include<iostream>
+// using namespace std;
+// int factorial(int n){
+//     if(n==0 || n==1){
+//         return 1;
+//     }
+//     else{
+//         return n*factorial(n-1);
+//     }
+// }
+// int main(){
+//     int n;
+//     cout<<"Enter the number:";
+//     cin>>n;
+//     cout<<factorial(n);
+//     return 0;
+// }
+
+// Power of 2 using recursion
+
+// #include<iostream>
+// using namespace std;
+// int power(int n){
+//     if(n==0){
+//         return 1;
+//     }
+//     else{
+//         return 2*power(n-1);
+//     }
+// }
+// int main(){
+//     int n;
+//     cout<<"Enter the number:";
+//     cin>>n;
+//     cout<<power(n);
+//     return 0;
+// }
+
+// Print counting using recursion
+
+// #include<iostream>
+// using namespace std;
+// void Print(int n){
+//     if(n==0){
+//         return;
+//     }
+//     Print(n-1);
+//     cout<<n<<" ";
+// }
+// int main(){
+//     int n;
+//     cout<<"Enter the number:";
+//     cin>>n;
+//     Print(n);
+//     return 0;
+// }
+
+// Reach Home using recursion
+
+// #include<iostream>
+// using namespace std;
+// void target(int src,int dest){
+//     cout<<"source "<<src<<" destination "<<dest<<endl;
+//     if(src==dest){
+//         cout<<"Reached Home"<<endl;
+//         return;
+//     }
+//     src++;
+//     target(src,dest);
+// }
+// int main(){
+//     int dest,src=1;
+//     cout<<"Enter the destination:";
+//     cin>>dest;
+//     target(src,dest);
+//     return 0;
+// }
+
+// Fibonacci Number
+
+// class Solution {
+// public:
+//     int fib(int n) {
+//         if(n==0){
+//             return 0;
+//         }
+//         if(n==1){
+//             return 1;
+//         }
+//         else{
+//             return fib(n-1)+fib(n-2);
+//         }
+//     }
+// };
+
+// Count Ways To Reach The N-th Stairs
+
+// #include <bits/stdc++.h>
+// #define mod 1000000007
+// int countDistinctWays(int nStairs) {
+//     int n=nStairs;
+//     int prev1=1;
+//     int prev2=1;
+//     int curr;
+//     if(n==1 || n==0)
+//         return 1;
+//     for(int i=2;i<=n;i++){
+//         curr=(prev1+prev2)%mod;
+//         prev1=prev2;
+//         prev2=curr;
+//     }
+//     return curr%mod;
+// }
+
+// Say digits
+
+// Four One Two
+// #include<iostream>
+// using namespace std;
+// void digit(string arr[],int n){
+//     if(n==0){
+//         return;
+//     }
+//     int r=n%10;
+//     n=n/10;
+//     digit(arr,n);
+//     cout<<arr[r]<<" ";
+// }
+// int main(){
+//     int n;
+//     cout<<"Enter the number:";
+//     cin>>n;
+//     string arr[10]={"Zero","One","Two","Three","Four","Five","Six","Seven","Eight","Nine"};
+//     digit(arr,n);
+// }
+
+// Two One Four
+// #include<iostream>
+// using namespace std;
+// void digit(string arr[],int n){
+//     if(n==0){
+//         return;
+//     }
+//     int r=n%10;
+//     n=n/10;
+//     cout<<arr[r]<<" ";
+//     digit(arr,n);
+// }
+// int main(){
+//     int n;
+//     cout<<"Enter the number:";
+//     cin>>n;
+//     string arr[10]={"Zero","One","Two","Three","Four","Five","Six","Seven","Eight","Nine"};
+//     digit(arr,n);
+// }
+
+// Sorting using recursion
+
+// #include<iostream>
+// using namespace std;
+// bool Sorted(int arr[],int n){
+//     if(n==0 || n==1){
+//         return true;
+//     }
+//     if(arr[0]>arr[1]){
+//         return false;
+//     }
+//     else{
+//         bool ans=Sorted(arr+1,n-1);;
+//         return ans;
+//     }
+// }
+// int main(){
+//     int n;
+//     cout<<"Enter the size of the array:";
+//     cin>>n;
+//     int arr[n];
+//     cout<<"Enter the elements of the array:";
+//     for (int i = 0; i < n; i++)
+//     {
+//         cin>>arr[i];
+//     }
+//     int ans=Sorted(arr,n);
+//     if(ans){
+//         cout<<"Array is sorted";
+//     }
+//     else{
+//         cout<<"Array is not sorted";
+//     }
+//     return 0;
+// }
+
+// Sum of array using recursion
+
+// #include<iostream>
+// using namespace std;
+// int sum(int arr[],int n){
+//     if(n==0){
+//         return 0;
+//     }
+//     if(n==1){
+//         return arr[0];
+//     }
+//     else{
+//         int leftover=sum(arr+1,n-1);
+//         int ans=arr[0]+leftover;
+//         return ans;
+//     }
+// }
+// int main(){
+//     int n;
+//     cout<<"Enter the number:";
+//     cin>>n;
+//     int arr[n];
+//     cout<<"Enter the size of the array:";
+//     for (int i = 0; i < n; i++)
+//     {
+//         cin>>arr[i];
+//     }
+//     cout<<sum(arr,n);
+//     return 0;
+// }
+
+// Linear search using recursion
+
+// #include<iostream>
+// using namespace std;
+// bool LinearSearch(int arr[],int n,int search){
+//     if(n==0){
+//         return false;
+//     }
+//     if(arr[0]==search){
+//         return true;
+//     }
+//     else{
+//         bool leftover=LinearSearch(arr+1,n-1,search);
+//         return leftover;
+//     }
+// }
+// int main(){
+//     int n;
+//     cout<<"Enter the size of the array:";
+//     cin>>n;
+//     int arr[n];
+//     cout<<"Enter the elements of the array:";
+//     for (int i = 0; i < n; i++)
+//     {
+//         cin>>arr[i];
+//     }
+//     int search;
+//     cout<<"Enter the element you want to search for:";
+//     cin>>search;
+//     bool ans=LinearSearch(arr,n,search);
+//     if(ans){
+//         cout<<"Element "<<search<<" is present in the array";
+//     }
+//     else{
+//         cout<<"Element "<<search<<" is not present in the array";
+//     }
+//     return 0;
+// }
+
+// Binary search using recursion
+
+// #include<iostream>
+// using namespace std;
+// bool BinarySearch(int arr[],int start,int end,int search){
+//     if(start>end){
+//         return false;
+//     }
+//     int mid=start+(end-start)/2;
+//     if(arr[mid]==search){
+//         return true;
+//     }
+//     if(arr[mid]<search){
+//         return BinarySearch(arr,mid+1,end,search);
+//     }
+//     else{
+//         return BinarySearch(arr,start,mid-1,search);
+//     }
+// }
+// int main(){
+//     int n;
+//     cout<<"Enter the size of the array:";
+//     cin>>n;
+//     int arr[n];
+//     cout<<"Enter the elements of the array:";
+//     for (int i = 0; i < n; i++)
+//     {
+//         cin>>arr[i];
+//     }
+//     int search;
+//     cout<<"Enter the element you want to search for:";
+//     cin>>search;
+//     bool ans=BinarySearch(arr,0,n-1,search);
+//     if(ans){
+//         cout<<"Element "<<search<<" is present in the array";
+//     }
+//     else{
+//         cout<<"Element "<<search<<" is not present in the array";
+//     }
+//     return 0;
+// }
+
+// BinarySearch using recursion(CS)
+
+// int BinarySearch(int arr[],int s,int e,int k){
+//     int mid=s+(e-s)/2;
+//     if(s>e){
+//         return -1;
+//     }
+//     if(arr[mid]==k){
+//         return mid;
+//     }
+//     if(arr[mid]<k){
+//         return BinarySearch(arr, mid+1, e, k);
+//     }
+//     else{
+//         return BinarySearch(arr,s,mid-1,k);
+//     }
+// }
+// int binarySearch(int *input, int n, int val)
+// {
+//     int ans=BinarySearch(input, 0, n-1, val);
+//     return ans;
+// }
+
+// Reverse string using recursion
+
+// #include<iostream>
+// #include<algorithm>
+// using namespace std;
+// void ReverseString(string &str,int s,int e){
+//     if(s>e){
+//         return;
+//     }
+//     swap(str[s++],str[e--]);
+//     ReverseString(str,s,e);
+// }
+// int main(){
+//     string str;
+//     cout<<"Enter the string:";
+//     cin>>str;
+//     ReverseString(str,0,str.length()-1);
+//     cout<<str;
+//     return 0;
+// }
+
+// #include<iostream>
+// #include<algorithm>
+// using namespace std;
+// void ReverseString(string &str,int s){
+//     int l=str.length()-s-1;
+//     if(s>=l){
+//         return;
+//     }
+//     swap(str[s++],str[l--]);
+//     ReverseString(str,s);
+// }
+// int main(){
+//     string str;
+//     cout<<"Enter the string:";
+//     cin>>str;
+//     ReverseString(str,0);
+//     cout<<str;
+//     return 0;
+// }
+
+// Check Palindrome
+
+// #include<iostream>
+// #include<algorithm>
+// using namespace std;
+// bool CheckPalindrome(string &str,int s,int e){
+//     if(s>e){
+//         return true;
+//     }
+//     if(str[s]!=str[e]){
+//         return false;
+//     }
+//     else{
+//         return CheckPalindrome(str,s+1,e-1);
+//     }
+// }
+// int main(){
+//     string str;
+//     cin>>str;
+//     bool ans=CheckPalindrome(str,0,str.length()-1);
+//     if(ans){
+//         cout<<"String is a palindorme";
+//     }
+//     else{
+//         cout<<"String is not a palindrome";
+//     }
+//     return 0;
+// }
+
+// #include<iostream>
+// #include<algorithm>
+// using namespace std;
+// bool CheckPalindrome(string &str,int s){
+//     int l=str.length()-s-1;
+//     if(s>l){
+//         return true;
+//     }
+//     if(str[s++]==str[l--]){
+//          return CheckPalindrome(str,s+1);
+//     }
+//     else{
+//        return false;
+//     }
+// }
+// int main(){
+//     string str;
+//     cin>>str;
+//     bool ans=CheckPalindrome(str,0);
+//     if(ans){
+//         cout<<"String is a palindorme";
+//     }
+//     else{
+//         cout<<"String is not a palindrome";
+//     }
+//     return 0;
+// }
+
+// Power using recursion
+
+// #include<iostream>
+// #include<algorithm>
+// using namespace std;
+// int power(int b,int e){
+//     if(e==0){
+//         return 1;
+//     }
+//     if(e==1){
+//         return b;
+//     }
+//     int ans = power(b,e/2);
+//     if(e%2==0){
+//         return ans*ans;
+//     }
+//     else{
+//         return b*ans*ans;
+//     }
+// }
+// int main(){
+//     int b,e;
+//     cout<<"Enter the values of base and exponent:";
+//     cin>>b>>e;
+//     int ans=power(b,e);
+//     cout<<ans;
+//     return 0;
+// }
+
+// Bubble sort using recursion
+
+// #include<iostream>
+// #include<algorithm>
+// using namespace std;
+// void BubbleSort(int arr[],int n){
+//     if(n==0 || n==1){
+//         return;
+//     }
+//     for(int i=0;i<n;i++){
+//         if(arr[i]>arr[i+1]){
+//             swap(arr[i],arr[i+1]);
+//         }
+//     }
+//     BubbleSort(arr,n-1);
+// }
+// int main(){
+//     int n;
+//     cout<<"Enter the size of the array:";
+//     cin>>n;
+//     int arr[n];
+//     cout<<"Enter the elements of the array:";
+//     for (int i = 0; i < n; i++)
+//     {
+//         cin>>arr[i];
+//     }
+//     BubbleSort(arr,n);
+//     for (int i = 0; i < n; i++)
+//     {
+//         cout<<arr[i]<<" ";
+//     }
+//     return 0;
+// }
+
+// Selection sort suing recursion
+
+// #include<iostream>
+// #include<algorithm>
+// using namespace std;
+// void SelectionSort(int arr[],int start,int n){
+//     if(n<=start){
+//         return;
+//     }
+//     int minIndex=start;
+//     for(int i=start;i<n;i++){
+//         if(arr[i]<arr[minIndex]){
+//             minIndex=i;
+//         }
+//     }
+//     swap(arr[minIndex],arr[start]);
+//     SelectionSort(arr,start+1,n);
+// }
+// int main(){
+//     int n;
+//     cout<<"Enter the size of the array:";
+//     cin>>n;
+//     int arr[n];
+//     cout<<"Enter the elements of the array:";
+//     for (int i = 0; i < n; i++)
+//     {
+//         cin>>arr[i];
+//     }
+//     SelectionSort(arr,0,n);
+//     for (int i = 0; i < n; i++)
+//     {
+//         cout<<arr[i]<<" ";
+//     }
+//     return 0;
+// }
+
+// Insertion Sort using recursion
+
+// #include<iostream>
+// #include<algorithm>
+// using namespace std;
+// void InsertionSort(int arr[],int n){
+//     if(n<=1){
+//         return;
+//     }
+//     InsertionSort(arr,n-1);
+//     int last=arr[n-1];
+//     int j=n-2;
+//     while(j>=0 && arr[j]>last){
+//         arr[j+1]=arr[j];
+//         j--;
+//     }
+//     arr[j+1]=last;
+// }
+// int main(){
+//     int n;
+//     cout<<"Enter the size of the array:";
+//     cin>>n;
+//     int arr[n];
+//     cout<<"Enter the elements of the array:";
+//     for (int i = 0; i < n; i++)
+//     {
+//         cin>>arr[i];
+//     }
+//     InsertionSort(arr,n);
+//     for (int i = 0; i < n; i++)
+//     {
+//         cout<<arr[i]<<" ";
+//     }
+//     return 0;
+// }
+
+// Merge Sort
+
+// void merging(vector<int> &arr, int s, int e)
+// {
+//     int mid = s + (e - s) / 2;
+//     int length1 = mid + 1 - s;
+//     int length2 = e - mid;
+//     int *arr1 = new int[length1];
+//     int *arr2 = new int[length2];
+//     int mainIndexArray = s;
+//     for (int i = 0; i < length1; i++)
+//     {
+//         arr1[i] = arr[mainIndexArray++];
+//     }
+//     mainIndexArray = mid + 1;
+//     for (int i = 0; i < length2; i++)
+//     {
+//         arr2[i] = arr[mainIndexArray++];
+//     }
+//     int index1 = 0;
+//     int index2 = 0;
+//     mainIndexArray = s;
+//     while (index1 < length1 && index2 < length2)
+//     {
+//         if (arr1[index1] < arr2[index2])
+//         {
+//             arr[mainIndexArray++] = arr1[index1++];
+//         }
+//         else
+//         {
+//             arr[mainIndexArray++] = arr2[index2++];
+//         }
+//     }
+//     while (index1 < length1)
+//     {
+//         arr[mainIndexArray++] = arr1[index1++];
+//     }
+//     while (index2 < length2)
+//     {
+//         arr[mainIndexArray++] = arr2[index2++];
+//     }
+// }
+// void merge(vector<int> &arr, int s, int e)
+// {
+//     if (s >= e)
+//     {
+//         return;
+//     }
+//     int mid = s + (e - s) / 2;
+//     merge(arr, s, mid);
+//     merge(arr, mid + 1, e);
+//     merging(arr, s, e);
+// }
+// void mergeSort(vector<int> &arr, int n) { merge(arr, 0, n - 1); }
+
+// Quick Sort
+
+// #include<iostream>
+// #include<algorithm>
+// using namespace std;
+// int parts(int arr[],int s,int e){
+//     int pivot=arr[s];
+//     int count=0;
+//     for (int i = s+1; i <= e ; i++)
+//     {
+//         if(arr[i]<= pivot){
+//             count++;
+//         }
+//     }
+//     int pivotIndex=s+count;
+//     swap(arr[pivotIndex],arr[s]);
+//     int i=s,j=e;
+//     while(i<pivotIndex && j>pivotIndex){
+//         while(arr[i]<pivot){
+//             i++;
+//         }
+//         while(arr[i]>pivot){
+//             j--;
+//         }
+//         if(i<pivotIndex && j>pivotIndex){
+//             swap(arr[i++],arr[j--]);
+//         }
+//     }
+//     return pivotIndex;
+// }
+// void QuickSort(int arr[],int s,int e){
+//     if(s>=e){
+//         return;
+//     }
+//     int p = parts(arr,s,e);
+//     QuickSort(arr,s,p-1); 
+//     QuickSort(arr,p+1,e); 
+// }
+// int main()
+// {
+//     int n;
+//     cout << "Enter the size of the array:";
+//     cin >> n;
+//     int arr[n];
+//     cout << "Enter the elements of the array:";
+//     for (int i = 0; i < n; i++)
+//     {
+//         cin >> arr[i];
+//     }
+//     QuickSort(arr, 0, n - 1);
+//     for (int i = 0; i < n; i++)
+//     {
+//         cout << arr[i] << " ";
+//     }
+//     return 0;
+// }
+
+// Subsets using recursion
+
+// class Solution {
+// public:
+//     void solve(vector<int> nums,vector<int> output,int index,vector<vector<int>> &ans){
+//         if(index>=nums.size()){
+//             ans.push_back(output);
+//             return;
+//         }
+//         solve(nums,output,index+1,ans);
+//         int element=nums[index];
+//         output.push_back(element);
+//         solve(nums,output,index+1,ans);
+//     }
+//     vector<vector<int>> subsets(vector<int>& nums) {
+//         vector<vector<int>> ans;
+//         vector<int> output;
+//         int index=0;
+//         solve(nums,output,index,ans);
+//         return ans;
+//     }
+// };
+
+// Subsets using Bit Manipulation
+
+// #include <bits/stdc++.h>
+// using namespace std;
+// // Function to find all subsets of given set. Any repeated subset is considered only once in the output
+// vector<vector<int> > findPowerSet(vector<int>& nums)
+// {
+// 	// Size of array to set bit
+// 	int bits = nums.size();
+// 	// Total number of subsets = pow(2, sizeof(arr))
+// 	unsigned int pow_set_size = pow(2, bits);
+// 	// Sort to avoid adding permutation of the substring
+// 	sort(nums.begin(), nums.end());
+// 	vector<vector<int> > ans;
+// 	// To store subset as a list toavoid adding exact duplicates
+// 	vector<string> list;
+// 	// Counter 000..0 to 111..1
+// 	for (int counter = 0; counter < pow_set_size;
+// 		counter++) {
+// 		vector<int> subset;
+// 		string temp = "";
+// 		// Check for the current bit in the counter
+// 		for (int j = 0; j < bits; j++) {
+// 			if (counter & (1 << j)) {
+// 				subset.push_back(nums[j]);
+// 				// Add special character to separate integers
+// 				temp += to_string(nums[j]) + '$';
+// 			}
+// 		}
+// 		if (find(list.begin(), list.end(), temp)
+// 			== list.end()) {
+// 			ans.push_back(subset);
+// 			list.push_back(temp);
+// 		}
+// 	}
+// 	return ans;
+// }
+// int main()
+// {
+// 	vector<int> arr{ 10, 12, 12 };
+// 	vector<vector<int> > power_set = findPowerSet(arr);
+// 	for (int i = 0; i < power_set.size(); i++) {
+// 		for (int j = 0; j < power_set[i].size(); j++)
+// 			cout << power_set[i][j] << " ";
+// 		cout << endl;
+// 	}
+// 	return 0;
+// }
+
+// Subsequences of String using Recursion
+
+// #include <bits/stdc++.h>
+// using namespace std;
+// void solve(string str, string output, int index, vector<string> &ans) {
+//   // base case
+//   if (index >= str.length()) {
+//     if (output.length() > 0) {
+//       ans.push_back(output);
+//     }
+//     return;
+//   }
+//   // exclude
+//   solve(str, output, index + 1, ans);
+//   // include
+//   char element = str[index];
+//   output.push_back(element);
+//   solve(str, output, index + 1, ans);
+// }
+// vector<string> subsequences(string str) {
+//   // Write your code here
+//   vector<string> ans;
+//   string output = "";
+//   int index = 0;
+//   solve(str, output, index, ans);
+//   return ans;
+// }
+
+// Subsequences of String using Bit Manipulation
+
+// #include<bits/stdc++.h>
+// using namespace std;
+// string print(string s , int i){
+// 	int j = 0;
+// 	string sub;
+// 	//finding where the bit is set
+// 	while(i>0){
+// 		if(i & 1){
+// 			sub.push_back(s[j]); //pushing only when bit is set
+// 		}
+// 		j++; //always incrementing the index pointer
+// 		i = i >> 1;
+// 	}	
+// 	return sub;
+// }
+// vector<string> createsubsets(string& s){	
+// 	vector <string> res;
+// 	for(int i = 1 ; i <= ((1 << s.size()) - 1) ; i++){
+// 		//each time we create a subsequence for corresponding binary representation
+// 		res.push_back(print(s,i));
+// 	}
+// 	return res;
+// }
+// int main(){
+// 	string s = "abc";
+// 	//vector of strings to store all sub-sequences
+// 	vector <string> print = createsubsets(s);	
+// 	//print function
+// 	for(int i = 0 ; i < print.size() ; i++){
+// 		for (int j = 0; j < print[i].size(); j++){
+// 			cout << print[i][j]<<" ";
+// 		}
+// 		cout << endl;
+// 	}
+// 	return 0;
+// }
+
+// Letter Combinations of a Phone Number(Phone Keypad Problem)
+
+// class Solution {
+// public:
+//     void solve(string digits,string output,int index,vector<string> &ans,string mapping[]){
+//         if(index>=digits.length()){
+//             ans.push_back(output);
+//             return;
+//         }
+//         int number=digits[index]-'0';
+//         string value=mapping[number];
+//         for(int i=0;i<value.length();i++){
+//             output.push_back(value[i]);
+//             solve(digits,output,index+1,ans,mapping);
+//             output.pop_back();
+//         }
+//     }
+//     vector<string> letterCombinations(string digits) {
+//         vector<string> ans;
+//         if(digits.length()==0){
+//             return ans;
+//         }
+//         string output="";
+//         int index=0;
+//         string mapping[10]={""," ","abc","def","ghi","jkl","mno","pqrs","tuv","wxyz"};
+//         solve(digits,output,index,ans,mapping);
+//         return ans;
+//     }
+// };
+
+// Permutations of a string
+
+// class Solution {
+// public:
+//     void solve(vector<int>& nums,vector<vector<int>> &ans,int index){
+//         if(index>=nums.size()){
+//             ans.push_back(nums);
+//             return;
+//         }
+//         for(int i=index;i<nums.size();i++){
+//             swap(nums[i],nums[index]);
+//             solve(nums,ans,index+1);
+//             swap(nums[i],nums[index]);
+//         }
+//     }
+//     vector<vector<int>> permute(vector<int>& nums) {
+//         vector<vector<int>> ans;
+//         int index=0;
+//         solve(nums,ans,index);
+//         return ans;
+//     }
+// };
+
+// Rat in a Maze Problem - I
+
+
