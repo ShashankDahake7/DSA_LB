@@ -2329,3 +2329,327 @@ class Solution{
     }
 };
     
+/************************************************************
+
+    Following is the linked list node structure.
+    
+    class Node 
+    {
+        public:
+        int data;
+        Node* next;
+
+        Node(int data) 
+        {
+            this->data = data;
+            this->next = NULL;
+        }
+    };
+    
+************************************************************/    
+    
+// Reverse a Linked List
+
+LinkedListNode<int> *reverseLinkedList(LinkedListNode<int> *head) 
+{
+    if(head == NULL || head->next == NULL){
+        return head;
+    }
+    LinkedListNode<int>* prev=NULL;
+    LinkedListNode<int>* curr=head;
+    LinkedListNode<int>* forw=NULL;
+    while(curr!=NULL){
+        forw=curr->next;
+        curr->next=prev;
+        prev=curr;
+        curr=forw;
+    }
+    return prev;
+}
+
+// Reverse a Linked List(Recursively)
+
+LinkedListNode<int> *rev(LinkedListNode<int> *head) {
+	  if (head == NULL || head->next == NULL){
+	    return head;
+	  }
+LinkedListNode<int> *chotaHead = rev(head->next);
+	  head->next->next = head;
+	  head->next = NULL;
+	  return chotaHead;
+}
+LinkedListNode<int> *reverseLinkedList(LinkedListNode<int> *head) {
+    return rev(head);
+}
+
+// Middle of a Linked List
+
+int getLength(Node *head){
+    int ans=0;
+    while(head){
+        ans++;
+        head=head->next;
+    }
+    return ans;
+}
+Node *findMiddle(Node *head) {
+    int n=getLength(head);
+    int t=n/2;
+    Node *ans=head;
+    while(t--){
+        ans=ans->next;
+    }
+    return ans;
+}
+
+// Reverse Nodes In K-Group
+
+Node *krevgroup(Node *head, int n, int b[], int i)
+{
+    if (n<1 || head == NULL || head->next == NULL){
+        return head;
+    }
+    Node *prev = NULL;
+    Node *curr = head;
+    Node *nxt = NULL;
+    int cnt = 0;
+    while(b[i] == 0 && i < n){ 
+    	i++;
+    }
+    while (curr != NULL && cnt < b[i] && i < n  ){
+        nxt = curr->next;
+         curr->next = prev;
+        prev = curr;
+        curr = nxt;
+        cnt++;
+    }
+    if (i >= n && curr != NULL){
+        return head;
+    }
+    if (curr != NULL)
+        head->next = krevgroup(nxt, n, b, i + 1);
+    return prev;
+}
+Node *getListAfterReverseOperation(Node *head, int n, int b[]){
+	return krevgroup(head,n,b,0);
+}
+
+// Circularly LinkedList
+
+bool isCircular(Node* head){
+    if(head==NULL){
+        return 1;
+    }
+    Node* slow=head;
+    Node* fast=head;
+    while(fast!=NULL && fast->next!=NULL){
+        slow=slow->next;
+        fast=fast->next->next;
+        if(slow==fast){
+            if(slow==head){
+                return 1;
+            }
+            else{
+                return 0;
+            }
+        }
+    }
+    return 0;
+}
+
+// Detect and Remove Loop
+
+//this is to find cycle in thr loop
+Node* floydCycle(Node* head)
+{
+    if(head == NULL){
+        return NULL;
+    }
+    Node* slow = head;
+    Node* fast = head;
+    while(slow!=NULL && fast!=NULL){
+        fast = fast->next;
+        if(fast!=NULL){
+            fast = fast->next;
+        }
+        slow = slow->next;
+        if(slow == fast){
+            return slow;
+        }
+    }
+    return NULL;
+}
+//this is to find first element from where loop started 
+Node* loopFind(Node* head){
+    if(head == NULL){
+        return NULL;
+    }
+    Node* meet = floydCycle(head);
+    if(meet == NULL){
+        return NULL;
+    }
+    Node* slow = head;
+    while(slow!= meet){
+        slow = slow->next;
+        meet = meet->next;
+    }
+    return slow;
+}
+//this is to remove the loop
+Node *removeLoop(Node *head){
+    if(head == NULL){
+        return NULL;
+    }
+    Node* startLoop = loopFind(head);
+    if(startLoop == NULL){
+        return head;
+    }
+    Node* temp = startLoop;
+    while(temp->next!= startLoop){
+        temp = temp->next;
+    }
+    temp->next = NULL;
+    return head;
+}
+
+// Remove Duplicates From a Sorted Linked List
+
+Node * uniqueSortedList(Node * head) {
+    if(head==NULL)return NULL;
+    Node* curr=head;
+    while(curr!=NULL){
+        if(curr->next!=NULL && curr->data==curr->next->data){
+            Node* next_next=curr->next->next;
+            Node* nodeToDelete=curr->next;
+            delete(nodeToDelete);
+            curr->next= next_next;
+        }
+        else{
+            curr=curr->next; 
+        }
+    }
+    return head;
+}
+
+// Remove Duplicates from a Unsorted Linked List
+
+// Brute Force(T.C --> O(n^2),S.C --> O(1))
+Node *removeDuplicates(Node *head)
+{
+    if(head == NULL)
+        return NULL;
+    Node* curr = head;
+    while(curr != NULL) {
+        Node* temp = curr;
+        while(temp -> next != NULL) {
+            if(curr -> data == temp -> next -> data){
+                Node* next_next = temp -> next -> next;
+                Node* nodeToDelete = temp -> next;
+                nodeToDelete -> next = NULL;
+                delete nodeToDelete;
+                temp -> next = next_next;
+            }
+            else
+                temp = temp -> next;
+        }
+        curr = curr -> next;
+    }
+    return head;
+}
+
+Node *removeDuplicates(Node *head)
+{
+    if( head == NULL){
+        return NULL;
+    }
+    unordered_map< int, bool> visited;
+    Node *curr = head;
+    while( curr -> next != NULL){
+        visited[curr -> data ] = true;
+        if( visited[curr -> next -> data] == true){
+            curr -> next = curr -> next -> next;
+        }
+        else{
+            curr = curr -> next;
+        }
+    }
+    return head;
+}
+
+// 
+
+
+
+// Merge two sorte arrays in a Linked List
+
+Node<int>* solve( Node<int>* first , Node<int>* second){
+
+    if( first -> next == NULL){
+        first -> next = second;
+        return first;
+    }
+
+    Node<int>* curr1 = first;
+    Node<int>* next1 = curr1 -> next;
+    Node<int>* curr2 = second;
+    Node<int>* next2 = curr2 -> next;
+
+    while( next1 != NULL and curr2 != NULL){
+        if( (curr2 -> data >= curr1 -> data) and (curr2 -> data <= next1 -> data)){
+            curr1 -> next = curr2;
+            next2 = curr2 -> next;
+            curr2 -> next = next1;
+            curr1 = curr2;
+            curr2 = next2;
+        }
+        else{
+            curr1 = next1;
+            next1 =  next1 -> next;
+
+            if( next1 == NULL){
+                curr1 -> next = curr2;
+                return first;
+            }
+        }
+    }
+    return first;
+}
+
+Node<int>* sortTwoLists(Node<int>* first, Node<int>* second)
+{
+    // Write your code here.
+    if( first == NULL){
+        return second;
+    }
+    if( second == NULL){
+        return first;
+    }
+
+    if( first -> data <= second -> data){
+        return solve( first , second );
+    }
+    else{
+        return solve( second , first );
+    }
+}
+
+// using recursion
+Node<int>* sortTwoLists(Node<int>* first, Node<int>* second)
+{
+    if(!first){
+        return second;
+    }
+    if (!second) {
+        return first;
+    }
+    if(first->data<=second->data){
+        first->next=sortTwoLists(first->next,second);
+        return first;
+    }
+    else{
+        second->next=sortTwoLists(first,second->next);
+        return second;
+    }
+}
+
+// 
