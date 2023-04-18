@@ -2382,6 +2382,22 @@ LinkedListNode<int> *reverseLinkedList(LinkedListNode<int> *head) {
     return rev(head);
 }
 
+// Reverse a Doubly Linked List
+
+Node* reverseDLL(Node * head){
+    Node *prev = NULL;
+    Node *curr = head;
+    Node *temp=NULL;
+    while(curr!=NULL){
+        temp = curr->prev;
+        curr->prev = curr->next;
+        curr->next = temp;
+        prev = curr;
+        curr = curr->prev;
+    }
+    return prev;
+}
+
 // Middle of a Linked List
 
 int getLength(Node *head){
