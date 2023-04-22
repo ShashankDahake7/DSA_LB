@@ -2660,7 +2660,142 @@ void splitList(Node *head, Node **head1_ref, Node **head2_ref)
     *head1_ref=head;
     *head2_ref=temp;
 }
-	
+
+// Split Linked List in parts
+		
+class Solution {
+public:
+    vector<ListNode*> splitListToParts(ListNode* head, int k) {
+        vector<ListNode*> ans;
+        int len=0;
+        ListNode *temp=head;
+        while(temp!=NULL)
+        {
+            len++;
+            temp=temp->next;
+        }
+        int size=len/k;
+        int rem=len%k;
+        temp=head;
+        for(int i=0;i<k;i++)
+        {
+            ListNode *end=temp;
+            if(rem>0)
+            {
+                int c=size;
+                while(c--)
+                {
+                    end=end->next;
+                }
+                ListNode *x=end->next;
+                end->next=NULL;
+                ans.push_back(temp);
+                temp=x;
+                rem--;
+            }
+            else
+            {
+                if(size==0)
+                {
+                    ans.push_back(NULL);    
+                }
+                else
+                {
+                    int c=size-1;
+                    while(c--)
+                    {
+                        end=end->next;
+                    }
+                    ListNode*x=end->next;
+                    end->next=NULL;
+                    ans.push_back(temp);
+                    temp=x;
+                }
+            }
+        }
+        return ans;
+    }
+};	
+
+// Sort 0s,1s and 2s in Linked List
+
+// Method 1
+class Solution
+{
+    public:
+    //Function to sort a linked list of 0s, 1s and 2s.
+    Node* segregate(Node *head) {
+        int zeroCount=0,oneCount=0,twoCount=0;
+        Node *temp=head;
+        while(temp!=NULL){
+            if(temp->data==0) zeroCount++;
+            else if(temp->data==1) oneCount++;
+            else if(temp->data==2) twoCount++;
+            temp=temp->next;
+        }
+        temp=head;
+        while(temp!=NULL){
+            if(zeroCount!=0){
+                temp->data=0;
+                zeroCount--;
+            }
+            else if(oneCount!=0){
+                temp->data=1;
+                oneCount--;
+            }
+            else if(twoCount!=0){
+                temp->data=2;
+                twoCount--;
+            }
+            temp=temp->next;
+        }
+        return head;
+    }
+};
+
+// Method 2
+class Solution
+{
+    public:
+    void insertAtTail(Node *&tail,Node *curr){
+        tail->next=curr;
+        tail=curr;
+    }
+    Node* segregate(Node *head) {
+        Node *zeroHead=new Node(-1);
+        Node *zeroTail=zeroHead;
+        Node *oneHead=new Node(-1);
+        Node *oneTail=oneHead;
+        Node *twoHead=new Node(-1);
+        Node *twoTail=twoHead;
+        Node *curr=head;
+        // created seperate list of 0s,1s and 2s
+        while(curr!=NULL){
+            int val=curr->data;
+            if(val==0) insertAtTail(zeroTail,curr);
+            else if(val==1) insertAtTail(oneTail,curr);
+            else if(val==2) insertAtTail(twoTail,curr);
+            curr=curr->next;
+        }
+        // merging above list
+        if(oneHead->next!=NULL){
+            zeroTail->next=oneHead->next;
+        }
+        else{
+            zeroTail->next=twoHead->next;   
+        }
+        oneTail->next=twoHead->next;
+        twoTail->next=NULL;
+        // setup head
+        head=zeroHead->next;
+        // delete dummy nodes
+        delete zeroHead;
+        delete oneHead;
+        delete twoHead;
+        return head;
+    }
+};
+
 // Merge two sorted arrays in a Linked List
 
 Node<int>* solve( Node<int>* first , Node<int>* second){
@@ -2669,12 +2804,10 @@ Node<int>* solve( Node<int>* first , Node<int>* second){
         first -> next = second;
         return first;
     }
-
     Node<int>* curr1 = first;
     Node<int>* next1 = curr1 -> next;
     Node<int>* curr2 = second;
     Node<int>* next2 = curr2 -> next;
-
     while( next1 != NULL and curr2 != NULL){
         if( (curr2 -> data >= curr1 -> data) and (curr2 -> data <= next1 -> data)){
             curr1 -> next = curr2;
@@ -2698,11 +2831,10 @@ Node<int>* solve( Node<int>* first , Node<int>* second){
 
 Node<int>* sortTwoLists(Node<int>* first, Node<int>* second)
 {
-    // Write your code here.
-    if( first == NULL){
+    if(first == NULL){
         return second;
     }
-    if( second == NULL){
+    if(second == NULL){
         return first;
     }
 
@@ -2717,10 +2849,10 @@ Node<int>* sortTwoLists(Node<int>* first, Node<int>* second)
 // using recursion
 Node<int>* sortTwoLists(Node<int>* first, Node<int>* second)
 {
-    if(!first){
+    if(first==NULL){
         return second;
     }
-    if (!second) {
+    if (second=NULL) {
         return first;
     }
     if(first->data<=second->data){
@@ -2733,4 +2865,315 @@ Node<int>* sortTwoLists(Node<int>* first, Node<int>* second)
     }
 }
 
-// 
+// Linked List is Palindrome or not
+
+// Method 1
+#include<vector>
+class Solution{
+  public:
+    bool checkPalindrome(vector<int> arr){
+        int n=arr.size();
+        int s=0,e=n-1;
+        while(s<=e){
+            if(arr[s]!=arr[e]){
+                return 0;
+            }
+            s++;
+            e--;
+        }
+        return 1;
+    }
+    bool isPalindrome(Node *head)
+    {
+        vector<int> arr;
+        Node *temp=head;
+        while(temp!=NULL){
+            arr.push_back(temp->data);
+            temp=temp->next;
+        }
+        return checkPalindrome(arr);
+    }
+};
+
+// Method 2
+class Solution{
+  public:
+    Node *getMid(Node *head){
+        Node *slow=head;
+        Node *fast=head->next;
+        while(fast!=NULL && fast->next!=NULL){
+            fast=fast->next->next;
+            slow=slow->next;
+        }
+        return slow;
+    }
+    Node *reverse(Node *head){
+        Node *curr=head;
+        Node *prev=NULL;
+        Node *forward=NULL;
+        while(curr!=NULL){
+            forward=curr->next;
+            curr->next=prev;
+            prev=curr;
+            curr=forward;
+        }
+        return prev;
+    }
+    bool isPalindrome(Node *head)
+    {
+        if(head->next==NULL){
+            return true;    
+        } 
+        // find mid
+        Node *mid=getMid(head);
+        // reverse list after mid
+        Node *temp=mid->next;
+        mid->next=reverse(temp);
+        // compare both halves
+        Node *head1=head;
+        Node *head2=mid->next;
+        while(head2!=NULL){
+            if(head1->data!=head2->data){
+                return false;
+            }
+            head1=head1->next;
+            head2=head2->next;
+        }
+        // form the same linkedlist given 
+        temp=mid->next;
+        mid->next=reverse(temp);
+        return true;
+    }
+};
+
+// Add two Numbers in a linked list
+
+// Method-1
+class Solution
+{
+    public:
+    struct Node *reverse(Node *head){
+        Node *curr=head;
+        Node *prev=NULL;
+        Node *forward=NULL;
+        while(curr!=NULL){
+            forward=curr->next;
+            curr->next=prev;
+            prev=curr;
+            curr=forward;
+        }
+        return prev;
+    }
+    void insertAtTail(struct Node* &head, struct Node* &tail,int val){
+        Node *temp=new Node(val);
+        // empty list
+        if(head==NULL){
+            head=temp;
+            tail=temp;
+            return;
+        }
+        // non-empty list
+        else{
+            tail->next=temp;
+            tail=temp;
+        }
+    }
+    struct Node *add(struct Node* first, struct Node* second){
+        Node *ansHead=NULL;
+        Node *ansTail=NULL;
+        int carry=0;
+        while(first!=NULL && second!=NULL){
+            int sum=carry+first->data+second->data;
+            int digit=sum%10;
+            // create node and add in answer linked list
+            insertAtTail(ansHead,ansTail,digit);
+            carry=sum/10;
+            first=first->next;
+            second=second->next;
+        }
+        while(first!=NULL){
+            int sum=carry+first->data;
+            int digit=sum%10;
+            // create node and add in answer linked list
+            insertAtTail(ansHead,ansTail,digit);
+            carry=sum/10;
+            first=first->next;
+        }
+        while(second!=NULL){
+            int sum=carry+second->data;
+            int digit=sum%10;
+            // create node and add in answer linked list
+            insertAtTail(ansHead,ansTail,digit);
+            carry=sum/10;
+            second=second->next;
+        }
+        while(carry!=0){
+            int sum=carry;
+            int digit=sum%10;
+            // create node and add in answer linked list
+            insertAtTail(ansHead,ansTail,digit);
+            carry=sum/10;
+        }
+        return ansHead;
+    }
+    struct Node* addTwoLists(struct Node* first, struct Node* second)
+    {
+        // reverse the linked lists which are to be added
+        first=reverse(first);
+        second=reverse(second);
+        // perform addition
+        Node *ans=add(first,second);
+        // reverse the answer linked list
+        ans=reverse(ans);
+        return ans;
+    }
+};
+
+// Method-2(same method but less complicated)
+class Solution
+{
+    public:
+    struct Node *reverse(Node *head){
+        Node *curr=head;
+        Node *prev=NULL;
+        Node *forward=NULL;
+        while(curr!=NULL){
+            forward=curr->next;
+            curr->next=prev;
+            prev=curr;
+            curr=forward;
+        }
+        return prev;
+    }
+    void insertAtTail(struct Node* &head, struct Node* &tail,int val){
+        Node *temp=new Node(val);
+        // empty list
+        if(head==NULL){
+            head=temp;
+            tail=temp;
+            return;
+        }
+        // non-empty list
+        else{
+            tail->next=temp;
+            tail=temp;
+        }
+    }
+    struct Node *add(struct Node* first, struct Node* second){
+        Node *ansHead=NULL;
+        Node *ansTail=NULL;
+        int carry=0;
+        while(first!=NULL || second!=NULL || carry!=0){
+            int val1=0;
+            if(first!=NULL){
+                val1=first->data;
+            }
+            int val2=0;
+            if(second!=NULL){
+                val2=second->data;
+            }
+            int sum=carry+val1+val2;
+            int digit=sum%10;
+            // create node and add in answer linked list
+            insertAtTail(ansHead,ansTail,digit);
+            carry=sum/10;
+            if(first!=NULL){
+                first=first->next;
+            }
+            if(second!=NULL){
+                second=second->next;
+            }
+        }
+        return ansHead;
+    }
+    struct Node* addTwoLists(struct Node* first, struct Node* second)
+    {
+        // reverse the linked lists which are to be added
+        first=reverse(first);
+        second=reverse(second);
+        // perform addition
+        Node *ans=add(first,second);
+        // reverse the answer linked list
+        ans=reverse(ans);
+        return ans;
+    }
+};
+
+// Add one to the number(Linked List)
+
+// Method-1
+class Solution
+{
+    public:
+    Node* reverse(Node* head)
+    {
+        if(!head || !head->next)
+            return head;
+        Node* curr = head;
+        Node* prev = NULL;
+        Node* Next = head->next;
+        while(curr->next!=NULL)
+        {
+            curr->next = prev;
+            prev = curr;
+            curr = Next;
+            Next = Next->next;
+        }
+        curr->next = prev;
+        return curr;
+    }
+    Node* addOne(Node *head) 
+    {
+        Node* newHead = reverse(head);
+        Node* temp = newHead;
+        while(temp->next != NULL && temp->data == 9)
+        {
+            temp->data = 0;
+            temp = temp->next;
+        }
+        if(temp->data != 9)
+            temp->data += 1;
+        else if(temp->next == NULL && temp->data == 9)
+        {
+            temp->data = 0;
+            temp->next = new Node(1);
+        }
+        return reverse(newHead);
+    }
+};
+
+// Method-2
+class Solution
+{
+    int recursiveAddition(Node*head)
+    {
+        if(head == NULL)
+        {
+            return 1;
+        }
+        int carry = recursiveAddition(head->next);
+        int sum = head->data + carry;
+        carry = sum / 10;
+        sum = sum % 10;
+        head->data = sum;
+        return carry;
+    }
+    public:
+    Node* addOne(Node *head) 
+    {
+        // return head of list after adding one
+        int carry = recursiveAddition(head);
+        if(carry == 0)
+        {
+            return head;
+        }
+        Node*temp = new Node(carry);
+        temp->next = head;
+        head = temp;
+        return head;
+    }
+};
+
+// Clone a Linked List with next and random pointers
+
+
