@@ -2452,6 +2452,23 @@ Node *getListAfterReverseOperation(Node *head, int n, int b[]){
 
 // Circularly LinkedList
 
+// Method-1
+bool isCircularList(Node *head){
+    //empty list
+    if(head==NULL){
+    	return head;
+    }
+    Node *temp=head->next;
+    while(temp!=NULL && temp!=head){
+          temp=temp->next;
+    }
+    if(temp==head){
+          return true;
+    }
+    return false;
+}
+
+// Method-2
 bool isCircular(Node* head){
     if(head==NULL){
         return 1;
@@ -2473,9 +2490,37 @@ bool isCircular(Node* head){
     return 0;
 }
 
+// Method-3
+bool hasCycle(ListNode *head){
+	unordered_map<ListNode*,bool>map;
+	ListNode *temp=head;
+	while(temp!=NULL){
+		if(map.find(temp)!=map.end())
+			return ttrue;
+		map[temp]=true;
+		temp=temp->next;
+	}
+	return false;
+}
+
 // Detect and Remove Loop
 
-//this is to find cycle in thr loop
+// Method-1 for detection of loop
+bool detectLoop(Node *head){
+	if(head==NULL) return false;
+	map<Noode*,bool> visited;
+	Node *temp=head;
+	while(temp!=NULL){
+		if(visited[temp]==true){
+			return true;
+		}
+		visited[temp]=true;
+		temp=temp->next;
+	}
+	return false;
+}
+
+//this is to find cycle in the loop
 Node* floydCycle(Node* head)
 {
     if(head == NULL){
@@ -2531,7 +2576,7 @@ Node *removeLoop(Node *head){
 // Remove Duplicates From a Sorted Linked List
 
 Node * uniqueSortedList(Node * head) {
-    if(head==NULL)return NULL;
+    if(head==NULL) return NULL;
     Node* curr=head;
     while(curr!=NULL){
         if(curr->next!=NULL && curr->data==curr->next->data){
@@ -2549,11 +2594,10 @@ Node * uniqueSortedList(Node * head) {
 
 // Remove Duplicates from a Unsorted Linked List
 
-// Brute Force(T.C --> O(n^2),S.C --> O(1))
+// Method-1[Brute Force(T.C --> O(n^2),S.C --> O(1))]
 Node *removeDuplicates(Node *head)
 {
-    if(head == NULL)
-        return NULL;
+    if(head == NULL) return NULL;
     Node* curr = head;
     while(curr != NULL) {
         Node* temp = curr;
@@ -2573,6 +2617,7 @@ Node *removeDuplicates(Node *head)
     return head;
 }
 
+// Method-2
 Node *removeDuplicates(Node *head)
 {
     if( head == NULL){
@@ -2592,11 +2637,31 @@ Node *removeDuplicates(Node *head)
     return head;
 }
 
-// 
+// Method-3(sort then use above question approach)
 
+// Split LinkedList in two halves
 
-
-// Merge two sorte arrays in a Linked List
+void splitList(Node *head, Node **head1_ref, Node **head2_ref)
+{
+    // using two pointer approach fast and slow which is used to calculate middle node
+    Node *fast=head->next;
+    Node *slow = head;
+    
+    while(fast->next!=head){
+        fast=fast->next;
+        if(fast->next!=head){
+            fast=fast->next;
+        }
+        slow=slow->next;
+    }
+    Node* temp=slow->next;
+    slow->next=head;
+    fast->next=temp;
+    *head1_ref=head;
+    *head2_ref=temp;
+}
+	
+// Merge two sorted arrays in a Linked List
 
 Node<int>* solve( Node<int>* first , Node<int>* second){
 
