@@ -3416,3 +3416,663 @@ char* reverse(char *S, int len){
     }
     return S;
 }
+
+// Reverse a stack
+
+class Solution{
+    public:
+    void Reverse(stack<int> &St){
+       vector<int> s1;
+       while(!St.empty()){
+           int num=St.top();
+           St.pop();
+           s1.push_back(num);
+       }
+       for(int i=0;i<s1.size();i++){
+           St.push(s1[i]);
+       }
+    }
+};
+
+// Delete middle element from stack
+
+#include <bits/stdc++.h> 
+void solve(stack<int>&inputStack,int count, int size){
+    if(count==size/2){
+        inputStack.pop();
+        return;
+    }
+    int num=inputStack.top();
+    inputStack.pop();
+    solve(inputStack,count+1,size);
+    inputStack.push(num);
+}
+void deleteMiddle(stack<int>&inputStack, int N){
+	int count=0;
+    solve(inputStack,count,N);
+}
+
+// Valid Parantheses
+
+bool isValidParenthesis(string expression)
+{
+    stack<char> s;
+    for (int i = 0; i < expression.length(); i++)
+    {
+        char ch = expression[i];
+        if (ch == '(' || ch == '{' || ch == '[')
+        {
+            s.push(ch);
+        }
+        else
+        {
+            if (!s.empty())
+            {
+                char top = s.top();
+            if ((ch == ')' && top=='(') || (ch == '}' && top== '{') || (ch==']' && top=='[')){
+                    s.pop();
+            }
+            else{
+                    return false;
+            }
+            }
+            else
+            {
+            return false;
+            }
+        }
+    }
+    if (s.empty())
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+// Insert an element at its bottom in the given stack
+
+#include <bits/stdc++.h>
+void solve(stack<int> &s,int x){
+    if(s.empty()){
+        s.push(x);
+        return;
+    }
+    int num=s.top();
+    s.pop();
+    solve(s,x);
+    s.push(num);
+} 
+stack<int> pushAtBottom(stack<int>& myStack, int x) {
+    solve(myStack,x);
+    return myStack;    
+}
+
+// Reverse a stack using recurison
+
+void insertAtBottom(stack<int> &s,int element){
+    if(s.empty()){
+        s.push(element);
+        return;
+    }
+    int num=s.top();
+    s.pop();
+    insertAtBottom(s, element);
+    s.push(num);
+}
+void reverseStack(stack<int> &stack) {
+    if(stack.empty()){
+        return;
+    }
+    int num=stack.top();
+    stack.pop();
+    reverseStack(stack);
+    insertAtBottom(stack,num);
+}
+
+// Sort a Stack
+
+#include <bits/stdc++.h> 
+void sortedInserted(stack<int> &stack,int num){
+	if(stack.empty() || (!stack.empty() && stack.top()<num)){
+		stack.push(num);
+		return;
+	}
+	int n=stack.top();
+	stack.pop();
+	sortedInserted(stack, num);
+	stack.push(n);
+}
+void sortStack(stack<int> &stack)
+{
+	if(stack.empty()){
+		return;
+	}
+	int num=stack.top();
+	stack.pop();
+	sortStack(stack);
+	sortedInserted(stack,num);
+}
+
+// Redundant brackets
+
+#include <bits/stdc++.h> 
+bool findRedundantBrackets(string &s)
+{
+    stack<char> st;
+    for(int i=0;i<s.length();i++){
+        char ch=s[i];
+        if(ch=='(' || ch=='+' || ch=='-' || ch=='*' || ch=='/' ){
+            st.push(ch);
+        }
+        else{
+            if(ch==')'){
+                bool isRedundant=true;
+                while(st.top()!='('){
+                    char top=st.top();
+                    if(top=='+' || top=='-' || top=='*' || top=='/' ){
+                        isRedundant=false;
+                    }
+                    st.pop();
+                }
+                if(isRedundant==true){
+                    return true;
+                }
+                st.pop();
+            }
+        }
+    }
+    return false;
+}
+
+// Minimum cost to make string valid
+
+#include <bits/stdc++.h> 
+int findMinimumCost(string str) {
+    //odd condition
+    if(str.length()%2 == 1) {
+        return -1;
+    }
+    stack<char> s;
+    for(int i=0; i<str.length(); i++) {
+        char ch = str[i];
+        if (ch == '{') {
+          s.push(ch);
+        } 
+        else {
+          // ch is closed brace
+          if (!s.empty() && s.top() == '{') {
+            s.pop();
+          } 
+          else {
+            s.push(ch);
+          }
+        }
+    }
+    //stack contains invalid expression
+    int a = 0, b = 0;
+    while(!s.empty()) {
+      if(s.top() == '{') {
+        b++;
+      }
+      else{
+        a++;
+      }
+      s.pop();
+    }    
+    int ans = (a+1)/2 + (b+1)/2;
+    return ans;
+}
+
+// Next smaller element
+
+#include<stack>
+vector<int> nextSmallerElement(vector<int> &arr, int n){
+    stack<int> s;
+    s.push(-1);
+    vector<int> ans(n);
+    for(int i=n-1;i>=0;i--){
+        int curr = arr[i];
+        while (s.top() >= curr) {
+            s.pop();
+        }
+        ans[i] = s.top();
+        s.push(curr);
+    }
+    return ans;
+}
+
+// Previous Smaller element
+
+#include<stack>
+vector<int> nextSmallerElement(vector<int> &arr, int n){
+    stack<int> s;
+    s.push(-1);
+    vector<int> ans(n);
+    for(int i=0;i<n;i++){
+        int curr = arr[i];
+        while (s.top() >= curr) {
+            s.pop();
+        }
+        ans[i] = s.top();
+        s.push(curr);
+    }
+    return ans;
+}
+
+// Largest Rectangular Area in a histogram
+
+// Method-1 : Brute Force
+class Solution {
+public:
+    int largestRectangleArea(vector<int>& heights) {
+        int n=heights.size(),prev,next;
+        long long maxi=0;
+        for(int i=0;i<n;i++)
+        {
+            int c=1;
+            prev=i-1;
+            next=i+1;
+            while(prev>=0 && heights[i]<=heights[prev]) //if prev>=current
+            {
+                c++;
+                prev--;
+            }
+            while(next<n && heights[i]<=heights[next]) //if next>=current
+            {
+                c++;
+                next++;
+            }
+            long long area=heights[i]*c;
+            maxi=max(maxi,area);
+            int t=heights[i];
+            while(i<n && heights[i]==t) //for same heights
+            {
+                i++;          
+            }
+            i--;
+            
+        }
+        return maxi;
+    }
+};
+
+// Method-2 
+#include <stack>
+#include <climits>
+vector<int> nextSmaller(vector<int> &arr, int n)
+{
+    stack<int> st;
+    st.push(-1);
+    vector<int> ans(n);
+    for (int i = n - 1; i >= 0; i--)
+    {
+        int curr = arr[i];
+        while (st.top() != -1 && arr[st.top()] >= curr)
+        {
+            st.pop();
+        }
+        ans[i] = st.top();
+        st.push(i);
+    }
+    return ans;
+}
+vector<int> prevSmaller(vector<int>&arr,int n){
+    stack<int> st;
+    st.push(-1);
+    vector<int> ans(n);
+    for (int i = 0; i < n; i++)
+    {
+        int curr = arr[i];
+        while (st.top() != -1 && arr[st.top()] >= curr)
+        {
+            st.pop();
+        }
+        ans[i] = st.top();
+        st.push(i);
+    }
+    return ans;
+ }
+ int largestRectangle(vector < int > & heights) {
+    int n = heights.size();
+    vector<int> next(n);
+    next = nextSmaller(heights, n);
+    vector<int> prev(n);
+    prev = prevSmaller(heights, n);
+    int area = INT_MIN;
+    for (int i = 0; i < n; i++)
+    {
+        int l = heights[i];
+        if (next[i] == -1)
+        {
+            next[i] = n;
+        }
+        int b = next[i] - prev[i] - 1;
+        int newArea = l * b;
+        area = max(area, newArea);
+    }
+    return area;
+ }
+
+// Celebrity Problem
+
+// Method-1 : Brute Force
+
+
+// Method-2
+#include <bits/stdc++.h> 
+/*
+    This is signature of helper function 'knows'.
+    You should not implement it, or speculate about its implementation.
+    bool knows(int A, int B); 
+    Function 'knows(A, B)' will returns "true" if the person having
+    id 'A' know the person having id 'B' in the party, "false" otherwise.
+*/
+int findCelebrity(int n) {
+     stack<int>st;
+     for(int i=0;i<n;i++)
+     {
+         st.push(i);
+     }
+     while(st.size() > 1)
+     {
+         int a = st.top();
+         st.pop();
+         int b = st.top();
+         st.pop();
+         if(knows(a,b))
+         {
+             st.push(b);
+         }
+         else
+         {
+             st.push(a);
+         }
+     }
+     int candi = st.top();
+     int celeb = 0;
+     for(int i=0;i<n;i++)
+     {
+         if(knows(candi,i))
+         celeb++;
+     }
+     if(celeb!=0)
+     {
+         return -1;
+     }
+     int people = 0;
+     for(int i=0;i<n;i++)
+     {
+         if(knows(i,candi))
+         people++;
+     }
+     if(people!= n-1)//all element should be 1 other than diagonal
+     {
+         return -1;
+     }
+     return candi;
+}
+
+// Max rectangle in binary matrix with all  1's
+
+// Method-1
+class Solution{
+  public:
+    int largestArea(vector<int>& arr)
+    {
+        int n = arr.size();
+        stack<int> stk;
+        stk.push(-1);
+        int max_area=0;
+        for(int i=0;i<n;i++)
+        {
+            while(stk.top()!=-1 && arr[stk.top()]>=arr[i])
+            {
+                int height = arr[stk.top()];
+                stk.pop();
+                int ls = stk.top();
+                int rs = i;
+                int width = rs-ls-1;
+                max_area = max(max_area,width*height);
+            }
+            stk.push(i);
+        }
+        while(stk.top()!=-1)
+        {
+            int height = arr[stk.top()];
+            stk.pop();
+            int ls = stk.top();
+            int rs = n;
+            int width = rs-ls-1;
+            max_area = max(max_area,width*height);
+        }
+        
+        return max_area;
+    }
+    int maxArea(int M[MAX][MAX], int n, int m) {
+        vector<int> arr(m,0);
+        int ans=largestArea(arr);
+        for(int i=0;i<n;i++)
+        {
+            for(int j=0;j<m;j++)
+            {
+                if(M[i][j]==1) arr[j]++;
+                else arr[j]=0;
+            }
+            ans = max(ans,largestArea(arr));
+        }
+        return ans;
+    }
+};
+
+// Method-2
+class Solution{
+  private:
+  vector<int> nextSmallerElement(int *arr, int n) {
+        stack<int> s;
+        s.push(-1);
+        vector<int> ans(n);
+        for(int i=n-1; i>=0 ; i--) {
+            int curr = arr[i];
+            while(s.top() != -1 && arr[s.top()] >= curr)
+            {
+                s.pop();
+            }
+            //ans is stack ka top
+            ans[i] = s.top();
+            s.push(i);
+        }
+        return ans;
+    }
+    vector<int> prevSmallerElement(int* arr, int n) {
+        stack<int> s;
+        s.push(-1);
+        vector<int> ans(n);
+
+        for(int i=0; i<n; i++) {
+            int curr = arr[i];
+            while(s.top() != -1 && arr[s.top()] >= curr)
+            {
+                s.pop();
+            }
+            //ans is stack ka top
+            ans[i] = s.top();
+            s.push(i);
+        }
+        return ans; 
+    }    
+  int largestRectangleArea(int* heights, int n) {
+        //int n= heights.size();
+        vector<int> next(n);
+        next = nextSmallerElement(heights, n);
+        vector<int> prev(n);
+        prev = prevSmallerElement(heights, n);
+        int area = INT_MIN;
+        for(int i=0; i<n; i++) {
+            int l = heights[i];
+            
+            if(next[i] == -1) {
+                next[i] = n;
+            }
+             int b = next[i] - prev[i] - 1;
+            int newArea = l*b;
+            area = max(area, newArea);
+        }
+        return area;
+    }
+  public:
+    int maxArea(int M[MAX][MAX], int n, int m) {
+        //compute area for first row
+        int area = largestRectangleArea(M[0], m);
+        for(int i = 1; i<n; i++) {
+            for(int j = 0; j<m; j++) {   
+                //row udpate: by adding previous row's value
+                if(M[i][j] != 0)
+                    M[i][j] = M[i][j] + M[i-1][j];
+                else
+                    M[i][j] = 0;
+            }
+            //entire row is updated now
+            area = max(area, largestRectangleArea(M[i],m));
+            
+        }
+        return area;
+    }
+};
+
+// N stacks
+
+#include <bits/stdc++.h> 
+class NStack
+{
+    int *arr;
+    int *top;
+    int *next;
+    int n, s;
+    int freespot;
+public:
+    // Initialize your data structure.
+    NStack(int N, int S)
+    {
+        n = N;
+        s = S;
+        arr = new int[s];
+        top = new int[n];
+        next = new int[s];
+        //top initialise
+        for(int i=0; i<n; i++) {
+            top[i] = -1;
+        }
+        //next initialise
+        for (int i = 0; i < s; i++) {
+          next[i] = i + 1;
+        }
+        // update last index value to -1
+        next[s - 1] = -1;
+        // initialise freespot
+        freespot = 0;
+    }
+    // Pushes 'X' into the Mth stack. Returns true if it gets pushed into the stack, and false otherwise.
+    bool push(int x, int m)
+    {
+        //check for overflow
+        if(freespot == -1) {
+            return false;
+        }   
+        //find index
+        int index = freespot;
+        //insert element into array
+        arr[index] = x;
+        //update freespot
+        freespot = next[index];
+        //update next;
+        next[index] = top[m-1];
+        //update top
+        top[m-1] = index;
+        return true;
+    }
+    // Pops top element from Mth Stack. Returns -1 if the stack is empty, otherwise returns the popped element.
+    int pop(int m)
+    {
+        //check underflow condition
+        if(top[m-1] == -1) {
+            return -1;
+        }   
+        int index= top[m-1];
+        top[m-1] = next[index];
+        next[index] = freespot;
+        freespot = index;
+        return arr[index];
+    }
+};
+
+// Get minimum element from the stack
+
+#include<stack>
+#include<limits.h>
+class SpecialStack {
+    stack<int> s;
+    int mini = INT_MAX;
+    public:  
+    void push(int data) {
+        //for first element
+        if(s.empty()) {
+            s.push(data);
+            mini = data;
+        }
+        else
+        {
+         	if(data < mini) {
+                s.push(2*data - mini);
+                mini = data;
+            }   
+            else
+            {
+                s.push(data);
+            }
+        }
+    }
+    int pop() {
+        if(s.empty()){
+            return -1;
+        }
+        int curr = s.top();
+        s.pop();
+        if(curr > mini) {
+            return curr;
+        }
+        else
+        {
+            int prevMin = mini;
+            int val = 2*mini - curr;
+            mini = val;
+            return prevMin;
+        }
+    }
+    int top() {
+        if(s.empty())
+            return -1;
+        
+        int curr = s.top();
+        if(curr < mini) {
+            return mini;
+        }
+        else
+        {
+            return curr;
+        }
+    }
+    bool isEmpty() {
+        return s.empty();
+    }
+    int getMin() {
+        if(s.empty())
+            return -1;
+        
+        return mini;
+    }  
+};
+
+// 
