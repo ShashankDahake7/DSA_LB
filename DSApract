@@ -4788,19 +4788,16 @@ queue<int> rev(queue<int> q)
 
 // First negative integer in every window of size k
 
-vector<long long> printFirstNegativeInteger(long long int A[],
-                                             long long int N, long long int K) {
+vector<long long> printFirstNegativeInteger(long long int A[], long long int N, long long int K) {
          deque<long long int> dq;
          vector<long long> ans;
-         int negative = -1;
-         
+         int negative = -1;  
          //process first window
          for(int i=0; i<K; i++) {
              if(A[i] < 0) {
                  dq.push_back(i);
              }
-         }
-         
+         }    
          //push ans for FIRST window
          if(dq.size() > 0) {
              ans.push_back(A[dq.front()]);
@@ -4809,20 +4806,15 @@ vector<long long> printFirstNegativeInteger(long long int A[],
          {
              ans.push_back(0);
          }
-         
          //now process for remaining windows
          for(int i = K; i<N; i++) {
              //first pop out of window element
-             
-             
              if(!dq.empty() && (i - dq.front())>=K ) {
                  dq.pop_front();
              }
-             
              //then push current element
              if(A[i] < 0)
                 dq.push_back(i);
-             
             // put in ans
             if(dq.size() > 0) {
                  ans.push_back(A[dq.front()]);
@@ -4842,95 +4834,62 @@ queue<int> modifyQueue(queue<int> q, int k) {
     //first k element stack me daaldo  and queue se hatado
     // k element stack se nikalke wapas queue me daalde 
     // fer queue k (n-k) starting k elements, wapas queue me daalde
-    
     stack<int> s;
-    
     for(int i = 0; i<k; i++) {
         int val = q.front();
         q.pop();
         s.push(val);
     }
-    
     while(!s.empty()) {
         int val = s.top();
         s.pop();
         q.push(val);
     }
-    
     int t = q.size()-k;
-    
     while(t--) {
         int val = q.front();
         q.pop();
         q.push(val);
     }
-    
-    return q;
-}queue<int> modifyQueue(queue<int> q, int k) {
-    //algo:
-    //first k element stack me daaldo  and queue se hatado
-    // k element stack se nikalke wapas queue me daalde 
-    // fer queue k (n-k) starting k elements, wapas queue me daalde
-    
-    stack<int> s;
-    
-    for(int i = 0; i<k; i++) {
-        int val = q.front();
-        q.pop();
-        s.push(val);
-    }
-    
-    while(!s.empty()) {
-        int val = s.top();
-        s.pop();
-        q.push(val);
-    }
-    
-    int t = q.size()-k;
-    
-    while(t--) {
-        int val = q.front();
-        q.pop();
-        q.push(val);
-    }
-    
     return q;
 }
 
 // First non-repeating character in a stream
 
- class Solution{
-  public:
-  
-    //Function to find starting point where the truck can start to get through
-    //the complete circle without exhausting its petrol in between.
-    int tour(petrolPump p[],int n)
-    {
-       int deficit = 0;
-       int balance = 0;
-       int start = 0;
-       
-       for(int i=0; i<n; i++) {
-           balance += p[i].petrol - p[i].distance;
-           if(balance < 0) {
-               start = i+1;
-               deficit += balance;
-               balance = 0;
+class Solution {
+	public:
+		string FirstNonRepeating(string A){
+           unordered_map<char,int> mp;
+           queue<char> q;
+           string ans = "";
+           
+           for(int i = 0; i < A.length(); i++)
+           {
+               char ch = A[i];
+               mp[ch]++;
+               q.push(ch);
+               
+               while(!q.empty())
+               {
+                   if(mp[q.front()] > 1)
+                        q.pop();
+                    else{
+                        ans.push_back(q.front());
+                        break;
+                    }
+               }
+               
+               if(q.empty())
+                    ans.push_back('#');
            }
-       }
-       
-       if(balance + deficit >=0) 
-            return start;
-        return -1;
-       
-    }
+           return ans;
+        }
 };
  
 // Circular tour
 
 class Solution{
-  public:
-  
+public:
     //Function to find starting point where the truck can start to get through
     //the complete circle without exhausting its petrol in between.
     int tour(petrolPump p[],int n)
@@ -4938,7 +4897,6 @@ class Solution{
        int deficit = 0;
        int balance = 0;
        int start = 0;
-       
        for(int i=0; i<n; i++) {
            balance += p[i].petrol - p[i].distance;
            if(balance < 0) {
@@ -4947,73 +4905,205 @@ class Solution{
                balance = 0;
            }
        }
-       
        if(balance + deficit >=0) 
             return start;
         return -1;
-       
     }
 };
- 
+
+// Interleave the firt half of the queue with the second half
+
+// Method-1
+#include <bits/stdc++.h> 
+void interLeaveQueue(queue < int > & q) {
+    queue<int> newq;
+    int n=q.size()/2;
+    while(n--){
+        newq.push(q.front());
+        q.pop();
+    }
+    while(!newq.empty()){
+        q.push(newq.front());
+        newq.pop();
+        int ele=q.front();
+        q.pop();
+        q.push(ele);
+    }
+}
+
+// Method-2
+#include <bits/stdc++.h> 
+void interLeaveQueue(queue < int > & q) {
+    stack<int> s;
+    int n=q.size()/2;
+    int count=0;
+    while(count<n){
+        s.push(q.front());
+        q.pop();
+        count++;
+    }
+    while(!s.empty()){
+        q.push(s.top());
+        s.pop();
+    }
+    count=0;
+    while(count<n){
+        int ele=q.front();
+        q.push(ele);
+        q.pop();
+        count++;
+    }
+    count=0;
+    while(count<n){
+        s.push(q.front());
+        q.pop();
+        count++;
+    }
+    while(!s.empty()){
+        int stackele=s.top();
+        s.pop();
+        q.push(stackele);
+        int qele= q.front();
+        q.pop();
+        q.push(qele);
+    }
+
+}
+
 // How to efficiently implement k Queues in a single array?
 
 https://www.geeksforgeeks.org/efficiently-implement-k-queues-single-array/
+#include <iostream>
+#include <queue>
+using namespace std;
+class kQueue
+{
+public:
+    int n;
+    int k;
+    int *arr;
+    int *front;
+    int *rear;
+    int freespot;
+    int *next;
+
+public:
+    kQueue(int n, int k)
+    {
+        this->n = n;
+        this->k = k;
+        front = new int[k];
+        rear = new int[k];
+        for (int i = 0; i < k; i++)
+        {
+            front[i] = -1;
+            rear[i] = -1;
+        }
+        next = new int[n];
+        for (int i = 0; i < n; i++)
+        {
+            next[i] = i + 1;
+        }
+        next[n - 1] = -1;
+        arr = new int[n];
+        freespot = 0;
+    }
+    void enqueue(int data,int qn){
+        // overflow
+        if(freespot==-1){
+            cout<<"No empty space is present "<<endl;
+            return;
+        }
+        // find first free index
+        int index=freespot;
+        // update freespot
+        freespot=next[index];
+        // check whether first element
+        if(front[qn-1]==-1){
+            front[qn-1]=index;
+        }
+        // link new element to the previous element
+        else{
+            next[rear[qn-1]]=index;
+        } 
+        // update next
+        next[index]=-1;
+        // update rear
+        rear[qn-1]=index;
+        // push element
+        arr[index]=data;
+    }
+    int dequeue(int qn){
+        // underflow
+        if(front[qn-1]==-1){
+            cout<<"Queue underflow"<<endl;
+            return -1;
+        }
+        // find index to pop
+        int index=front[qn-1];
+        // front ko aage badhao
+        front[qn-1]=next[index];
+        // freeslots ko manage karo
+        next[index]=freespot;
+        freespot=index;
+        return arr[index];
+    }
+};
+int main()
+{
+    kQueue q(10,3);
+    q.enqueue(10,1);
+    q.enqueue(15,1);
+    q.enqueue(20,2);
+    q.enqueue(25,1);
+    // cout<<q.dequeue(1)<<endl;
+    // cout<<q.dequeue(2)<<endl;
+    // cout<<q.dequeue(1)<<endl;
+    // cout<<q.dequeue(1)<<endl; // output -> 10 20 15 25
+    cout<<q.dequeue(1)<<endl;
+    cout<<q.dequeue(2)<<endl;
+    cout<<q.dequeue(1)<<endl;
+    cout<<q.dequeue(1)<<endl;
+    cout<<q.dequeue(1)<<endl; // output -> 10 20 15 25 Queue underflow -1
+    return 0;
+}
 
 // Sum of minimum and maximum elements of all subarrays of size k.
 
 #include<iostream>
 #include<queue>
 using namespace std;
-
 int solve(int *arr, int n, int k) {
-
     deque<int> maxi(k);
     deque<int> mini(k);
-
     //Addition of first k size window
-
     for(int i=0; i<k; i++) {
-
         while(!maxi.empty() && arr[maxi.back()] <= arr[i])
             maxi.pop_back();
-
         while(!mini.empty() && arr[mini.back()] >= arr[i])
             mini.pop_back();
-
         maxi.push_back(i);
         mini.push_back(i);
     }
     int ans = 0;
-
     ans += arr[maxi.front()] + arr[mini.front()];
-
     //remaining windows ko process karlo
     for(int i=k; i<n; i++) {
-
-        
-
         //next window
-
         //removal
         while(!maxi.empty() && i - maxi.front() >=k) {
             maxi.pop_front();
         }
-
         while(!mini.empty() && i - mini.front() >=k) {
             mini.pop_front();
         }
-
         //addition
-
         while(!maxi.empty() && arr[maxi.back()] <= arr[i])
             maxi.pop_back();
-
         while(!mini.empty() && arr[mini.back()] >= arr[i])
             mini.pop_back();
-
         maxi.push_back(i);
         mini.push_back(i);    
-
         ans += arr[maxi.front()] + arr[mini.front()];
     }
     return ans;
