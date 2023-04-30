@@ -4308,7 +4308,6 @@ public:
 
 // Input restricted queue
 
-
 #include <iostream>
 using namespace std;
 // Maximum size of array or Input Restricted Queue
