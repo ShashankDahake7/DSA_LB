@@ -5108,4 +5108,545 @@ int solve(int *arr, int n, int k) {
     return ans;
 }
 
-// 
+// Level Order Traversal in Binary Tree
+
+#include <iostream>
+#include <queue>
+#include <stack>
+using namespace std;
+class node
+{
+public:
+    int data;
+    node *left;
+    node *right;
+    node(int d)
+    {
+        this->data = d;
+        this->left = NULL;
+        this->right = NULL;
+    }
+};
+node *buildTree(node *root)
+{
+    int data;
+    cout << "Enter the data:" << endl;
+    cin >> data;
+    root = new node(data);
+    if (data == -1)
+    {
+        return NULL;
+    }
+    cout << "Enter the data for inserting in left of " << data << endl;
+    root->left = buildTree(root->left);
+    cout << "Enter the data for inserting in right of " << data << endl;
+    root->right = buildTree(root->right);
+    return root;
+}
+node *levelTraversal(node *root)
+{
+    queue<node *> q;
+    q.push(root);
+    q.push(NULL);
+    while (!q.empty())
+    {
+        node *temp = q.front();
+        q.pop();
+        if (temp == NULL)
+        { // purana level complete traverse ho chuka hai
+            cout << endl;
+            if (!q.empty())
+            { // queue still has some child nodes
+                q.push(NULL);
+            }
+        }
+        else
+        {
+            cout << temp->data << " ";
+            if (temp->left)
+            {
+                q.push(temp->left);
+            }
+            if (temp->right)
+            {
+                q.push(temp->right);
+            }
+        }
+    }
+}
+int main()
+{
+    node *root = NULL;
+    // creating a tree
+    root = buildTree(root);
+    // level order
+    cout << "Printing the level order traversal output " << endl;
+    levelTraversal(root);
+    return 0;
+}
+
+// Reverse Level Order Traversal in Binary Tree
+
+#include <iostream>
+#include <queue>
+#include <stack>
+using namespace std;
+class node
+{
+public:
+    int data;
+    node *left;
+    node *right;
+    node(int d)
+    {
+        this->data = d;
+        this->left = NULL;
+        this->right = NULL;
+    }
+};
+node *buildTree(node *root)
+{
+    int data;
+    cout << "Enter the data:" << endl;
+    cin >> data;
+    root = new node(data);
+    if (data == -1)
+    {
+        return NULL;
+    }
+    cout << "Enter the data for inserting in left of " << data << endl;
+    root->left = buildTree(root->left);
+    cout << "Enter the data for inserting in right of " << data << endl;
+    root->right = buildTree(root->right);
+    return root;
+}
+void reverseLevelTraversal(node *root)
+{
+    queue<node *> q;
+    q.push(root);
+    q.push(NULL);
+    // q.push(NULL);
+    stack<node *> s;
+    while (!q.empty())
+    {
+        node *temp = q.front();
+        s.push(temp);
+        q.pop();
+        if (temp == NULL)
+        {
+            if (!q.empty())
+            {
+                q.push(NULL);
+            }
+        }
+        else
+        {
+            if (temp->right)
+            {
+                q.push(temp->right);
+            }
+            if (temp->left)
+            {
+                q.push(temp->left);
+            }
+        }
+    }
+    while (!s.empty())
+    {
+        node *temp = s.top();
+        s.pop();
+        if (temp == NULL)
+        {
+            cout << endl;
+        }
+        else
+        {
+            cout << temp->data << " ";
+        }
+    }
+}
+int main()
+{
+    node *root = NULL;
+    // creating a tree
+    root = buildTree(root);
+    // reverse level order
+    cout << "Printing the reverse level order traversal output " << endl;
+    reverseLevelTraversal(root);
+    return 0;
+}
+
+// Inorder Level Traversal in Binary Tree (Left Node Right [LNR] )
+
+// Method-1 ( Recursively )
+#include <iostream>
+#include <queue>
+#include <stack>
+using namespace std;
+class node
+{
+public:
+    int data;
+    node *left;
+    node *right;
+    node(int d)
+    {
+        this->data = d;
+        this->left = NULL;
+        this->right = NULL;
+    }
+};
+node *buildTree(node *root)
+{
+    int data;
+    cout << "Enter the data:" << endl;
+    cin >> data;
+    root = new node(data);
+    if (data == -1)
+    {
+        return NULL;
+    }
+    cout << "Enter the data for inserting in left of " << data << endl;
+    root->left = buildTree(root->left);
+    cout << "Enter the data for inserting in right of " << data << endl;
+    root->right = buildTree(root->right);
+    return root;
+}
+void inOrderTraversal(node *root){
+    if(root==NULL){
+        return;
+    }
+    inOrderTraversal(root->left);
+    cout<<root->data<<" ";
+    inOrderTraversal(root->right);
+}
+int main()
+{
+    node *root = NULL;
+    // creating a tree
+    root = buildTree(root);
+    // inorder traversal
+    inOrderTraversal(root);
+    return 0;
+}
+
+// Method-2 ( Iteratively )
+#include <iostream>
+#include <queue>
+#include <stack>
+using namespace std;
+class node
+{
+public:
+    int data;
+    node *left;
+    node *right;
+    node(int d)
+    {
+        this->data = d;
+        this->left = NULL;
+        this->right = NULL;
+    }
+};
+node *buildTree(node *root)
+{
+    int data;
+    cout << "Enter the data:" << endl;
+    cin >> data;
+    root = new node(data);
+    if (data == -1)
+    {
+        return NULL;
+    }
+    cout << "Enter the data for inserting in left of " << data << endl;
+    root->left = buildTree(root->left);
+    cout << "Enter the data for inserting in right of " << data << endl;
+    root->right = buildTree(root->right);
+    return root;
+}
+void inOrderTraversal(node *root)
+{
+    stack<node *> s;
+    node *curr = root;
+    while (curr != NULL || s.empty() == false)
+    {
+        // Reach the leftmost node of the curr node
+        while (curr != NULL)
+        {
+            // place pointer to a tree node on the stack before traversing the node's left subtree
+            s.push(curr);
+            curr = curr->left;
+        }
+        // curr must be NULL at this point
+        curr = s.top();
+        s.pop();
+        cout << curr->data << " ";
+        // we have visited the node and ist left subtree. Now, its right subtree turn
+        curr = curr->right;
+    }
+}
+int main()
+{
+    node *root = NULL;
+    // creating a tree
+    root = buildTree(root);
+    // inorder traversal
+    inOrderTraversal(root);
+    return 0;
+}
+
+// Preorder Level Traversal in Binary Tree ( Node Left Right [NLR] )
+
+// Method-1 ( Recursively )
+#include <iostream>
+#include <queue>
+#include <stack>
+using namespace std;
+class node
+{
+public:
+    int data;
+    node *left;
+    node *right;
+    node(int d)
+    {
+        this->data = d;
+        this->left = NULL;
+        this->right = NULL;
+    }
+};
+node *buildTree(node *root)
+{
+    int data;
+    cout << "Enter the data:" << endl;
+    cin >> data;
+    root = new node(data);
+    if (data == -1)
+    {
+        return NULL;
+    }
+    cout << "Enter the data for inserting in left of " << data << endl;
+    root->left = buildTree(root->left);
+    cout << "Enter the data for inserting in right of " << data << endl;
+    root->right = buildTree(root->right);
+    return root;
+}
+void PreOrderTraversal(node *root){
+    if(root==NULL){
+        return;
+    }
+    cout<<root->data<<" ";
+    PreOrderTraversal(root->left);
+    PreOrderTraversal(root->right);
+}
+int main()
+{
+    node *root = NULL;
+    // creating a tree
+    root = buildTree(root);
+    // preorder traversal
+    PreOrderTraversal(root);
+    return 0;
+}
+
+// Method-2 ( Iteratively )
+#include <iostream>
+#include <queue>
+#include <stack>
+using namespace std;
+class node
+{
+public:
+    int data;
+    node *left;
+    node *right;
+    node(int d)
+    {
+        this->data = d;
+        this->left = NULL;
+        this->right = NULL;
+    }
+};
+node *buildTree(node *root)
+{
+    int data;
+    cout << "Enter the data:" << endl;
+    cin >> data;
+    root = new node(data);
+    if (data == -1)
+    {
+        return NULL;
+    }
+    cout << "Enter the data for inserting in left of " << data << endl;
+    root->left = buildTree(root->left);
+    cout << "Enter the data for inserting in right of " << data << endl;
+    root->right = buildTree(root->right);
+    return root;
+}
+void PreOrderTraversal(node *root)
+{
+    if (root == NULL)
+        return;
+    stack<node *> st;
+    // start from root node (set current node to root node)
+    node *curr = root;
+    // run till stack is not empty or current is not NULL
+    while (!st.empty() || curr != NULL)
+    {
+        // Print left children while exist and keep pushing right into the stack.
+        while (curr != NULL)
+        {
+            cout << curr->data << " ";
+
+            if (curr->right)
+            {
+                st.push(curr->right);
+            }
+            curr = curr->left;
+        }
+        // We reach when curr is NULL, so We take out a right child from stack
+        if (st.empty() == false)
+        {
+            curr = st.top();
+            st.pop();
+        }
+    }
+}
+int main()
+{
+    node *root = NULL;
+    // creating a tree
+    root = buildTree(root);
+    // preorder traversal
+    PreOrderTraversal(root);
+    return 0;
+}
+
+
+// Postorder Level Traversal in Binary Tree ( Left Right Node [LRN] )
+
+// Method-1 ( Recursively )
+#include <iostream>
+#include <queue>
+#include <stack>
+using namespace std;
+class node
+{
+public:
+    int data;
+    node *left;
+    node *right;
+    node(int d)
+    {
+        this->data = d;
+        this->left = NULL;
+        this->right = NULL;
+    }
+};
+node *buildTree(node *root)
+{
+    int data;
+    cout << "Enter the data:" << endl;
+    cin >> data;
+    root = new node(data);
+    if (data == -1)
+    {
+        return NULL;
+    }
+    cout << "Enter the data for inserting in left of " << data << endl;
+    root->left = buildTree(root->left);
+    cout << "Enter the data for inserting in right of " << data << endl;
+    root->right = buildTree(root->right);
+    return root;
+}
+void PostOrderTraversal(node *root){
+    if(root==NULL){
+        return;
+    }
+    PostOrderTraversal(root->left);
+    PostOrderTraversal(root->right);
+    cout<<root->data<<" ";
+}
+int main()
+{
+    node *root = NULL;
+    // creating a tree
+    root = buildTree(root);
+    // postorder traversal
+    PostOrderTraversal(root);
+    return 0;
+}
+
+// Method-2 ( Iteratively )
+#include <iostream>
+#include <queue>
+#include <stack>
+using namespace std;
+class node
+{
+public:
+    int data;
+    node *left;
+    node *right;
+    node(int d)
+    {
+        this->data = d;
+        this->left = NULL;
+        this->right = NULL;
+    }
+};
+node *buildTree(node *root)
+{
+    int data;
+    cout << "Enter the data:" << endl;
+    cin >> data;
+    root = new node(data);
+    if (data == -1)
+    {
+        return NULL;
+    }
+    cout << "Enter the data for inserting in left of " << data << endl;
+    root->left = buildTree(root->left);
+    cout << "Enter the data for inserting in right of " << data << endl;
+    root->right = buildTree(root->right);
+    return root;
+}
+void PostOrderTraversal(node *root)
+{
+    if (root == NULL)
+        return;
+    // Create two stacks
+    stack<node *> s1, s2;
+    // push root to first stack
+    s1.push(root);
+    node *curr;
+    // Run while first stack is not empty
+    while (!s1.empty())
+    {
+        // Pop an item from s1 and push it to s2
+        curr = s1.top();
+        s1.pop();
+        s2.push(curr);
+        // Push left and right children of removed item to s1
+        if (curr->left)
+            s1.push(curr->left);
+        if (curr->right)
+            s1.push(curr->right);
+    }
+    // Print all elements of second stack
+    while (!s2.empty())
+    {
+        curr = s2.top();
+        s2.pop();
+        cout << curr->data << " ";
+    }
+}
+int main()
+{
+    node *root = NULL;
+    // creating a tree
+    root = buildTree(root);
+    // postorder traversal
+    PostOrderTraversal(root);
+    return 0;
+}
