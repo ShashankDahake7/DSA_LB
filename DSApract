@@ -6298,3 +6298,37 @@ class Solution
         return ans;
     }
 };
+
+// Diagonal Traversal in Binary tree
+
+vector<int> diagonal(Node *root)
+{
+   vector<int>ans;
+   if(root==NULL)
+   {
+       return ans;
+   }  
+   queue<Node*>q;
+   q.push(root);
+   while(!q.empty())
+   {
+       Node* temp=q.front();
+       q.pop();
+       ans.push_back(temp->data);
+       if(temp->left)
+       {
+           q.push(temp->left);
+       }
+       while(temp->right!=NULL)
+       {
+           temp=temp->right;
+           ans.push_back(temp->data);
+           if(temp->left)
+           {
+               q.push(temp->left);
+           }
+       }
+   }
+   return ans;
+}
+
