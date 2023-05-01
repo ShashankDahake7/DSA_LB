@@ -5948,6 +5948,25 @@ class Solution
 
 // Sum tree
 
+// Method-1
+int sumTree(TreeNode<int> *root) {
+    if(root == NULL) return 0;
+    return root->val + sumTree(root->left) + sumTree(root->right);
+} 
+bool isSumTree(TreeNode<int> *root)
+{
+    if(root == NULL) return true;
+    if(root->left == NULL && root->right == NULL) return true;
+    if(isSumTree(root->left) && isSumTree(root->right)) {
+        int l = sumTree(root->left);
+        int r = sumTree(root->right);
+        if(root->val == (l+r)) return true;
+        return false;
+    }
+    return false;
+}
+
+// Method-2
 class Solution
 {
     public:
