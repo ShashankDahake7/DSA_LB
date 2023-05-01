@@ -5756,3 +5756,22 @@ int main()
 
 // Count leaf nodes
 
+void inOrderTraversal(BinaryTreeNode<int> *root, int &count) {
+  // base case
+  if (root == NULL) {
+    return;
+  }
+  // leaf node
+  inOrderTraversal(root->left, count);
+  if (root->left == NULL && root->right == NULL) {
+    count++;
+  }
+  inOrderTraversal(root->right, count);
+}
+int noOfLeafNodes(BinaryTreeNode<int> *root) {
+  int count = 0;
+  inOrderTraversal(root, count);
+  return count;
+}
+
+//
