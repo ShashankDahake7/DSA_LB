@@ -5774,4 +5774,209 @@ int noOfLeafNodes(BinaryTreeNode<int> *root) {
   return count;
 }
 
-//
+// Height of binary tree ( Max depth of binary tree )
+
+class Solution{
+    public:
+    int height(struct Node* node){
+        //base case
+        if(node==NULL){
+            return 0;
+        }
+        int left=height(node->left);
+        int right=height(node->right);
+        int ans=max(left,right)+1;
+        return ans;
+    }
+};
+
+// Diameter of binary tree
+
+// Method-1
+class Solution{
+    public:
+    int height(Node*root)
+    {   
+    	 if(root==NULL)
+         {
+         return 0;
+         }
+         int h1=height(root->left);
+         int h2=height(root->right);
+         return (max(h1,h2)+1);
+     }
+    int diameter(Node* root) {
+        if(root==NULL)
+        {
+            return 0;
+        }
+        int h1=height(root->left);
+        int h2=height(root->right);
+        int op1=h1+h2+1;
+        int op2=diameter(root->left);
+        int op3=diameter(root->right);
+        return (max(op1,(max(op2,op3))));
+    }
+};
+
+// Method-2
+class Solution
+{
+public:
+    pair<int,int> diameterFast(Node *root){
+        if(root == NULL){
+            pair<int,int>p = make_pair(0,0);
+            return p;
+        }
+        pair<int,int> left = diameterFast(root->left);
+        pair<int,int> right = diameterFast(root->right);
+        
+        int op1 = left.first;
+        int op2 = right.first;
+        int op3 = left.second + right.second + 1;
+        
+        pair<int,int>ans;
+        ans.first = max(op1,max(op2,op3));
+        ans.second = max(left.second, right.second)+1;
+        return ans;
+    }
+    int diameter(Node* root) {
+        
+        return diameterFast(root).first;
+    }
+};
+
+// Check for balanced tree
+
+// Method-1
+class Solution
+{
+public:
+    int height(struct Node *node)
+    {
+        if (node == NULL)
+        {
+            return 0;
+        }
+        int left = height(node->left);
+        int right = height(node->right);
+        int ans = max(left, right) + 1;
+        return ans;
+    }
+    bool isBalanced(Node *root)
+    {
+        if (root == NULL)
+        {
+            return 1;
+        }
+        bool left = isBalanced(root->left);
+        bool right = isBalanced(root->right);
+        bool diff = abs(height(root->left) - height(root->right)) <= 1;
+        if (left && right && diff)
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+};
+
+// Method-2
+class Solution
+{
+public:
+    class Solution {
+public:
+    pair<bool,int> isBalancedFast(TreeNode *root){
+        if(root == NULL){
+            pair<bool,int> p = make_pair(true,0);
+            return p;
+        }
+        pair<int,int> left = isBalancedFast(root->left);
+        pair<int,int> right = isBalancedFast(root->right);
+        
+        bool leftAns=left.first;
+        bool rightAns=right.first;
+        
+        bool diff = abs(left.second - right.second) <= 1;
+        
+        pair<bool,int> ans;
+        ans.second=max(left.second,right.second)+1;
+        
+        if (leftAns && rightAns && diff)
+        {
+            ans.first=1;
+        }
+        else
+        {
+            ans.first=0;
+        }
+        
+        return ans;
+    }
+    bool isBalanced(TreeNode* root) {
+        return isBalancedFast(root).first;
+    }
+};
+
+// Determine if two trees are identical or not
+
+class Solution
+{
+    public:
+    bool isIdentical(Node *r1, Node *r2)
+    {
+        if(r1==NULL && r2==NULL){
+            return true;
+        }
+        if(r1==NULL && r2!=NULL){ 
+            return false;
+        }
+        if(r1!=NULL && r2==NULL){ 
+            return false;
+        }
+        if(r1->data!=r2->data){
+            return false;
+        }
+        else{
+            return (isIdentical(r1->left,r2->left) && isIdentical(r1->right,r2->right));
+        }
+    }
+};
+
+// Sum tree
+
+class Solution
+{
+    public:
+    pair<bool,int> solve(Node* root){
+        if(root==NULL){
+            pair<bool,int>p=make_pair(true,0);
+            return p;
+        }
+        if(root->left==NULL && root->right==NULL){
+        pair<bool,int>p=make_pair(true,root->data);
+        return p;
+        }
+        pair<bool,int> leftans=solve(root->left);
+        pair<bool,int> rightans=solve(root->right);
+        bool l=leftans.first;
+        bool r=rightans.first;
+        bool condn=root->data==leftans.second+ rightans.second;
+        pair<bool,int> ans;
+        if(l&&r&&condn){
+            ans.first=true;
+            ans.second=2*root->data;
+        }
+        else{
+            ans.first=false;
+        }
+        return ans;   
+    }
+    bool isSumTree(Node* root)
+    {
+         return solve(root).first;
+    }
+};
