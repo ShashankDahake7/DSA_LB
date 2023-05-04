@@ -6624,4 +6624,318 @@ Node *buildTree(int in[], int post[], int n) {
     return solve(in,post,index,0,n-1,n,mp);
 }
 
-// 
+// Minimum Time To Burn A Tree
+
+class Solution {
+  public:
+    // create mapping and return target node
+    Node* createParentMapping(Node* root, int target,map<Node*,Node*> &nodeToParent){
+        Node* res=NULL;
+        queue<Node*> q;
+        q.push(root);
+        nodeToParent[root]=NULL;
+        while(!q.empty()){
+            Node* front=q.front();
+            q.pop();
+            if(front->data==target){
+                res=front;
+            }
+            if(front->left){
+                nodeToParent[front->left]=front;
+                q.push(front->left);
+            }
+            if(front->right){
+                nodeToParent[front->right]=front;
+                q.push(front->right);
+            }
+        }
+        return res;
+    }
+    int burnTree(Node* root,map<Node*,Node*> &nodeToParent){
+        map<Node*,bool> visited;
+        queue<Node*> q;
+        q.push(root);
+        visited[root]=true;
+        int ans=0;
+        while(!q.empty()){
+            bool flag=0;
+            int size=q.size();
+            for(int i=0;i<size;i++){
+                // processing neighbouring nodes
+                Node* front=q.front();
+                q.pop();
+                if(front->left && !visited[front->left]){
+                    flag=true;
+                    q.push(front->left);
+                    visited[front->left]=1;
+                }
+                if(front->right && !visited[front->right]){
+                    flag=true;
+                    q.push(front->right);
+                    visited[front->right]=1;
+                }
+                if(nodeToParent[front] && !visited[nodeToParent[front]]){
+                    flag=true;
+                    q.push(nodeToParent[front]);
+                    visited[nodeToParent[front]]=1;
+                }
+            }
+            if(flag==1){
+                ans++;
+            }
+        }
+        return ans;
+    }
+    int minTime(Node* root, int target) 
+    {
+        map<Node*,Node*> nodeToParent;
+        Node* targetNode=createParentMapping(root,target,nodeToParent);
+        int ans=burnTree(targetNode,nodeToParent);
+        return ans;
+    }
+};
+
+// Morris Traversal ( T.C. => O(n) , S.C. => O(1) )
+
+// Morris traversal for inorder traversal
+
+#include <iostream>
+using namespace std;
+/* Node Structure in a threaded binary tree */
+struct Node
+{
+    int value;
+    struct Node *left;
+    struct Node *right;
+};
+/* Function to traverse the binary tree without using any additional space */
+void Morris(struct Node *root)
+{
+    struct Node *current, *prev;
+    if (root == NULL)
+        return;
+    current = root;
+    while (current != NULL)
+    {
+        if (current->left == NULL)
+        {
+            cout << current->value << "\t";
+            current = current->right;
+        }
+        else
+        {
+            /* Find the previous node of the current node */
+            prev = current->left;
+            while (prev->right != NULL && prev->right != current)
+                prev = prev->right;
+            /* Make current node as the right child of its previous node */
+            if (prev->right == NULL)
+            {
+                prev->right = current;
+                current = current->left;
+            }
+            /* fix the right child of previous */
+            else
+            {
+                prev->right = NULL;
+                cout << current->value << "\t";
+                current = current->right;
+            }
+        }
+    }
+}
+/* Function allocates a new Node with the given value and the left and right pointers to NULL. */
+struct Node *add_node(int value)
+{
+    struct Node *node = new Node;
+    node->value = value;
+    node->left = NULL;
+    node->right = NULL;
+
+    return (node);
+}
+int main()
+{
+    struct Node *root = add_node(20);
+    root->left = add_node(40);
+    root->right = add_node(60);
+    root->left->left = add_node(80);
+    root->left->right = add_node(100);
+    Morris(root);
+    return 0;
+}
+
+// Morris traversal for Preorder traversal
+#include <bits/stdc++.h>
+using namespace std;
+class node
+{
+	public:
+	int data;
+	node *left, *right;
+};
+// Helper function that allocates a new node with the given data and NULL left and right pointers. 
+node* newNode(int data)
+{
+	node* temp = new node();
+	temp->data = data;
+	temp->left = temp->right = NULL;
+	return temp;
+}
+// Preorder traversal without recursion and without stack
+void morrisTraversalPreorder(node* root)
+{
+	while (root)
+	{
+		// If left child is null, print the current node data. Move to right child.
+		if (root->left == NULL)
+		{
+			cout<<root->data<<" ";
+			root = root->right;
+		}
+		else
+		{
+			// Find inorder predecessor
+			node* current = root->left;
+			while (current->right && current->right != root)
+				current = current->right;
+			// If the right child of inorder predecessor already points to this node
+			if (current->right == root)
+			{
+				current->right = NULL;
+				root = root->right;
+			}
+			// If right child doesn't point to this node, then print this node and make right child point to this node
+			else
+			{
+				cout<<root->data<<" ";
+				current->right = root;
+				root = root->left;
+			}
+		}
+	}
+}
+// Function for Standard preorder traversal
+void preorder(node* root)
+{
+	if (root)
+	{
+		cout<<root->data<<" ";
+		preorder(root->left);
+		preorder(root->right);
+	}
+}
+int main()
+{
+	node* root = NULL;
+	root = newNode(1);
+	root->left = newNode(2);
+	root->right = newNode(3);
+	root->left->left = newNode(4);
+	root->left->right = newNode(5);
+	root->right->left = newNode(6);
+	root->right->right = newNode(7);
+	root->left->left->left = newNode(8);
+	root->left->left->right = newNode(9);
+	root->left->right->left = newNode(10);
+	root->left->right->right = newNode(11);
+	morrisTraversalPreorder(root);
+	cout<<endl;
+	preorder(root);
+	return 0;
+}
+
+// Morris traversal for Postorder traversal
+
+#include <bits/stdc++.h>
+using namespace std;
+struct TreeNode {
+	int key;
+	TreeNode* left;
+	TreeNode* right;
+	TreeNode(int data)
+	{
+		key = data;
+		left = NULL;
+		right = NULL;
+	}
+};
+// Function to print vector
+void print(vector<int>& ans)
+{
+	// Print the vector elements
+	for (auto x : ans) {
+		cout << x << " ";
+	}
+}
+// Postorder traversal Without recursion and without stack
+vector<int> postorderTraversal(TreeNode* root)
+{
+	vector<int> res;
+	TreeNode* current = root;
+	while (current != NULL) {
+		// If right child is null, put the current node data in res. Move to left child.
+		if (current->right == NULL) {
+			res.push_back(current->key);
+			current = current->left;
+		}
+		else {
+			TreeNode* predecessor = current->right;
+			while (predecessor->left != NULL
+				&& predecessor->left != current) {
+				predecessor = predecessor->left;
+			}
+			// If left child doesn't point to this node, then put in res this node and make left child point to this node
+			if (predecessor->left == NULL) {
+				res.push_back(current->key);
+				predecessor->left = current;
+				current = current->right;
+			}
+			// If the left child of inorder predecessor already points to this node
+			else {
+				predecessor->left = NULL;
+				current = current->left;
+			}
+		}
+	}
+	// reverse the res
+	reverse(res.begin(), res.end());
+	return res;
+}
+int main()
+{
+	TreeNode* root = new TreeNode(10);
+	root->left = new TreeNode(20);
+	root->right = new TreeNode(30);
+	root->right->left = new TreeNode(40);
+	root->right->right = new TreeNode(50);
+	cout << "Morris(postorder) Traversal: ";
+	vector<int> ans = postorderTraversal(root);
+	print(ans);
+	return 0;
+}
+
+// Flatten a binary tree to Linked List
+
+class Solution
+{
+    public:
+    void flatten(Node *root)
+    {
+        Node* curr=root;
+        while(curr!=NULL)
+        {
+            if(curr->left)
+            {
+                Node* pred=curr->left;
+                while(pred->right){
+                    pred=pred->right;
+                }
+                pred->right=curr->right;
+                curr->right=curr->left;
+                curr->left=NULL;
+            }
+            curr=curr->right;
+        }   
+    }
+};
