@@ -6484,7 +6484,144 @@ int kthAncestor(Node *root, int k, int node)
 
 // Maximum sum of non-adjacent nodes
 
+class Solution{
+  public:
+    pair<int,int> solve(Node *root){
+        if(root==NULL){
+            pair<int,int> p=make_pair(0,0);
+            return p;
+        }
+        pair<int,int> left=solve(root->left);
+        pair<int,int> right=solve(root->right);
+        pair<int,int> res;
+        res.first=root->data+left.second+right.second;
+        res.second=max(left.first,left.second)+max(right.first,right.second);
+        return res;
+    }
+    int getMaxSum(Node *root) 
+    {
+        pair<int,int> ans=solve(root);
+        return max(ans.first,ans.second);
+    }
+};
 
+// Construct Tree from given Inorder and Preorder traversals
 
+// Method-1
+class Solution{
+    public:
+    int findposition(int in[],int element,int start,int end)
+    {
+        for(int i=start;i<=end;i++)
+        {
+            if(in[i]==element)
+            return i;
+        }
+        return -1;
+    }
+    Node* solve(int in[],int pre[],int &index,int inorderstart,int inorderend,int n)
+    {
+        if(index>=n || inorderstart >inorderend){
+            return NULL;
+        }
+        
+        int element = pre[index++];
+        Node* root = new Node(element);
+        int position = findposition(in,element,inorderstart,inorderend);
+        
+        root->left=solve(in,pre,index,inorderstart,position-1,n);
+        root->right=solve(in,pre,index,position+1,inorderend,n);
+        
+        return root;
+    }
+    Node* buildTree(int in[],int pre[], int n)
+    {
+        int preorderindex=0;
+        Node* ans = solve(in,pre,preorderindex,0,n-1,n);
+        return ans;
+    }
+};
 
+// Method-2
+class Solution{
+    public:
+    Node* solve(int in[], int pre[], int n, int &index, int s, int e, unordered_map<int, vector<int>> &m){
+        if(index>=n || s>e)
+            return NULL;
+            
+            int element = pre[index++];
+            Node* root = new Node(element);
+            int pos = -1;
+            if(m[element][0] == INT_MIN){
+                 pos = m[element][1];
+                m[element][1] = INT_MIN;
+            }
+            else{
+                pos = m[element][0];
+                m[element][0] = INT_MIN;
+            }
+                
+            root->left = solve(in, pre, n, index, s, pos-1, m);
+            root->right = solve(in, pre, n, index, pos+1, e, m);
+            
+            return root;
+    }
+    
+    Node* buildTree(int in[],int pre[], int n)
+    {
+        unordered_map<int, vector<int>>index;
+        for(int i= 0; i<n; i++)
+            index[in[i]].push_back(i);
+            
+            int preindex = 0;
+            return solve(in, pre, n, preindex, 0, n-1, index);
+    }
+};
 
+// Construct Tree from given Inorder and Postorder traversals
+
+// Method-1
+Node* solve(int in[], int post[], int inStart, int inEnd, int postStart, int postEnd) {
+    if(inStart > inEnd){
+        return NULL;
+    }
+    Node* root = new Node(post[postEnd]);
+    int i = inStart;
+    for(; i<= inEnd; i++) {
+        if(in[i] == root->data)
+            break;
+    }
+    int leftSize  = i - inStart;
+    int rightSize = inEnd - i;
+    root->left  = solve(in, post, inStart, i-1, postStart, postStart + leftSize - 1);
+    root->right = solve(in, post, i+1, inEnd, postEnd - rightSize, postEnd-1);
+    return root;
+}
+Node *buildTree(int in[], int post[], int n) {
+    return solve(in, post, 0, n-1, 0, n-1);
+}
+
+// Method-2
+Node*solve(int in[], int post[], int &index,int s,int e,int n,unordered_map<int,int>&mp)
+{
+    if(index<0 || s>e){
+        return NULL;
+    }
+    int element=post[index--];
+    Node*root=new Node(element);
+    int pos=mp[element];
+    root->right=solve(in,post,index,pos+1,e,n,mp);
+    root->left=solve(in,post,index,s,pos-1,n,mp);
+    return root;
+}
+Node *buildTree(int in[], int post[], int n) {
+    unordered_map<int,int>mp;
+    for(int i=0;i<n;i++)
+    {
+        mp[in[i]]=i;
+    }
+    int index=n-1;
+    return solve(in,post,index,0,n-1,n,mp);
+}
+
+// 
