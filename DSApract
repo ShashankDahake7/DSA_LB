@@ -6332,3 +6332,159 @@ vector<int> diagonal(Node *root)
    return ans;
 }
 
+// Sum of the Longest Bloodline of a Tree (Sum of nodes on the longest path from root to leaf node)
+
+class Solution
+{
+public:
+    void solve(Node *root,int sum,int &maxSum,int len,int &maxLen){
+        // base case
+        if(root==NULL){
+            if(len>maxLen){
+                maxLen=len;
+                maxSum=sum;
+            }
+            else if(len==maxLen){
+                maxSum=max(sum,maxSum);
+            }
+            return;
+        }
+        sum=sum+root->data;
+        solve(root->left,sum,maxSum,len+1,maxLen);
+        solve(root->right,sum,maxSum,len+1,maxLen);
+    }
+    int sumOfLongRootToLeafPath(Node *root)
+    {
+        int len=0,maxLen=0,sum=0,maxSum=INT_MIN;
+        solve(root,sum,maxSum,len,maxLen);
+        return maxSum;
+    }
+};
+
+// Lowest Common Ancestor in a Binary Tree
+
+class Solution
+{
+    public:
+    //Function to return the lowest common ancestor in a Binary Tree.
+    Node* lca(Node* root ,int n1 ,int n2 )
+    {
+        // base case
+        if(root==NULL){
+            return NULL;
+        }
+        if(root->data==n1 || root->data==n2){
+            return root;
+        }
+        Node *leftAns=lca(root->left,n1,n2);
+        Node *rightAns=lca(root->right,n1,n2);
+        if(leftAns!=NULL && rightAns!=NULL){
+            return root;
+        }
+        else if(leftAns!=NULL && rightAns==NULL){
+            return leftAns;
+        }
+        else if(leftAns==NULL && rightAns!=NULL){
+            return rightAns;
+        }
+        else{
+            return NULL;
+        }
+    }
+};
+
+// K sum paths
+
+class Solution{
+    public:
+    void check(Node *root, int k, int &count, int sum, unordered_map<int, int> &mp) {
+        if(root == NULL) 
+            return;
+        sum += root->data;
+        count += mp[sum-k];
+        if(sum == k)
+            count++;
+        mp[sum]++;
+        check(root->left, k, count, sum, mp);
+        check(root->right, k, count, sum, mp);   
+        mp[sum]--;
+    }
+    int sumK(Node *root,int k)
+    { 
+        int count = 0;
+        unordered_map<int, int> mp;
+        check(root, k, count, 0, mp);
+        return count;
+    }
+};
+
+// Kth ancestor in a binary tree 
+
+// Method-1
+bool solve(Node *root,int &k, int node,int &ans){
+    if(root == NULL) return false;
+    
+    if(root->data == node) return true;
+    bool left = solve(root->left,k,node,ans);
+    bool right = solve(root->right, k,node,ans);
+    
+    if(left||right){
+        k--;
+        if(k==0) ans = root->data;
+        return true;
+    }
+    return false;
+}
+int kthAncestor(Node *root, int k, int node)
+{
+    int ans;
+    solve(root,k,node,ans);
+    if(k>0) return -1;         // If k is greater than required distance b/w nodes.
+    return ans;
+}
+
+// Method-2
+Node* solve(Node* root,int &k,int node){
+    if(root==NULL){
+        return NULL;
+    }
+    if(root->data==node){
+        return root;
+    }
+    Node *leftAns=solve(root->left,k,node);
+    Node *rightAns=solve(root->right,k,node);
+    if(leftAns!=NULL && rightAns==NULL){
+        k--;
+        if(k==0){
+            k=INT_MAX;
+            return root;
+        }
+        return leftAns;
+    }
+    if(leftAns==NULL && rightAns!=NULL){
+        k--;
+        if(k==0){
+            k=INT_MAX;
+            return root;
+        }
+        return rightAns;
+    }
+    return NULL;
+}
+int kthAncestor(Node *root, int k, int node)
+{
+    Node* ans=solve(root,k,node);
+    if((ans==NULL) || (ans->data==node)){
+        return -1;   
+    }
+    else{
+        return ans->data;
+    }
+}
+
+// Maximum sum of non-adjacent nodes
+
+
+
+
+
