@@ -7669,35 +7669,121 @@ int main(){
 // Check BST or not
 
 // Method-1
-
+bool isBST(BinaryTreeNode<int> *root, int min, int max){
+    if(root==NULL){
+        return true;
+    }
+    if(root->data>=min && root->data<=max){
+        bool left=isBST(root->left, min, root->data);
+        bool right=isBST(root->right, root->data, max);
+        return left && right;
+    }
+    else{
+        return false;
+    }
+}
+bool validateBST(BinaryTreeNode<int> *root) {
+    return isBST(root, INT_MIN, INT_MAX);
+}
 
 // Method-2
-class Solution
-{
-    public:
-    void value(Node* root, bool &ans,int &index,vector<int>&check)
-    {
-        if(root==NULL||ans==0){
-            return;
-        }
-        value(root->left,ans,index,check);
-        check.push_back(root->data);
-        if(index>=1)
-        {
-            if(check[index]<=check[index-1]){
-                ans=0;
-            }
-        }
-        index=index+1;
-        value(root->right,ans,index,check);
+void inorder(BinaryTreeNode<int> *root, vector<int>& ans){
+    if(root==NULL){
+        return;
     }
-    bool isBST(Node* root) 
-    {
-        bool ans=1;
-        int index=0;
-        vector<int>check;
-        value(root,ans,index,check);
-        return ans;
-    }
-};
+    inorder(root->left, ans);
+    ans.push_back(root->data);
+    inorder(root->right, ans);
+}
+bool validateBST(BinaryTreeNode<int> *root) {
+    vector<int> ans;
+    int c=0;
+    inorder(root, ans);
+    if(is_sorted(ans.begin(), ans.end()))
+        return true;
+     else
+        return false;
+}
 
+// Predecessor and Successor in BST
+
+void helper(binaryTreeNode *root, int key,int &suc,int &pre) {
+	if(root==NULL) {
+		return;
+	}
+	if(root->data > key) {
+		suc=root->data;
+		helper(root->left,key,suc,pre);
+	}
+	else if(root->data < key) {
+		pre=root->data;
+		helper(root->right,key,suc,pre);
+	}
+	else {
+		binaryTreeNode *tmp=root->right;
+		while(tmp && tmp->left) {
+			tmp=tmp->left;
+		}
+		if(tmp) {
+			suc=tmp->data;
+		}
+		tmp=root->left;
+		while(tmp && tmp->right) {
+			tmp=tmp->right;
+		}
+		if(tmp) {
+			pre=tmp->data;
+		}
+		return;
+	}
+}
+vector<int> findPreSuc(binaryTreeNode *root, int key) {
+	int pre=-1,suc=-1;
+	helper(root,key,suc,pre);
+	return {pre,suc};;
+}
+
+// Find K-th smallest Element in BST
+
+int solve(BinaryTreeNode<int>* root, int &i, int k){
+    //base case
+    if(root == NULL){
+        return -1;
+    }//Inorder - LNR since it is sorted, we increment i when a node is found
+    // Left
+    int left = solve(root->left, i,k);
+    if(left != -1){
+        return left;
+    }
+    // Node
+    i++;
+    if (i == k) {
+        return root->data;
+    }
+    // Right
+    return solve(root->right, i,k);    
+}
+int kthSmallest(BinaryTreeNode<int>* root, int k) {
+    int i =0;
+    int ans = solve(root, i, k);
+    return ans;
+}
+
+// LCA of two nodes in a BST
+
+TreeNode<int>* LCAinaBST(TreeNode<int>* root, TreeNode<int>* P, TreeNode<int>* Q)
+{
+	while(root != NULL){
+        if(root->data < P->data && root->data < Q->data){
+            root = root->right;
+        }
+        else if(root->data > P->data && root->data > Q->data){
+            root = root->left;
+        }
+        else{ 
+            return root;
+        }
+    }
+}
+
+// 
