@@ -7769,6 +7769,33 @@ int kthSmallest(BinaryTreeNode<int>* root, int k) {
     return ans;
 }
 
+// Find K-th Largest Element in BST
+
+int solve(TreeNode<int>* root,int &i,int k){
+    //base case
+        if(root == NULL){
+            return -1;
+        }//Inorder - LNR since it is sorted, we increment i when a node is found
+        // Right
+        int right = solve(root->right, i,k);
+        if(right != -1){
+            return right;
+        }
+        // Node
+        i++;
+        if (i == k) {
+            return root->data;
+        }
+        // Left
+        return solve(root->left, i,k);
+}
+int KthLargestNumber(TreeNode<int>* root, int k) 
+{
+    int i=0;
+    int ans=solve(root,i,k);
+    return ans;
+}
+
 // LCA of two nodes in a BST
 
 TreeNode<int>* LCAinaBST(TreeNode<int>* root, TreeNode<int>* P, TreeNode<int>* Q)
