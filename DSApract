@@ -7939,6 +7939,7 @@ TreeNode<int>* balancedBst(TreeNode<int>* root) {
 
 // Preorder traversal of a BST
 
+// Method-1
 BinaryTreeNode<int>* inorderToBST(int s, int e, vector<int> &inorder)
 {
     if(s>e)
@@ -7956,3 +7957,239 @@ BinaryTreeNode<int>* preorderToBST(vector<int> &preorder) {
     return inorderToBST(0,preorder.size()-1, preorder);
 }
 
+// Method-2
+BinaryTreeNode<int>* solve(vector<int> &preorder, int mini, int maxi, int &i){
+    if(i >= preorder.size()){
+        return NULL;
+    }
+    if(preorder[i] < mini || preorder[i] > maxi){
+        return NULL;
+    }
+
+    BinaryTreeNode<int>* root = new BinaryTreeNode<int>(preorder[i++]);
+    root->left = solve(preorder, mini, root->data, i);
+    root->right = solve(preorder, root->data, maxi, i);
+
+    return root;
+}
+BinaryTreeNode<int>* preorderToBST(vector<int> &preorder) {
+    // Write your code here.
+    int mini = INT_MIN;
+    int maxi = INT_MAX;
+
+    int i = 0;
+    return solve(preorder, mini, maxi, i);
+}
+
+// Method-3
+BinaryTreeNode<int>* solve(vector<int> &preorder, int maxi, int &i){
+    if(i == preorder.size() || preorder[i] > maxi){
+        return NULL;
+    }
+    BinaryTreeNode<int>* root = new BinaryTreeNode<int>(preorder[i++]);
+    root->left = solve(preorder, root->data, i);
+    root->right = solve(preorder, maxi, i);
+
+    return root;
+}
+BinaryTreeNode<int>* preorderToBST(vector<int> &preorder) {
+    int maxi = INT_MAX;
+    int i = 0;
+    return solve(preorder, maxi, i);
+}
+
+// Merge two BST
+
+// Method-1
+void inorder(TreeNode<int>*root,vector<TreeNode<int>*>&v) {
+    if(!root) {
+        return;
+    }
+    inorder(root->left,v);
+    v.push_back(root);
+    inorder(root->right,v);
+}
+
+// The following function merges the inorder traversal of two trees
+void merge(vector<TreeNode<int>*>&v1,vector<TreeNode<int>*>&v2,vector<TreeNode<int>*>&ans) {
+    int i=0,j=0,k=0;
+    while(i<v1.size() && j<v2.size()) {
+        if(v1[i]->data<v2[j]->data) {
+            ans[k]=v1[i++];
+        }
+        else {
+            ans[k]=v2[j++];
+        }
+        ans[k]->left=NULL;
+        ans[k]->right=NULL;
+        k++;
+    }
+    while(i<v1.size()) {
+        ans[k]=v1[i++];
+        ans[k]->left=NULL;
+        ans[k]->right=NULL;
+        k++;
+    }
+    while(j<v2.size()) {
+        ans[k]=v2[j++];
+        ans[k]->left=NULL;
+        ans[k]->right=NULL;
+        k++;
+    }
+}
+// The following function builds the merged tree from the merged inorder traversal 
+TreeNode<int>*helper(vector<TreeNode<int>*>&ans,int start,int end) {
+    if(start>end) {
+        return NULL;
+    }
+    int mid=start+(end-start)/2;
+    TreeNode<int> *root= ans[mid];
+    if(start==end) {
+        return root;
+    }
+    root->left=helper(ans,start,mid-1);
+    root->right=helper(ans,mid+1,end);
+    return root;
+}
+TreeNode<int> *mergeBST(TreeNode<int> *root1, TreeNode<int> *root2) {
+    vector<TreeNode<int>*>v1,v2;
+    inorder(root1,v1);
+    inorder(root2,v2);
+    vector<TreeNode<int>*>ans(v1.size()+v2.size());
+    merge(v1,v2,ans);
+    return helper(ans,0,ans.size()-1);
+}
+
+// Method-2
+// function to convert BST to Doubly Linked List
+void convertTOList(TreeNode<int>*root, TreeNode<int>*&head){
+    if(!root)
+        return;
+    convertTOList(root->right, head);
+    root->right=head;
+    if(head){
+        head->left=root;
+    }
+    head=root;
+    convertTOList(root->left, head);
+}
+// merge two sorted Linked lists
+TreeNode<int>* mergedList(TreeNode<int>*head1,TreeNode<int>*head2){
+    TreeNode<int>* head=NULL;
+    TreeNode<int>* tail =NULL;
+    while(head1 && head2){
+        if(head1->data<head2->data){
+            if(head==NULL){
+                head=head1;
+                tail=head1;
+                head1=head1->right;
+            }
+            else{
+                tail->right=head1;
+                head1->left=tail;
+                tail=head1;
+                head1=head1->right;
+            }
+        }
+        else{
+            if(head==NULL){
+                head=head2;
+                tail=head2;
+                head2=head2->right;
+            }
+            else{
+                tail->right=head2;
+                head2->left=tail;
+                tail=head2;
+                head2=head2->right;
+            }
+        }
+    }
+    while(head1){
+        tail->right=head1;
+        head1->left=tail;
+        tail=head1;
+        head1=head1->right;
+    }
+    while(head2){
+        tail->right=head2;
+        head2->left=tail;
+        tail=head2;
+        head2=head2->right;
+    }
+    return head;
+}
+int count_nodes(TreeNode<int>*head){
+    TreeNode<int>*temp=head;
+    int count=0;
+    while(temp){
+        count++;
+        temp=temp->right;
+    }
+    return count;
+}
+TreeNode<int>*lltoBST(TreeNode<int>*&head,int n){
+    if(n<=0  || head==NULL)
+        return NULL;
+    TreeNode<int>*left =lltoBST(head,  n/2);
+    TreeNode<int>*root =head;
+    root->left=left;
+    head=head->right;
+    root->right =lltoBST(head, n-n/2-1);
+    return root;
+}
+TreeNode<int> *mergeBST(TreeNode<int> *root1, TreeNode<int> *root2){
+    // Convert BST TO Doubly
+    TreeNode<int>* head1=NULL;
+    convertTOList(root1, head1);
+    head1->left=NULL;
+    TreeNode<int>* head2=NULL;
+    convertTOList(root2, head2);
+    head2->left=NULL;
+    // Merge the two Linked Lists
+    TreeNode<int>*mergedHead = mergedList(head1, head2);
+    // merge the two BST's
+    return lltoBST(mergedHead, count_nodes(mergedHead)); 
+}
+
+// Largest BST in binary tree
+
+void func(TreeNode<int>* root,int &size,int &max_num, int &min_num){
+    if(root == NULL){
+        size = 0;
+        max_num = -100000;
+        min_num = 100000;
+        return;
+    }
+    if(root->left == NULL&&root->right == NULL){
+        size = 1;
+        max_num = root->data;
+        min_num = root->data;
+        return;
+    }
+    int size1,max_num1,min_num1,size2,max_num2,min_num2;
+    func(root->left,size1,max_num1,min_num1);
+    func(root->right,size2,max_num2,min_num2);
+    if(root->data>max_num1&&root->data<min_num2){
+        size = 1 + size1 + size2;
+        max_num = max(root->data,max_num2);
+        min_num = min(root->data,min_num1);
+        return;
+    }
+    else{
+        size = max(size1,size2);
+        max_num = 100000;
+        min_num = -100000;
+        return;
+    }
+}
+int largestBST(TreeNode<int>* root) 
+{
+    if(root == NULL)return -1;
+    int size = 0;
+    int max_num,min_num;
+    func(root,size,max_num,min_num);
+    return size;
+}
+
+//
