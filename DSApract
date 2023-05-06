@@ -7740,11 +7740,56 @@ void helper(binaryTreeNode *root, int key,int &suc,int &pre) {
 vector<int> findPreSuc(binaryTreeNode *root, int key) {
 	int pre=-1,suc=-1;
 	helper(root,key,suc,pre);
-	return {pre,suc};;
+	return {pre,suc};
 }
 
 // Find K-th smallest Element in BST
 
+// Method-1
+class Solution {
+public:
+    int kthSmallest(TreeNode* root, int k) {
+        int i=0, ans=0;
+        TreeNode *prev, *curr;
+
+        //NULL check
+        if(root == NULL){
+            return -1;
+        }
+        curr = root;
+        while(curr){
+            if(curr->left == NULL){
+                i++;
+                if(i == k){
+                    ans = curr->val; 
+                }
+                curr = curr->right;
+            }
+            else{
+                prev = curr->left;
+                while(prev->right != NULL && prev->right != curr){
+                    prev = prev->right;
+                }
+
+                if(prev->right == NULL){
+                    prev->right = curr;
+                    curr = curr->left;
+                }
+                else{
+                    prev->right = NULL;
+                    i++;
+                    if(i == k){
+                        ans = curr->val;
+                    }
+                    curr = curr->right;
+                }
+            }
+        }
+        return ans;        
+    }
+};
+
+// Method-2
 int solve(BinaryTreeNode<int>* root, int &i, int k){
     //base case
     if(root == NULL){
@@ -7813,4 +7858,101 @@ TreeNode<int>* LCAinaBST(TreeNode<int>* root, TreeNode<int>* P, TreeNode<int>* Q
     }
 }
 
-// 
+// Two Sum in a BST
+
+// Method-1
+void inorder(BinaryTreeNode<int>* root,vector<int>&ans){
+   if(root==NULL)
+       return ;
+   inorder(root->left,ans);
+   ans.push_back(root->data);
+   inorder(root->right,ans);
+}
+bool twoSumInBST(BinaryTreeNode<int>* root, int target) {
+   vector<int> ans;
+   inorder(root,ans);
+   int size=ans.size();
+   int start=0,end=size-1;
+   while(start<end){
+       if(ans[start]+ans[end] == target)
+           return true;
+       else if(ans[start]+ans[end] > target)
+           end--;
+       else
+           start++;
+   }
+   return false;
+}
+
+// Flatten BST to a sorted List
+
+void inorder(TreeNode<int>* root, vector<int> &in){
+    if(root == NULL)
+        return;
+    inorder(root->left, in);
+    in.push_back(root->data);
+    inorder(root->right, in);
+}
+TreeNode<int>* flatten(TreeNode<int>* root)
+{
+    vector<int> in;
+    inorder(root, in);
+    int n = in.size();
+    TreeNode<int>* newRoot = new TreeNode<int>(in[0]);
+    TreeNode<int>* curr = newRoot;
+    for(int i = 1; i < n; i++){
+        TreeNode<int>* temp = new TreeNode<int>(in[i]);
+        curr->right = NULL;
+        curr->left = temp;
+        curr = temp;
+    }
+    curr->left = NULL;
+    curr->right = NULL;
+    return newRoot;
+}
+
+// Normal BST to Balanced BST
+
+void inorder(TreeNode<int>* root, vector<int> &inorderVal){
+    if(root == NULL){
+        return;
+    }
+    inorder(root->left, inorderVal);
+    inorderVal.push_back(root->data);
+    inorder(root->right, inorderVal);
+}
+TreeNode<int>* inorderToBST(int s, int e, vector<int> inorderVal){
+    if(s > e){
+        return NULL;
+    }
+    int mid = (s+e)/2;
+    TreeNode<int>* root = new TreeNode<int>(inorderVal[mid]);
+    root->left = inorderToBST(s, mid-1, inorderVal);
+    root->right = inorderToBST(mid+1, e, inorderVal);
+    return root;
+}
+TreeNode<int>* balancedBst(TreeNode<int>* root) {
+    vector<int> inorderVal;
+    inorder(root, inorderVal);
+    return inorderToBST(0, inorderVal.size()-1, inorderVal);
+}
+
+// Preorder traversal of a BST
+
+BinaryTreeNode<int>* inorderToBST(int s, int e, vector<int> &inorder)
+{
+    if(s>e)
+    {
+        return NULL;
+    }
+    int mid=(s+e)/2;
+    BinaryTreeNode<int>* newRoot= new BinaryTreeNode<int>(inorder[mid]);
+    newRoot->left=inorderToBST(s, mid-1, inorder);
+    newRoot->right=inorderToBST(mid+1, e, inorder);
+    return newRoot;
+}
+BinaryTreeNode<int>* preorderToBST(vector<int> &preorder) {
+    sort(preorder.begin(), preorder.end());
+    return inorderToBST(0,preorder.size()-1, preorder);
+}
+
