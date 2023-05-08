@@ -9141,3 +9141,78 @@ string reArrangeString(string &s)
         return "not possible";
     }   
 }
+
+// Hashmap
+
+#include<iostream>
+#include<map>
+#include<unordered_map>
+using namespace std;
+int main(){
+    // creation
+    // map<string,int> m; -> just to check map
+    unordered_map<string,int> m;
+    // insertion
+    // 1
+    pair<string,int> p = make_pair("krsna",3);
+    m.insert(p);
+    // 2
+    pair<string,int> q("anjum",2);
+    m.insert(q);
+    // 3
+    m["yunus"] = 3;
+    // what will happen?
+    m["yunus"] = 2;
+    // Search
+    cout<<m["yunus"]<<endl;
+    cout<<m.at("krsna")<<endl;
+    // cout<<m.at("unknownKey")<<endl; -> error
+    cout<<m["unknownKey"]<<endl; // mapping <unknownKey,0> here
+    cout<<m.at("unknownKey")<<endl;
+    // size
+    cout<<m.size()<<endl;
+    // to check presence
+    cout<<m.count("bro")<<endl;
+    cout<<m.count("anjum")<<endl;
+    // erase
+    m.erase("yunus");
+    cout<<m.size()<<endl;
+    // Accesing map through iteration
+    // 1
+    for(auto i:m){
+        cout<<i.first<<" "<<i.second<<endl;
+    }
+    // 2 -> Not in same order random order
+    unordered_map<string,int> :: iterator it = m.begin();
+    while(it!=m.end()){
+        cout<<it->first<<" "<<it->second<<endl;;
+        it++;
+    }
+    // 3 -> In same order
+    // map<string,int> :: iterator it = m.begin();
+    // while(it!=m.end()){
+    //     cout<<it->first<<" "<<it->second<<endl;;
+    //     it++;
+    // }
+    return 0;
+}
+
+// Maximum Frequency Number
+
+int maximumFrequency(vector<int> &arr, int n)
+{
+    int maxFreq=0;
+    int maxAns=0;
+    unordered_map<int ,int>mp;
+    for(int i=0;i<arr.size();i++){
+        mp[arr[i]]++;
+        maxFreq=max(maxFreq,mp[arr[i]]);
+    }
+    for(int i=0;i<arr.size();i++){
+        if(maxFreq==mp[arr[i]]){
+            maxAns=arr[i];
+            break;
+        }
+    }
+    return maxAns;
+}
