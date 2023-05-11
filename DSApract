@@ -9801,7 +9801,6 @@ class Solution {
 };
 
 // Method-2
-
 #include<iostream>
 #include<unordered_map>
 #include<list>
@@ -10134,7 +10133,6 @@ string cycleDetection (vector<vector<int>>& edges, int n, int m){
 
 // Method-1
 #include <bits/stdc++.h>
-
 bool cycle(int src, unordered_map<int, list<int>> &adj, unordered_map<int, bool> &visited, unordered_map<int, bool> &dfsCheck) {
   visited[src] = true;
   dfsCheck[src] = true;
@@ -10662,7 +10660,6 @@ vector<vector<int>> findBridges(vector<vector<int>> &edges, int v, int e) {
 
 #include <bits/stdc++.h>
 using namespace std;
-
 // A function to add edges in the graph.
 void addEdge(vector<vector<int>> &adj, int u, int v)
 {
