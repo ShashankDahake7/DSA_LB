@@ -9783,12 +9783,13 @@ int main()
 
 // Adjacency List
 
+// Method-1
 class Solution {
   public:
     vector<vector<int>> printGraph(int V, vector<int> adj[]) {
-        vector<vector<int>>ans;
-        for(int i = 0 ; i <V ;i ++){
-            vector<int>row;
+        vector<vector<int>> ans;
+        for(int i = 0 ; i < V ;i ++){
+            vector<int> row;
             row.push_back(i);
             for(int j = 0 ; j < adj[i].size() ; j++){
                 row.push_back(adj[i][j]);
@@ -9798,3 +9799,1044 @@ class Solution {
         return ans;
     }
 };
+
+// Method-2
+
+#include<iostream>
+#include<unordered_map>
+#include<list>
+using namespace std;
+template <typename T>
+class graph{
+	public:
+	unordered_map<T,list<T>> adj;
+	void addEdge(T u,T v,bool direction){
+		// direction = 0 -> undirected
+		// direction = 1 -> directed
+		// create and edge from u to v;
+		adj[u].push_back(v);
+		if(direction==0){
+			adj[v].push_back(u);
+		}
+	}
+	void printAdjList(){
+		for(auto i:adj){
+			cout<<i.first<<" -> ";
+			for(auto j:i.second){
+				cout<<j<<" , ";
+			}
+			cout<<endl;
+		}
+	}
+};
+int main(){
+	int n,m;
+	cout<<"Enter the number of nodes:";
+	cin>>n;
+	cout<<"Enter the number of edges:";
+	cin>>m;
+	graph<int> g;
+	for(int i=0;i<m;i++){
+		int u,v;
+		cin>>u>>v;
+		// creating an undirected graph
+		g.addEdge(u,v,0);
+	}
+	// printing graph
+	g.printAdjList();
+	return 0;
+}
+
+// Creating and Printing
+
+#include <bits/stdc++.h> 
+vector < vector < int >> printAdjacency(int n, int m, vector < vector < int >> & edges) {
+    vector<int>ans[n];
+    for(int i=0; i<m; i++)
+    {
+        int u=edges[i][0];
+        int v=edges[i][1];
+        ans[u].push_back(v);
+        ans[v].push_back(u);
+    }
+    vector < vector < int >> adj(n);
+    for(int i=0; i<n; i++) {
+        adj[i].push_back(i);
+        for (int j=0; j < ans[i].size(); j++) {
+            adj[i].push_back(ans[i][j]);
+        }
+    }
+    return adj;
+
+}
+
+// BFS Traversal ( Breadth First Search )
+
+// Method-1
+#include <bits/stdc++.h> 
+void prepAdjList(unordered_map<int, set<int>> &adjlist, 
+vector<pair<int, int>> &edges) {
+    for (int i = 0; i < edges.size(); i++) {
+        int u = edges[i].first;
+        int v = edges[i].second;
+        adjlist[u].insert(v);
+        adjlist[v].insert(u);
+    }
+}
+void bfs(unordered_map<int, set<int>> &adjlist, unordered_map<int, bool> &visited,vector<int> &ans, int node) {
+    queue<int> q;
+    q.push(node);
+    visited[node] = 1;
+    while (!q.empty()) {
+        int frontNode = q.front();
+        q.pop();
+        ans.push_back(frontNode);
+        for (auto i : adjlist[frontNode]) {
+            if (!visited[i]) {
+                q.push(i);
+                visited[i] = 1;
+            }
+        }
+    }
+} 
+vector<int> BFS(int vertex, vector<pair<int, int>> edges)
+{
+    unordered_map<int, set<int> > adjlist;
+    unordered_map<int, bool> visited;
+    vector<int> ans;
+    prepAdjList(adjlist, edges);
+    //traverse the tree
+    for (int i = 0; i < vertex; i++) {
+        if (!visited[i]) {
+            bfs (adjlist, visited, ans, i);
+        }
+    }
+    return ans;
+}
+
+// Method-2
+class Solution {
+  public:
+    vector<int> bfsOfGraph(int V, vector<int> adj[]) {
+        vector<int> res;
+        bool visited[V+1];
+        for(int i=0; i<V; ++i)
+            visited[i] = false;
+        queue<int> q;
+        q.push(0);
+        res.push_back(0);
+        visited[0] = true;
+        while(!q.empty()) {
+            auto u = q.front();
+            q.pop();
+            for(int v : adj[u]) {
+                if(!visited[v]) {
+                    visited[v] = true;
+                    q.push(v);
+                    res.push_back(v);
+                }
+            }
+        }
+        return res;
+    }
+};
+
+// DFS ( Depth First Search )
+
+// Method-1
+class Solution {
+    // let's write the steps to make a dfs
+    // at first write the algorithm for dfs and make it private
+    // inside the dfs we do like;
+    // at first we pass the necessary parameters
+    // we make visited of the fist node to 1; i.e.vis[node]=1;
+    // we even store the nodes in the list ;i.e ls.push_back(node)
+    // then we have to iterate through the each node to find its adjacent nodes;i.e. 
+    // for(auto it: adj[node])
+    // inside the for loop we check for whether the node is visted or not
+    // if the not is not visited we continue the dfs ;i.e.dfs(it,adj,vis,ls)
+    // after the we write the necessary code in the public of the class 
+    // we first initialize all the necessary variables which are passed in the dfs call
+    // and in the last we return the list; i.e. return ls
+    private:
+    void dfs(int node,vector<int>adj[],int vis[],vector<int>&ls)
+    {
+       vis[node]=1;
+       ls.push_back(node);
+       for(auto it: adj[node])
+       {
+           if(!vis[it])
+           {
+               dfs(it,adj,vis,ls);
+           }
+       }
+    }
+    public:
+    vector<int> dfsOfGraph(int V, vector<int> adj[]) {
+        int vis[V]={0};
+        vector<int> ls;
+        int i=0;
+        dfs(i,adj,vis,ls);  
+        return ls;
+    }
+};
+
+// Method-2
+#include<bits/stdc++.h>
+void dfs(int node, unordered_map<int,bool>&visited,unordered_map<int,list<int>>&adj, vector<int>&component)
+{
+    component.push_back(node);
+    visited[node]=true;
+    // hr connected node k liye recursive call
+    for(auto i:adj[node] )
+    {
+        if(!visited[i])
+        {
+            dfs(i,visited,adj,component);
+        }
+    }
+}
+vector<vector<int>> depthFirstSearch(int V, int E, vector<vector<int>> &edges)
+{
+    //prepared adjList
+    unordered_map<int,list<int>>adj;
+    for(int i=0; i<edges.size() ; i++)
+    {
+        int u=edges[i][0];
+        int v=edges[i][1];
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    vector<vector<int>> ans;
+    unordered_map<int,bool>visited;
+    // for of all node all dfs ,if not visited
+    for(int i=0; i<V; i++ )
+    {
+        if(!visited[i])
+        {
+            vector<int>component;
+            dfs(i,visited,adj,component);
+            ans.push_back(component);
+        }
+    }
+    return ans;
+}
+
+// Cycle Detection in undirected graphs
+
+// Method-1
+#include<bits/stdc++.h>
+bool bfs( vector<int> adj[],vector<int> &vis,int node){
+    queue <pair<int,int>> q;
+    vis[node]=1;
+    q.push({node,-1});
+    while(!q.empty()){
+        int node=q.front().first;
+        int parent=q.front().second;
+        q.pop();
+        for(auto x:adj[node]){
+            if(!vis[x])
+            {
+                vis[x]=1;
+                q.push({x,node});
+            }
+            else if(x!=parent)
+            return 1;
+        }
+    }
+    return 0;
+}
+string cycleDetection (vector<vector<int>>& edges, int n, int m)
+{   
+    vector<int> adj[n+1];
+    for(int i=0;i<m;i++){
+        adj[edges[i][0]].push_back(edges[i][1]);
+        adj[edges[i][1]].push_back(edges[i][0]);
+    }
+    vector<int> vis(n+1,0);
+    for(int i=1;i<=n;i++){
+        if(!vis[i]){
+            if(bfs(adj,vis,i)) {
+                return "Yes";
+            }
+        }
+        
+    }
+    return "No";
+}
+
+// Method-2 ( Using DFS )
+#include<bits/stdc++.h>
+bool dfs(unordered_map<int,set<int>>&adj,unordered_map<int,bool>&vis,int node,int parent){
+    vis[node]=1;
+    for(int i:adj[node]){
+        if((vis[i] && i!=parent) || (!vis[i] && dfs(adj,vis,i,node)) ){
+            return 1;
+        }
+    }
+    return 0;
+}
+string cycleDetection (vector<vector<int>>& edges, int n, int m){
+    unordered_map<int,set<int>>adj;
+    unordered_map<int,bool>vis;
+    // Create a adjacency list
+    for(int i=0;i<m;i++){
+        adj[edges[i][0]].insert(edges[i][1]);
+        adj[edges[i][1]].insert(edges[i][0]); 
+    }
+    // Traverse over all vertices and check for cyclic BFS
+    for(int i=1;i<=n;i++){
+        if(!vis[i] && dfs(adj,vis,i,-1)){
+            return "Yes";
+        }
+    }
+    return "No";
+}
+
+// Method 3 ( Using BFS )
+#include<bits/stdc++.h>
+bool cyclicBFS(unordered_map<int,set<int>>&adj,unordered_map<int,bool>&vis,int node){
+    unordered_map<int,int>parent;
+    queue<int>q;
+    q.push(node),vis[node]=1,parent[node]=-1;
+    while(!q.empty()){
+        int front=q.front();
+        q.pop();
+        for(int i:adj[front]){
+            if(vis[i] && i!=parent[front]){
+                return 1;
+            }
+            if(!vis[i]){
+                q.push(i),vis[i]=1,parent[i]=front;
+            }
+        }
+    }
+    return 0;
+}
+string cycleDetection (vector<vector<int>>& edges, int n, int m){
+    unordered_map<int,set<int>> adj;
+    unordered_map<int,bool> vis;
+    // Create a adjacency list
+    for(int i=0;i<m;i++){
+        adj[edges[i][0]].insert(edges[i][1]);
+        adj[edges[i][1]].insert(edges[i][0]); 
+    }
+    // Traverse over all vertices and check for cyclic BFS
+    for(int i=1;i<=n;i++){
+        if(!vis[i] && cyclicBFS(adj,vis,i)){
+            return "Yes";
+        }
+    }
+    return "No";
+}
+
+// Cycle detection in directed graph
+
+// Method-1
+#include <bits/stdc++.h>
+
+bool cycle(int src, unordered_map<int, list<int>> &adj, unordered_map<int, bool> &visited, unordered_map<int, bool> &dfsCheck) {
+  visited[src] = true;
+  dfsCheck[src] = true;
+  for (auto side : adj[src]) {
+    if (!visited[side]) {
+      bool ans = cycle(side, adj, visited, dfsCheck);
+      if (ans)
+        return true;
+    } else if (dfsCheck[side]) {
+      return true;
+    }
+  }
+  dfsCheck[src] = false;
+  return false;
+}
+int detectCycleInDirectedGraph(int n, vector<pair<int, int>> &edges) {
+  unordered_map<int, list<int>> adj;
+  for (int i = 0; i < edges.size(); i++) {
+    int u = edges[i].first;
+    int v = edges[i].second;
+    adj[u].push_back(v);
+  }
+  unordered_map<int, bool> dfsCheck;
+  unordered_map<int, bool> visited;
+  for (int i = 1; i < n; i++) {
+    if (!visited[i]) {
+      bool ans = cycle(i, adj, visited, dfsCheck);
+      if (ans == 1)
+        return true;
+    }
+  }
+  return false;
+}
+
+// Method-2
+#include<bits/stdc++.h>
+bool DFS(int node,unordered_map<int,bool> &vis,unordered_map<int,bool> &dfsvis,unordered_map<int,list<int>> &adj){
+    vis[node] = 1;
+    dfsvis[node] = 1;
+    for(auto i:adj[node]){
+      if(!vis[i]){
+        bool present = DFS(i,vis,dfsvis,adj);
+        if(present) return 1;
+      }
+      else if(dfsvis[i])
+      // if Both vis & dfsvis of node is True then loop is present
+       return 1;
+    }
+    dfsvis[node] = 0;
+    return 0;
+}
+int detectCycleInDirectedGraph(int n,vector<pair<int,int>>&edges){
+  //preparing adjacency list
+  unordered_map<int,list<int>> adj;
+  for(int i = 0;i<edges.size();i++){
+    int u = edges[i].first;
+    int v = edges[i].second;
+    // directed graph
+    adj[u].push_back(v);
+  }
+  unordered_map<int,bool> vis;
+  unordered_map<int,bool> dfsvis;
+  for(int i =1;i<=n;i++){
+    if(!vis[i]){
+      bool present = DFS(i,vis,dfsvis,adj);
+      if(present) return 1;
+    }
+  }
+  return 0;
+}
+
+// Topological Sort
+
+// Method-1
+// topology sort using bfs i.e KAHN'S algorithm
+vector<int> topologicalSort(vector<vector<int>> &edges, int v, int e)
+{
+    //create adj list
+     unordered_map<int,list<int>>adj;
+    for(int i=0;i<e;i++)
+    {
+        int u=edges[i][0];
+        int v=edges[i][1];
+        adj[u].push_back(v);
+    }
+    //store indegree of nodes
+    vector<int>indegree(v);
+    for(auto i:adj)
+    {
+        for(auto j:i.second)
+        {
+            indegree[j]++;
+        }
+    }
+    //0 indegree the push in queue;
+    queue<int>q;
+    for(int i=0;i<v;i++)
+    {
+        if(indegree[i]==0)
+        {
+            q.push(i);
+        }
+    }
+    //update indegree
+    vector<int>ans;
+    while(!q.empty())
+    {
+        int front=q.front();
+        q.pop();
+        ans.push_back(front);
+        for(auto i:adj[front])
+        {
+            indegree[i]--;
+            if(indegree[i]==0)
+            {
+                q.push(i);
+            }
+        }
+    }
+    return ans;
+}
+
+// Method-2
+#include<bits/stdc++.h>
+//TopologySort using dfs
+void toposort(int node,vector<bool> &visited,stack<int> &s,unordered_map<int,list<int>> &adj)
+{
+    visited[node]=1;
+    for(auto i:adj[node])
+    {
+        if(!visited[i])
+        {
+            toposort(i,visited,s,adj);
+        }
+    }
+    s.push(node);
+}
+
+vector<int> topologicalSort(vector<vector<int>> &edges, int v, int e)  {
+  
+    unordered_map<int,list<int>>adj;
+    for(int i=0;i<e;i++)
+    {
+        int u=edges[i][0];
+        int v=edges[i][1];
+        adj[u].push_back(v);
+    }
+    vector<bool>visited(v);
+    stack<int>s;
+    for(int i=0;i<v;i++)
+    {
+        if(!visited[i])
+        {
+            toposort(i,visited,s,adj);
+        }
+    }
+    vector<int>ans;
+    while(!s.empty())
+    {
+        ans.push_back(s.top());
+        s.pop();
+    }
+    return ans;
+}
+
+// Shortest Path in an undirected graph
+
+#include<bits/stdc++.h>
+vector<int> shortestPath( vector<pair<int,int>> edges , int n , int m, int s , int t){
+    // ADJ LIST
+    unordered_map<int,list<int>>adj;
+    for(int i=0; i<edges.size();i++)
+    {
+        int u=edges[i].first;
+        int v= edges[i].second;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    //do bfs
+    unordered_map<int,bool>visited;
+    unordered_map<int,int>parent;
+    queue<int>q;
+    q.push(s);
+    parent[s]=-1;
+    visited[s]=true;
+    while(!q.empty())
+	{
+        int front=q.front();
+        q.pop();
+        for(auto neighbour :adj[front])
+        {
+            if(!visited[neighbour])	
+            {
+                visited[neighbour]=true;
+                parent[neighbour]=front;
+                q.push(neighbour);
+			}
+        }
+    }
+    // prepare short path
+    vector<int>ans;
+    int currentnode= t;
+    ans.push_back(t);
+    while(currentnode!=s)
+    {
+        currentnode=parent[currentnode];
+        ans.push_back(currentnode);
+    }
+    reverse(ans.begin(),ans.end());
+    return ans;
+}
+
+// Shortest Path in an directed graph
+
+#include <bits/stdc++.h>
+using namespace std;
+// Graph class implemented using an adjacency list
+class Graph{
+public:
+    int V;  // Number of Vertices
+    int E;  // Number of Edges
+    vector<pair<int, int>> *adj; // adjacency list
+    Graph(int num_vertices, int num_edges){
+        this->V = num_vertices
+        this->E = num_edges;
+        this->adj = new vector<pair<int, int>>[num_vertices];
+    }
+    // function to add Edge
+    void addEdge(int u, int v, int w){
+        adj[u].push_back({v, w});
+    }
+    // function that returns the topSort ordering of nodes in a graph
+    vector<int> topSort(int src){
+        //inDegree vector
+        vector<int> indegree(V, 0);
+        // update the indegree of each node in the graph
+        for(int i=0;i<V;++i){
+            for(pair<int, int> node:this->adj[i]){
+                indegree[node.first]++;
+            }
+        }
+        // queue 
+        queue<int> q;
+        // push all nodes with 0 in degree in the queue
+        for(int i=0;i<V;++i){
+            if(indegree[i]==0)
+                q.push(i);
+        }
+        // vector to store topSortOrdering        
+        vector<int> topSortOrdering;
+        // run until queue is empty
+        while(!q.empty()){
+            // pop the front node
+            int u = q.front();
+            q.pop();
+            // since it has 0 indegree it will occur before all elements  with non-0 indegree currently
+            topSortOrdering.push_back(u);
+            // decrement the indegree of adjacent nodes of the popped node by 1
+            for(pair<int, int> node:this->adj[u]){
+                indegree[node.first]--;
+                // if the indegree of the node is 0
+                if(indegree[node.first]==0){
+                    // push it to the queue
+                    q.push(node.first);
+                }
+            }
+        }
+        // return the topSortOrdering        
+        return topSortOrdering;
+    }
+    //find all the shortest path distances
+    void findShortestPathInDAG(int src){
+        // distance vector from the src node
+        vector<int> distances(V, INT_MAX);
+        // find the topSort ordering        
+        vector<int> topSortOrdering = topSort(src);
+        // initially mark the distance from the source node to itself as 0
+        distances[src]=0;
+        // for each vertex in topSortOrdering
+        for(int x:topSortOrdering){
+            // if current vertex weight is not INT_MAXinity
+            if(distances[x]!=INT_MAX){
+                // traverse all the adjacent Edges
+                for(pair<int, int> adjNode : this->adj[x]){
+                    // relax the edges
+                    if(distances[adjNode.first] > distances[x]+adjNode.second){
+                        distances[adjNode.first] = distances[x]+adjNode.second;
+                    }
+                }   
+            }
+        }
+        // print the final distances
+        cout<<"The distances from the src node are: ";
+        for(int i=0;i<V;++i){
+            if(distances[i]==INT_MAX) cout<<"INF ";
+            else cout<<distances[i]<<" ";
+        }
+    }
+};
+int main() {
+    // Number of Edges and Vertices
+    int num_vertices = 6;
+    int num_edges = 9;
+    Graph G(num_vertices, num_edges); // Graph G   
+    // add all edges to graph
+    G.addEdge(1, 3, 6);
+    G.addEdge(1, 2, 2);
+    G.addEdge(0, 1, 5);
+    G.addEdge(0, 2, 3);
+    G.addEdge(3, 4, -1);
+    G.addEdge(2, 4, 4);
+    G.addEdge(2, 5, 2);
+    G.addEdge(2, 3, 7);
+    G.addEdge(4, 5, -2);
+    // compute the Shortest_path
+    int src = 1; 
+    G.findShortestPathInDAG(src);
+    return 0;
+}
+
+// Djikstra's Algorithm
+
+#include <bits/stdc++.h> 
+vector<int> dijkstra(vector<vector<int>> &vec, int V, int edges, int S) {
+    // create adjacency List
+    unordered_map<int,list<pair<int,int>>>adj;
+    for(int i= 0;i<edges;i++){
+        int u = vec[i][0];
+        int v = vec[i][1];
+        int wt = vec[i][2];
+        adj[u].push_back({v,wt});
+        adj[v].push_back({u,wt});
+    }
+    vector<int>dist(V,INT_MAX);
+    set<pair<int,int>>st;
+    dist[S] = 0;
+    st.insert({0,S});
+    while(!st.empty()){
+        auto it = *(st.begin());
+        int NodeDist= it.first;
+        int u = it.second;
+        st.erase(it);
+        for(auto i:adj[u]){
+            int edgeWt = i.second;
+            int adjNode = i.first;
+            if(NodeDist+ edgeWt< dist[adjNode]){
+                if(dist[adjNode] != INT_MAX)
+                        st.erase({dist[adjNode], adjNode});
+                    dist[adjNode] = NodeDist+ edgeWt;
+                    st.insert({dist[adjNode],adjNode});
+            }
+        }
+    }
+    return dist;
+}
+
+// Prim's Algorithm for Minimum Spanning Tree
+
+#include <bits/stdc++.h> 
+vector<pair<pair<int, int>, int>> calculatePrimsMST(int n, int m, vector<pair<pair<int, int>, int>> &g)
+{ 
+    vector<pair<int, int>> adj[n+1];
+    for(auto it: g){
+        adj[it.first.first].push_back({it.first.second, it.second});
+        adj[it.first.second].push_back({it.first.first, it.second});
+    }
+    priority_queue<pair<pair<int, int>, int>, vector<pair<pair<int, int>, int>>, greater<pair<pair<int, int>, int>>> pq;
+        vector<int> vist(n+1, 0);
+        vector<pair<pair<int, int>, int>> mst;
+        // {wt, node}
+        pq.push({{0, 1}, -1}); 
+        while(!pq.empty()){
+            auto it = pq.top();
+            pq.pop();
+            int wt = it.first.first;
+            int node = it.first.second;
+            int parent = it.second;
+            if(vist[node] == 1) continue; // if already visisted
+            vist[node] = 1; // else mark it visited only after popping out of the min-heap
+            if(parent != -1) mst.push_back({{parent, node}, wt});
+            // sum += wt; // add the edge weight to sum
+            for(auto it: adj[node]){
+                int adjNode = it.first;
+                int edgwt = it.second;
+                
+                if(!vist[adjNode])
+                    pq.push({{edgwt, adjNode}, node});
+            }
+        }
+    return mst;
+}
+
+// Kruskal's Algorithm
+
+#include<bits/stdc++.h>
+void make_set(int v, vector <int> &parent, vector <int> &rank) {
+    parent[v] = v;
+    rank[v] = 0;
+}
+
+// Returns the parent of the set that contains the element v.
+int find_set(int v, vector <int> &parent) {
+    if (v == parent[v]) {
+        // Current element is the parent of its set.
+        return v;
+    } else {
+        // Using path compression technique.
+        return parent[v] = find_set(parent[v], parent);
+    }
+}
+
+// Merges the two specified sets.
+void union_sets(int a, int b, vector <int> &parent, vector <int> &rank) {
+    // Find the parent of both elements.
+    a = find_set(a, parent);
+    b = find_set(b, parent);
+
+    if (a != b) {
+        if (rank[a] < rank[b]) {
+            // Swap.
+            swap(a, b);
+        }
+        parent[b] = a;
+        if (rank[a] == rank[b]) {
+            rank[a]++;
+        }
+    }
+}
+
+// Custom comparator to sort the edges.
+bool compare(vector <int> const &a, vector <int> const &b) {
+    return a[2] < b[2];
+}
+
+int kruskalMST(int n, int m, vector <vector<int> > &graph) {
+    // Parent and rank arrays to be used in DSU.
+    vector <int> parent(n);
+    vector <int> rank(n);
+
+    for (int i = 1; i <= n; i++) {
+        // Create a new set for each node.
+        make_set(i, parent, rank);
+    }
+
+    // To store the weight of MST.
+    int cost = 0;
+
+    // Sort the edges in ascending order by its weight.
+    sort(graph.begin(), graph.end(), compare);
+
+    // Start traversign through the edges.
+    for (auto edge: graph) {
+        // Check if both vertices of current edge belong to different sets(subtrees).
+        if (find_set(edge[0], parent) != find_set(edge[1], parent)) {
+            // Add the weight of the current edge.
+            cost = cost + edge[2];
+
+            // Merge the two sets(subtrees).
+            union_sets(edge[0], edge[1], parent, rank);
+        }
+    }
+    return cost;
+}
+
+// Bridge in a graph
+
+#include <bits/stdc++.h>
+void dfs(int node, vector<vector<int>> &result, vector<int> &low,
+         vector<int> &disc, int &timer, unordered_map<int, list<int>> &adj,
+         int parent, unordered_map<int, bool> &vis) {
+    vis[node] = true;
+    low[node] = disc[node] = timer++;
+
+    for (auto nebr : adj[node]) {
+        if (nebr == parent) {
+            continue;
+        }
+        if (!vis[nebr]) {
+            dfs(nebr, result, low, disc, timer, adj, node, vis);
+            low[node] = min(low[node], low[nebr]); // check bridges
+            if (low[nebr] > disc[node]) {
+                vector<int> ans;
+                ans.push_back(node);
+                ans.push_back(nebr);
+                result.push_back(ans);
+            }
+        } 
+        else { // back edges
+            low[node] = min(low[node], disc[nebr]);
+        }
+    }
+}
+vector<vector<int>> findBridges(vector<vector<int>> &edges, int v, int e) {
+  unordered_map<int, list<int>> adj;
+  for (int i = 0; i < edges.size(); i++) {
+    int u = edges[i][0];
+    int v = edges[i][1];
+
+    adj[u].push_back(v);
+    adj[v].push_back(u);
+  }
+
+  int timer = 0;
+  vector<int> low(v);
+  vector<int> disc(v);
+  int parent = -1;
+  unordered_map<int, bool> vis;
+
+  for (int i = 0; i < v; i++) {
+    low[i] = -1;
+    disc[i] = -1;
+  }
+
+  vector<vector<int>> result; // dfs
+  for (int i = 0; i < v; i++) {
+    if (!vis[i]) {
+      dfs(i, result, low, disc, timer, adj, parent, vis);
+    }
+  }
+
+  return result;
+}
+
+// Articulation Points in a graph
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// A function to add edges in the graph.
+void addEdge(vector<vector<int>> &adj, int u, int v)
+{
+    adj[u].push_back(v);
+    adj[v].push_back(u);
+}
+
+void APUtil(vector<vector<int>> &adj, vector<bool> &visited, vector<int> &disc, vector<int> &low, int &time, int u, int parent, vector<bool> &AP)
+{
+    // To count the children in the DFS Tree.
+    int child = 0;
+    visited[u] = true;
+
+    // Initialise the discovery time and the low value for u.
+    disc[u] = ++time;
+    low[u] = time;
+
+    for (auto v : adj[u]) {
+        // If v is not visited yet, make it a child of u in the DFS tree and repeat for it.
+        if (!visited[v]) {
+            child++;
+            APUtil(adj, visited, disc, low, time, v, u, AP);
+
+            // Check if the subtree rooted at v has a back edge to the ancestors of u.
+            low[u] = min(low[u], low[v]);
+
+            // If u is not the root and the low value of one of its children is more than the discovery time value of u.
+            if (low[v] >= disc[u] && parent != -1)
+                AP[u] = true;
+        }
+
+        // Update low value of u for the parent function calls.
+        else if (v != parent)
+            low[u] = min(low[u], disc[v]);
+    }
+
+    // Case 1, if u is the root of the DFS tree and has more than one child.
+    if (parent == -1 && child > 1)
+        AP[u] = true;
+}
+
+void AP(vector<vector<int>> &adj, int V)
+{
+    vector<int> disc(V);
+
+    vector<int> low(V);
+
+    vector<bool> visited(V, false);
+
+    vector<bool> AP(V, false); 
+    int time = 0;
+    int par = -1;
+
+    // Using the for loop so that the code works for disconnected the graph.
+    for (int u = 0; u < V; ++u){
+         if (!visited[u])
+             APUtil(adj, visited, disc, low, time, u, par, AP);
+    }
+
+    // Printing the Articulation points.
+    for (int i = 0; i < V; i++){
+        if (AP[i] == true)
+            cout << i << " ";
+    }
+}
+
+int main()
+{
+    cout << "Articulation points: ";
+    int V = 5;
+    int E = 6;
+    vector<vector<int>> adj(V);
+    addEdge(adj, 1, 0);
+    addEdge(adj, 0, 4);
+    addEdge(adj, 1, 4);
+    addEdge(adj, 2, 3);
+    addEdge(adj, 2, 4);
+    addEdge(adj, 3, 4);
+    AP(adj, V);
+    return 0;
+}
+
+// Kosaraju's Algorithm
+
+#include <bits/stdc++.h> 
+    void dfs(int node,vector<int>adj[],stack<int>&st,vector<int>&vis){
+        vis[node]=1;
+        for(auto it:adj[node]){
+            if(!vis[it])
+                dfs(it,adj,st,vis);
+        }
+        st.push(node);
+    }
+        void dfsStep3(int node,vector<int>adjT[],vector<int>&vis){
+            vis[node]=1;
+            for(auto it:adjT[node])
+                if(!vis[it])
+                    dfsStep3(it,adjT,vis);
+        }
+        void getAdjacencyList(vector<vector<int>> &edges, int e, vector<int> adj[]){
+    for(int i=0; i<e; i++){
+        int u = edges[i][0];
+        int v = edges[i][1];
+        adj[u].push_back(v);
+    }
+}
+int stronglyConnectedComponents(int V, vector<vector<int>> &edges)
+{
+	// Write your code here.
+        //code here
+        //step 1 sort all the edges acc to finishing time
+	vector<int> adj[V];
+	int e = edges.size();
+    getAdjacencyList(edges, e, adj);
+
+        vector<int>vis(V,0);
+        stack<int>st;
+        for(int i =0;i<V;i++){
+            if(!vis[i])
+                dfs(i,adj,st,vis);
+        }
+    //step 2 reverse Graph
+    vector<int>adjT[V];//denotes transpose adjacency list or reversed one
+    for(int i=0;i<V;i++){
+        vis[i] = 0; //hum bus yaha ye is liye kar rahe take vis array fir se re use kar sake
+        for(auto it:adj[i]){
+            //currently i is connected to it or i->it
+            // now we want it ->i
+            adjT[it].push_back(i);
+        }
+    }
+    //step-3
+    int sccCount=0;
+    while(!st.empty()){
+        int node = st.top();
+        st.pop();
+        if(!vis[node]){
+            sccCount++;
+            dfsStep3(node,adjT,vis);
+        }
+    }
+    return sccCount;
+}
+
+// Bellman Ford Algorithm
+
+#include <bits/stdc++.h> 
+int bellmonFord(int n, int m, int src, int dest, vector<vector<int>> &edges) {
+    vector<int> dist(n+1, 1e9);
+    dist[src] = 0;
+    for (int i=1; i<=n; i++){
+        for (int j=0; j<m; j++){
+            int u = edges[j][0];
+            int v = edges[j][1];
+            int wt = edges[j][2];
+            if (dist[u] != 1e9 && ((dist[u]+wt) < dist[v])){
+                dist[v] = dist[u]+wt;
+            }
+        }
+    }
+    return dist[dest];
+
+    // if -ve cycle is present
+    // bool flag = 0;
+    // for (int j=0; j<m; j++){
+    //     int u = edges[j][0];
+    //     int v = edges[j][1];
+    //     int wt = edges[j][2];
+    //     if (dist[u] != 1e9 && ((dist[u]+wt) < dist[v])){
+    //         bool flag = 1;
+    //     }
+    // }
+    // if (flag == 0){
+    //     return dist[dest];
+    // }
+    // return -1;
+}
