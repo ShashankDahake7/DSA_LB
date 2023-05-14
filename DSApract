@@ -10768,8 +10768,6 @@ int main()
 }
 int stronglyConnectedComponents(int V, vector<vector<int>> &edges)
 {
-	// Write your code here.
-        //code here
         //step 1 sort all the edges acc to finishing time
 	vector<int> adj[V];
 	int e = edges.size();
@@ -10837,3 +10835,3495 @@ int bellmonFord(int n, int m, int src, int dest, vector<vector<int>> &edges) {
     // }
     // return -1;
 }
+
+// Dynamic Programming
+// Method-1 => Top - Down Approach -> Recursion + Memoization
+// Method-2 => Bottom - Up -> Tabulation
+
+// Fibonacci Series
+
+// USING TOP -DOWN
+// #include<bits/stdc++.h>
+// using namespace std;
+// int fib(int n,vector<int> &dp){
+//         if(n <= 1){
+//                 return n;
+//         }
+//         if(dp[n] != -1)return dp[n];
+//         dp[n] = fib(n-1,dp)+fib(n-2,dp);
+//         return dp[n];
+// }
+// int main()
+// {
+//      int n;
+//      cin>>n;
+//      vector<int> dp(n+1,-1);
+//      for(int i=0;i<n;i++)
+//              dp[i] = -1;
+//      cout<<fib(n,dp);
+//      return 0;
+// }
+
+//USING BOTTOM'S UP....
+// #include<bits/stdc++.h>
+// using namespace std;
+// int main()
+// {
+//         int n;
+//         cin >> n;
+//         vector<int> dp(n+1);
+//         dp[0] =0;
+//         dp[1] =1;
+//         for(int i=2;i<=n;i++){
+//             dp[i] = dp[i-1] + dp[i-2];
+//         }
+//         cout<<dp[n] << endl;
+// }
+
+// Space Optimized Solution
+
+#include<bits/stdc++.h>
+using namespace std;
+int main(){
+	int n;
+	cin>>n;
+	int prev1=0;
+	int prev2=1;
+	if(n==0) return prev1;
+	for(int i=2;i<=n;i++){
+		int curr=prev1+prev2;
+		prev1=prev2;
+		prev2=curr;
+	}
+    cout<<prev2<<endl;
+}
+
+// Minimmum cost climbing stairs
+
+// Top-Down Approach
+#include <bits/stdc++.h>
+#define mod 1000000007
+int f(int i, vector<long long> &dp, int n) {
+  if (i == n)
+    return 1;
+  if (i > n)
+    return 0;
+  if (dp[i] != -1)
+    return dp[i];
+  return dp[i] = (f(i + 1, dp, n) + f(i + 2, dp, n)) % mod;
+}
+int countDistinctWays(int n) {
+  vector<long long> dp(n + 1, -1);
+  return f(0, dp, n);
+}
+
+// Bottom-Up Approach
+#include <bits/stdc++.h> 
+#define mod 1000000007
+
+int countDistinctWays(int nStairs) {
+     vector<int>dp(nStairs+1,-1);
+   dp[0]=1;
+   dp[1]=1;
+   for(int i=2;i<=nStairs;i++)
+   {
+       int steps=dp[i-1]%mod;
+   int step1=dp[i-2]%mod;
+    dp[i]=steps+step1;
+   }
+   return dp[nStairs]%mod;
+}
+
+// Space Optimized
+#include <bits/stdc++.h> 
+#define mod 1000000007
+int countDistinctWays(int nStairs) {
+    int n=nStairs;
+    int prev1=1;
+    int prev2=1;
+    int curr;
+    if(n==1 || n==0)
+        return 1;
+    for(int i=2;i<=n;i++){
+        curr=(prev1+prev2)%mod;
+        prev1=prev2;
+        prev2=curr;
+    }
+    return curr%mod;
+}
+
+// Minimum Number of coins
+
+1. Naive Recursive approach (TLE)
+Time complexity: O(2^n)
+Space complexity: Stack Space
+class Solution {
+public:
+    int count(vector<int>&coins, int amount, int n){
+        if(amount==0) return 0;
+        if(n==0 && amount>0) return INT_MAX-1;
+        int res=0;
+        if(amount>=coins[n-1]){
+            int take=1+count(coins, amount-coins[n-1], n);
+            int dontTake=count(coins, amount, n-1);
+            res=min(take, dontTake);
+        }
+        else{
+            res=count(coins, amount, n-1);
+        } 
+        return res;
+    }
+    int coinChange(vector<int>& coins, int amount) {
+        if(amount == 0) return 0;
+        int n=coins.size();
+        int res= count(coins, amount, n);
+        if(res==INT_MAX-1) return -1;
+        else return res;
+    }
+};
+2. Memoization(DP-TLE)
+Time complexity: O(N*amount)
+Space complexity: O(N*amount)+Stack Space
+class Solution {
+public:
+    int count(vector<int>&coins, int amount, int n, vector<vector<int>>&memo){
+        if(amount==0) return 0;
+        if(n==0 && amount>0) return INT_MAX-1;
+        int res=0;
+        if(amount>=coins[n-1]){
+            int take=1+count(coins, amount-coins[n-1], n, memo);
+            int dontTake=count(coins, amount, n-1, memo);
+            res=min(take, dontTake);
+        }
+        else{
+            res=count(coins, amount, n-1, memo);
+        } 
+        return memo[n][amount]=res;
+    }
+    int coinChange(vector<int>& coins, int amount) {
+        if(amount == 0) return 0;
+        if(coins.size()==1 && coins[0]>amount) return -1;
+        int n=coins.size();
+        vector<vector<int>>memo(n+1, vector<int>(amount+1, -1));
+        int res= count(coins, amount, n, memo);
+        if(res==INT_MAX-1) return -1;
+        else return res;
+    }
+};
+3. Tabulation(DP)
+Time complexity: O(N*amount)
+Space complexity: O(N*amount)
+class Solution {
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        if(amount == 0) return 0;
+        int n=coins.size();
+        vector<vector<int>>dp(n+1, vector<int>(amount+1, -1));
+        for(int i=0;i<=n;i++){
+            dp[i][0]=0;
+        }
+        for(int i=1;i<=amount;i++){
+            dp[0][i]=INT_MAX-1;
+        }
+        for(int i=1;i<=n;i++){
+            for(int j=1;j<=amount;j++){
+                if(j>=coins[i-1]) dp[i][j]=min(1+dp[i][j-coins[i-1]], dp[i-1][j]);
+                else dp[i][j]=dp[i-1][j];
+            }
+        }
+        int res= dp[n][amount];
+        if(res==INT_MAX-1) return -1;
+        else return res;
+    }
+};
+4. Optimized Space (BEST Approach)
+Time complexity: O(N*amount)
+Space complexity: O(amount)
+class Solution {
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        if(amount == 0) return 0;
+        int n=coins.size();
+        vector<int>dp(amount+1);
+        dp[0]=0;
+        for(int i=1;i<=amount;i++){
+            dp[i]=INT_MAX-1;
+        }
+        for(int i=1;i<=n;i++){
+            for(int j=1;j<=amount;j++){
+                if(j>=coins[i-1]) dp[j]=min(1+dp[j-coins[i-1]], dp[j]);
+                else dp[j]=dp[j];
+            }
+        }
+        int res= dp[amount];
+        if(res==INT_MAX-1) return -1;
+        else return res;
+    }
+};
+
+// Max Sum of non-adjacent elements
+
+// Recursion
+#include <bits/stdc++.h> 
+int solveRec(vector<int> &nums,int n){
+    if(n<0){
+        return 0;
+    }
+    if(n==0){
+        return nums[0];
+    }
+    int incl = solveRec(nums, n-2)+nums[n];
+    int excl = solveRec(nums, n-1)+0;
+    return max(incl,excl);
+}
+int maximumNonAdjacentSum(vector<int> &nums){
+    int n= nums.size()-1;
+    int ans = solveRec(nums,n);
+    return ans;
+}  
+
+// Memoization
+#include <bits/stdc++.h>
+int solveMem(vector<int> &nums,int n,vector<int> &dp){
+    if(n<0){
+        return 0;
+    }
+    if(n==0){
+        return nums[0];
+    }
+    if(dp[n]!=-1) return dp[n];
+    int incl = solveMem(nums, n-2,dp)+nums[n];
+    int excl = solveMem(nums, n-1,dp)+0;
+
+    dp[n] = max(incl,excl);
+    return dp[n];
+}
+int maximumNonAdjacentSum(vector<int> &nums){
+    int n= nums.size();
+    vector<int> dp(n,-1);
+    int ans = solveMem(nums,n-1,dp);
+    return ans;
+}
+
+// Tabulation
+#include <bits/stdc++.h>
+int solveTab(vector<int> &nums){
+    int n = nums.size();
+    vector<int>dp(n,0);
+    dp[0] = nums[0];
+    for (int i = 1; i < n; i++) {
+      int incl = dp[i - 2] + nums[i];
+      int excl = dp[i - 1] + 0;
+      dp[i] =max(incl,excl);
+    }
+    return dp[n-1];
+}
+int maximumNonAdjacentSum(vector<int> &nums){
+    return solveTab(nums);
+}
+
+// Space Optimized
+#include <bits/stdc++.h>
+int solveSpaceOptimise(vector<int> &nums){
+    int n = nums.size();
+    int prev2 = 0;
+    int prev1 = nums[0];
+    for (int i = 1; i < n; i++) {
+      int incl = prev2 + nums[i];
+      int excl = prev1 + 0;
+      int ans =max(incl,excl);
+      prev2 = prev1;
+      prev1 = ans;
+    }
+    return prev1;
+}
+int maximumNonAdjacentSum(vector<int> &nums){
+    return solveSpaceOptimise(nums);
+}
+
+// House Robber
+
+// Recursive + Memoization
+
+class Solution
+{
+    // Time Complexity : O(n)
+    // Space Complexity : O(n) + O(n)
+private:
+    int solve(int i, vector<int> &nums, vector<int> &dp)
+    {
+        if (i == 0)
+            return nums[0];
+        if (i < 0)
+            return 0;
+        if (dp[i] != -1)
+            return dp[i];
+        int pick = nums[i] + solve(i - 2, nums, dp);
+        int notPick = 0 + solve(i - 1, nums, dp);
+        return dp[i] = max(pick, notPick);
+    }
+public:
+    int rob(vector<int> &nums)
+    {
+        int n = nums.size();
+        if (n == 1)
+            return nums[0];
+        vector<int> dp(n, -1);
+        solve(n - 1, nums, dp);
+        return dp[n - 1];
+    }
+};
+
+// Tabulation
+
+class Solution
+{
+
+    // Time Complexity : O(n)
+    // Space Complexity : O(n)
+public:
+    int rob(vector<int> &nums)
+    {
+        int n = nums.size();
+        vector<int> dp(n, -1);
+        dp[0] = nums[0];
+        for (int i = 1; i < n; i++)
+        {
+            int pick = nums[i];
+            if (i > 1)
+            {
+                pick += dp[i - 2];
+            }
+            int notPick = 0 + dp[i - 1];
+            dp[i] = max(pick, notPick);
+        }
+        return dp[n - 1];
+    }
+};
+
+// Space Optimized
+
+class Solution
+{
+    // Time Complexity : O(n)
+    // Space Complexity : O(1)
+public:
+    int rob(vector<int> &nums)
+    {
+        int n = nums.size();
+        int prev2 = 0, prev = nums[0];
+        for (int i = 1; i < n; i++)
+        {
+            int pick = nums[i] + prev2;
+            int notPick = 0 + prev;
+            int curr = max(pick, notPick);
+            prev2 = prev;
+            prev = curr;
+        }
+        return prev;
+    }
+};
+
+// House Robber II
+
+// Recursive+Memoization
+
+#include <bits/stdc++.h> 
+long long int solve(int index,vector<long long int>& valueInHouse,vector<long long int>& dp){
+    //base case
+    if(index<0)
+        return 0;
+    if(index==0)
+        return valueInHouse[0];
+    if(dp[index]!=-1)
+        return dp[index];
+    long long int include=valueInHouse[index]+solve(index-2,valueInHouse,dp);
+    long long int exclude=solve(index-1,valueInHouse,dp);
+    dp[index]=max(include,exclude);
+    return max(include,exclude);
+
+}
+long long int houseRobber(vector<int>& valueInHouse)
+{
+    
+    int n=valueInHouse.size();
+    if(n==1)
+        return valueInHouse[0];
+    vector<long long int>first,last;
+    vector<long long int>dp1(n,-1),dp2(n,-1);
+    for(int i=0;i<n;i++){
+        //storing a vector without the last element
+        if(i!=n-1)
+            last.push_back(valueInHouse[i]);
+        //storing a vector without the first element
+        if(i!=0)
+            first.push_back(valueInHouse[i]);
+    }
+    //checks which one has maximum roberry value
+    long long int ans1= solve(n-2,first,dp1);
+    long long int ans2= solve(n-2,last,dp2);
+    return max(ans1,ans2);
+}
+
+// Tabulation
+
+#include <bits/stdc++.h> 
+long long int solve(vector<int>& valueInHouse){
+    int n=valueInHouse.size();
+    vector<int>dp(n,0);
+    dp[0]=valueInHouse[0];
+    for(int i=1;i<n;i++){
+        long long int include=dp[i-2]+valueInHouse[i];
+        long long int exclude=dp[i-1];
+        dp[i]=max(include,exclude);
+    }
+    return dp[n-1];
+}
+long long int houseRobber(vector<int>& valueInHouse)
+{
+    int n=valueInHouse.size();
+    //if there is only 1 house to robber
+    if(n==1)
+        return valueInHouse[0];
+    vector<int>first,last;
+    for(int i=0;i<n;i++){
+        //vector without 1st element
+        if(i!=0)
+            first.push_back(valueInHouse[i]);
+        //vector without last element
+        if(i!=n-1)
+            last.push_back(valueInHouse[i]);
+    }
+    long long int ans1=solve(first);
+    long long int ans2=solve(last);
+    return max(ans1,ans2);
+}
+
+// Space Optimized
+
+#include <bits/stdc++.h> 
+long long int solve(vector<int>& valueInHouse){
+    int n=valueInHouse.size();
+   long long int prev2=0,prev1=valueInHouse[0],sum=0;
+    
+    for(int i=1;i<n;i++){
+        long long int include=prev2+valueInHouse[i];
+        long long int exclude=prev1;
+        sum=max(include,exclude);
+        prev2=prev1;
+        prev1=sum;
+    }
+    return sum;
+}
+long long int houseRobber(vector<int>& valueInHouse)
+{
+    int n=valueInHouse.size();
+    //if there is only 1 house to robber
+    if(n==1)
+        return valueInHouse[0];
+    vector<int>first,last;
+    for(int i=0;i<n;i++){
+        //vector without 1st element
+        if(i!=0)
+            first.push_back(valueInHouse[i]);
+        //vector without last element
+        if(i!=n-1)
+            last.push_back(valueInHouse[i]);
+    }
+    long long int ans1=solve(first);
+    long long int ans2=solve(last);
+    return max(ans1,ans2);
+}
+
+// Cut rod into segments
+
+// Recursion
+#include<bits/stdc++.h>
+int Recursion(int n, int x, int y, int z){
+	// base case
+	if (n == 0) return 0;
+	if (n < 0) return INT_MIN;
+	// Rest three segment
+	int x_segment = Recursion(n-x, x, y, z) + 1;
+	int y_segment = Recursion(n-y, x, y, z) + 1;
+	int z_segment = Recursion(n-z, x, y, z) + 1;
+	return max(x_segment, max(y_segment, z_segment));
+}
+int cutSegments(int n, int x, int y, int z) {
+	int ans = Recursion(n, x, y, z);
+	if (ans < 0) return 0;
+	return ans;
+}
+
+// Recursion + Memoization
+#include<bits/stdc++.h>
+int RecurMemo(int n, int x, int y, int z, vector<int> &dp){
+	// base case
+	if (n == 0) return 0;
+	if (n < 0) return INT_MIN;
+	if (dp[n] != -1) return dp[n];
+
+	// Rest three segment
+	int x_segment = RecurMemo(n-x, x, y, z, dp) + 1;
+	int y_segment = RecurMemo(n-y, x, y, z, dp) + 1;
+	int z_segment = RecurMemo(n-z, x, y, z, dp) + 1;
+
+	dp[n] = max(x_segment, max(y_segment, z_segment));
+	return dp[n];
+}
+int cutSegments(int n, int x, int y, int z) {
+	vector<int> dp(n+1, -1);
+	int ans = RecurMemo(n, x, y, z, dp);
+	if (ans < 0) return 0;
+	return ans;
+}
+
+// Tabulation
+#include<bits/stdc++.h>
+int Tabulation(int n, int x, int y, int z){
+	vector<int> dp(n+1, INT_MIN);
+	dp[0] = 0;
+	// 1 to n
+	for (int i=1; i<=n; i++){
+		if (i-x >= 0){
+			dp[i] = max(dp[i], dp[i-x]+1);
+		}
+		if (i-y >= 0){
+			dp[i] = max(dp[i], dp[i-y]+1);
+		}
+		if (i-z >= 0){
+			dp[i] = max(dp[i], dp[i-z]+1);
+		}
+	}
+	if (dp[n] < 0) return 0;
+	return dp[n];
+}
+int cutSegments(int n, int x, int y, int z) {
+	return Tabulation(n, x, y, z);
+}
+
+// Count dearrangements
+
+// Recursive+Memoization
+#include <bits/stdc++.h> 
+
+typedef long long ll;
+ll mod=1e9+7;
+ll helper(int n,vector<ll>&dp) {
+  if(n<=1) {
+    return dp[n]=0;
+  }
+  if(n==2) {
+    return dp[n]=1;
+  }
+  if(dp[n]!=-1) {
+    return dp[n];
+  }
+  if(dp[n-1]==-1) {
+    dp[n-1]=helper(n-1,dp)%mod;
+  }
+  if(dp[n-2]==-1) {
+    dp[n-2]=helper(n-2,dp)%mod;
+  }
+  return dp[n]=((n-1)*((dp[n-1]+dp[n-2])%mod))%mod;
+}
+
+ll countDerangement(int n) {
+  vector<ll>dp(n+1,-1);
+  return helper(n,dp);
+}
+
+// Tabulation
+#include <bits/stdc++.h> 
+long long int countDerangement(int n) 
+{
+    long long mod=1e9+7;
+    vector<int> DP(n + 1);
+    DP[1] = 0;
+    DP[2] = 1;
+    for(int i = 3; i <= n; i++)
+      DP[i] = ((i - 1)*((DP[i - 1] + DP[i - 2])%mod))%mod;
+    return DP[n];
+}
+
+// Ninja and fence
+
+// Recursion
+#include <bits/stdc++.h> 
+#define MOD 1000000007
+int add(int a, int b){
+    return ( (a%MOD) + (b%MOD) )%MOD;
+}
+int mul(int a, int b){
+    return ( ( (a%MOD) * 1LL) * ( (b%MOD) * 1LL) )%MOD;
+}
+int Recursion(int n, int k){
+    // base case
+    if (n == 1) return k;
+    if (n == 2) return add(k, mul(k, k-1));
+    int ans = add( (mul(Recursion(n-2, k), k-1) ), ( (mul(Recursion(n-1, k), k-1) ) ) );
+    return ans;
+}
+int numberOfWays(int n, int k) {
+    return Recursion(n, k);
+}
+
+// Recursive+Memoization
+#include <bits/stdc++.h> 
+#define MOD 1000000007
+int add(int a, int b){
+    return ( (a%MOD) + (b%MOD) )%MOD;
+}
+int mul(int a, int b){
+    return ( ( (a%MOD) * 1LL) * ( (b%MOD) * 1LL) )%MOD;
+}
+int RecurMemo(int n, int k, vector<int> &dp){
+    // base case
+    if (n == 1) return k;
+    if (n == 2) return add(k, mul(k, k-1));
+    if (dp[n] != -1) return dp[n];
+    dp[n] = add( (mul(RecurMemo(n-2, k, dp), k-1) ), ( (mul(RecurMemo(n-1, k, dp), k-1) ) ) );
+    return dp[n];
+}
+int numberOfWays(int n, int k) {
+    vector<int> dp(n+1, -1);
+    return RecurMemo(n, k, dp);
+}
+
+// Tabulation
+#include <bits/stdc++.h> 
+#define MOD 1000000007
+int add(int a, int b){
+    return ( (a%MOD) + (b%MOD) )%MOD;
+}
+int mul(int a, int b){
+    return ( ( (a%MOD) * 1LL) * ( (b%MOD) * 1LL) )%MOD;
+}
+int Tabulation(int n, int k){
+    vector<int> dp(n+1, -1);
+    dp[1] = k;
+    dp[2] = add(k, mul(k, k-1));
+    for (int i=3; i<=n; i++){
+        dp[i] = add( (mul(dp[i-2], k-1)), (mul(dp[i-1], k-1)) );
+    }
+    return dp[n];
+}
+int numberOfWays(int n, int k) {
+    return Tabulation(n, k);
+}
+
+// Space Optimized
+#include <bits/stdc++.h> 
+#define MOD 1000000007
+int add(int a, int b){
+    return ( (a%MOD) + (b%MOD) )%MOD;
+}
+int mul(int a, int b){
+    return ( ( (a%MOD) * 1LL) * ( (b%MOD) * 1LL) )%MOD;
+}
+int Space_Optimize(int n, int k){
+    int prev2 = k;
+    int prev1 = add(k, mul(k, k-1));
+    for (int i=3; i<=n; i++){
+        int ans = add( (mul(prev2, k-1)), (mul(prev1, k-1)) );
+        prev2 = prev1;
+        prev1 = ans;
+    }
+    return prev1;
+}
+int numberOfWays(int n, int k) {
+    return Space_Optimize(n, k);
+}
+
+// 0/1 Knapsack Problem
+
+// Recursion
+#include <bits/stdc++.h> 
+int Rec(vector<int> &weight, vector<int> &value, int n, int W){
+    if(n==0){
+        if(weight[0]<=W)
+            return value[0];
+        else
+            return 0;
+    }
+    int incl = 0;
+    if(weight[n]<=W)
+    incl = value[n] + Rec(weight,value,n-1,W-weight[n]);
+    int excl = Rec(weight,value,n-1,W); 
+    return max(incl,excl);
+}
+int knapsack(vector<int>weight, vector<int> value, int n, int maxWeight) 
+{
+    return Rec(weight,value,n-1,maxWeight);
+}
+
+// Recursion+Memoization
+#include <bits/stdc++.h> 
+int Mem(vector<int> &weight, vector<int> &value, int n, int W,vector<vector<int>>&dp){
+    if(n==0){
+        if(weight[0]<=W)
+            return value[0];
+        else
+            return 0;
+    }
+    if(dp[n][W]!=-1) return dp[n][W];
+    int incl = 0;
+    if(weight[n]<=W)
+    incl = value[n] + Mem(weight,value,n-1,W-weight[n],dp);
+    int excl = Mem(weight,value,n-1,W,dp);  
+    return dp[n][W] = max(incl,excl);
+}
+int knapsack(vector<int>weight, vector<int> value, int n, int maxWeight) 
+{
+    vector<vector<int>>dp(n,vector<int>(maxWeight+1,-1));
+    return Mem(weight,value,n-1,maxWeight,dp);
+}
+
+// Tabulation
+#include <bits/stdc++.h> 
+int tab(vector<int> &weight, vector<int> &value, int n, int W){
+    vector<vector<int>> dp(n,vector<int>(W+1,0));
+    for(int j = weight[0];j<=W;j++) dp[0][j] = value[0];
+        for (int i = 1; i < n; i++) {
+          for (int j = 0; j <= W; j++){
+              int in = 0;
+                if(weight[i]<=j)
+                in = value[i] + dp[i-1][j-weight[i]];
+              int ex = dp[i-1][j];
+              dp[i][j] = max(in,ex);
+          }
+        }
+    return dp[n-1][W];
+}
+int knapsack(vector<int>weight, vector<int> value, int n, int maxWeight) 
+{
+    return tab(weight,value,n,maxWeight);
+}
+
+// Space Optimized 1
+#include <bits/stdc++.h> 
+int SO(vector<int> &weight, vector<int> &value, int n, int W){
+    vector<int> prev(W+1,0);
+    vector<int> curr(W+1,0);
+    for(int j = weight[0];j<=W;j++) prev[j] = value[0];
+        for (int i = 1; i < n; i++) {
+          for (int j = 0; j <= W; j++){
+              int in = 0;
+                if(weight[i]<=j)
+                in = value[i] +prev[j-weight[i]];
+                int ex = prev[j];
+                curr[j] = max(in,ex);
+            }
+            for(int k =0;k<=W;k++)
+            prev[k] = curr[k];
+        }
+    return prev[W];
+}
+int knapsack(vector<int>weight, vector<int> value, int n, int maxWeight) 
+{
+    //SPACE OPTIMIZATION --> using two vectors
+    return SO(weight,value,n,maxWeight);
+}
+
+// Space Optimized 2
+int SO2(vector<int> &weight, vector<int> &value, int n, int W){
+    vector<int> curr(W+1,0);
+    for(int j = weight[0];j<=W;j++) curr[j] = value[0];
+        for (int i = 1; i < n; i++) {
+          for (int j = W; j >=0 ; j--){
+              int in = 0;
+                if(weight[i]<=j)
+                in = value[i] +curr[j-weight[i]];
+                int ex = curr[j];
+                curr[j] = max(in,ex);
+            }
+        }
+    return curr[W];
+}
+int knapsack(vector<int>weight, vector<int> value, int n, int maxWeight) 
+{
+    //SPACE OPTIMIZATION --> using single vector
+    return SO2(weight,value,n,maxWeight);
+}
+
+// Combination Sum IV 1D DP
+
+// Recursion
+#include <bits/stdc++.h> 
+int solve(vector<int> &num, int tar){
+    //base case
+    if(tar==0)
+    return 1;
+    if(tar<0)
+    return 0;
+    int ans=0;
+    for(int i=0;i<num.size();i++){
+        ans=ans+solve(num,tar-num[i]);
+    }
+    return ans;
+}
+int findWays(vector<int> &num, int tar)
+{
+    return solve(num,tar);
+}
+
+// Recursion+memoization
+#include <bits/stdc++.h> 
+int solve(vector<int> &num, int tar,vector<int>&dp){
+    //base case
+    if(tar==0)
+        return 1;
+    if(tar<0)
+        return 0;
+    if(dp[tar]!=-1)
+         return dp[tar];
+    int ans=0;
+    for(int i=0;i<num.size();i++){
+        ans=ans+solve(num,tar-num[i],dp);
+    }
+    dp[tar]= ans;
+    return dp[tar];
+}
+int findWays(vector<int> &num, int tar)
+{
+    vector<int>dp(tar+1,-1);
+    return solve(num,tar,dp);
+}
+
+// Tabulation
+#include <bits/stdc++.h> 
+int findWays(vector<int> &num, int tar)
+{
+    vector<int>dp(tar+1,-1);
+    dp[0]=1;
+    for(int i=1;i<=tar;i++){
+        int ans=0;
+        for(int j=0;j<num.size();j++){
+            if(i-num[j]>=0)
+                ans+=dp[i-num[j]];
+    }
+    dp[i]=ans;
+    }
+    return dp[tar];
+}
+
+// Perfect Squares 1d DP
+
+// RECURSION 
+class Solution {
+public:
+    int solve(int n)
+    {
+        if (n == 0) return 0;
+        
+        int mnCount = INT_MAX;
+        for (int num = 1; num <= sqrt(n); num++)
+        {
+            int sqNum = num * num;
+            int currCount = 1 + solve(n - sqNum);
+            mnCount = min(mnCount, currCount);
+        }
+        return mnCount;
+    }
+    int numSquares(int n) 
+    {
+        return solve(n);
+    }
+};
+
+// MEMOIZATION 
+class Solution {
+public:
+    int solve(int n, vector<int>&dp)
+    {
+        if (n == 0) return 0;
+        if (dp[n] != -1) return dp[n];
+        
+        int mnCount = INT_MAX;
+        for (int num = 1; num <= sqrt(n); num++)
+        {
+            int sqNum = num * num;
+            int currCount = 1 + solve(n - sqNum, dp);
+            mnCount = min(mnCount, currCount);
+        }
+        return dp[n] = mnCount;
+    }
+    int numSquares(int n) 
+    {
+        vector<int>dp(n + 1, -1);
+        return solve(n, dp);
+    }
+};
+
+// DP 
+class Solution {
+public:
+    int solve(int n)
+    {
+        vector<int>dp(n + 1, INT_MAX);
+        dp[0] = 0; 
+        for (int target = 1; target <= n; target++)
+        {
+            int mnCount = INT_MAX;
+            for (int num = 1; num <= sqrt(target); num++)
+            {
+                int sqNum = num * num;
+                int currCount = 1 + dp[target - sqNum];
+                mnCount = min(mnCount, currCount);
+            }
+            dp[target] = mnCount;
+        }
+        return dp[n];
+    } 
+    int numSquares(int n) 
+    {
+        return solve(n);
+    }
+};
+
+// Minimum cost for tickets 1D DP
+
+// RECURSION
+class Solution {
+public:
+    int getNextDaysIdx(vector<int>&days, int daysIdx, int ticketDuration)
+    {
+        int target = days[daysIdx] + ticketDuration - 1; //Max I can travel upto this 'day Number'
+        for (int i = daysIdx + 1; i < days.size(); i++)
+        {
+            if (days[i] > target) return i;
+        }
+        return days.size();
+    }
+    int solve(vector<int>& days, vector<int>& costs, vector<int>& ticketDurations, int daysIdx)
+    {
+        if (daysIdx == days.size()) return 0;     
+        int minTravelCost = INT_MAX;
+        for (int i = 0; i < 3; i++)
+        {
+            int ticketCost = costs[i], ticketDuration = ticketDurations[i];
+            int nextDaysIdx = getNextDaysIdx(days, daysIdx, ticketDuration);
+            int travelCost = ticketCost + solve(days, costs, ticketDurations, nextDaysIdx);
+            minTravelCost = min(minTravelCost, travelCost);
+        }
+        return minTravelCost;
+    }
+    int mincostTickets(vector<int>& days, vector<int>& costs) 
+    {
+        vector<int>ticketDurations = {1, 7, 30};
+        int ans = solve(days, costs, ticketDurations, 0);
+        return ans;
+    }
+};
+
+// TOP - DOWN - MEMOIZATION
+class Solution {
+public:
+    int getNextDaysIdx(vector<int>&days, int daysIdx, int ticketDuration)
+    {
+        int target = days[daysIdx] + ticketDuration - 1;
+        for (int i = daysIdx + 1; i < days.size(); i++)
+        {
+            if (days[i] > target) return i;
+        }
+        return days.size();
+    }
+    int solve(vector<int>& days, vector<int>& costs, vector<int>& ticketDurations, vector<int>&dp, int daysIdx)
+    {
+        if (daysIdx == days.size()) return 0;     
+        if (dp[daysIdx] !=  -1) return dp[daysIdx];
+        int minTravelCost = INT_MAX;
+        for (int i = 0; i < 3; i++)
+        {
+            int ticketCost = costs[i], ticketDuration = ticketDurations[i];
+            int nextDaysIdx = getNextDaysIdx(days, daysIdx, ticketDuration);
+            int travelCost = ticketCost + solve(days, costs, ticketDurations, dp, nextDaysIdx);
+            minTravelCost = min(minTravelCost, travelCost);
+        }
+        return dp[daysIdx] = minTravelCost;
+    }
+    int mincostTickets(vector<int>& days, vector<int>& costs) 
+    {
+        vector<int>ticketDurations = {1, 7, 30};
+        vector<int>dp(days.size(), -1);
+        int ans = solve(days, costs, ticketDurations, dp, 0);
+        return ans;
+    }
+};
+
+// BOTTOM UP - TABULATION
+class Solution {
+public:
+    int getNextDaysIdx(vector<int>&days, int daysIdx, int ticketDuration)
+    {
+        int target = days[daysIdx] + ticketDuration - 1;
+        for (int i = daysIdx + 1; i < days.size(); i++)
+        {
+            if (days[i] > target) return i;
+        }
+        return days.size();
+    }
+    int mincostTickets(vector<int>& days, vector<int>& costs) 
+    {
+        int n = days.size();
+        vector<int>ticketDurations = {1, 7, 30};
+        vector<int>dp(n);
+        // If I start at last day I can pick the min cost ticket instead of taking ticket for '1' day duration
+        dp[n - 1] = *min_element(costs.begin(), costs.end()); 
+        for (int currDaysIdx = n - 2; currDaysIdx >= 0; currDaysIdx--)
+        {
+            int minTravelCost = INT_MAX;
+            for (int i = 0; i < 3; i++)
+            {
+                int ticketCost = costs[i], ticketDuration = ticketDurations[i];
+                int nextDaysIdx = getNextDaysIdx(days, currDaysIdx, ticketDuration);     
+                int nextTravelCost = (nextDaysIdx >= n)? 0 : dp[nextDaysIdx];
+                int travelCost = ticketCost + nextTravelCost;
+                minTravelCost = min(minTravelCost, travelCost);
+            }
+            dp[currDaysIdx] = minTravelCost;
+        }
+        return dp[0];
+    }
+};
+
+// Ninja's Trip
+
+// Recursion
+#include<bits/stdc++.h>
+int Recursion(int n, vector<int> &days, vector<int> &cost, int index){
+    // base case
+    if (index >= n){
+        return 0;
+    }
+    // 1 days pass
+    int One_day = cost[0] + Recursion(n, days, cost, index+1);
+    // 7 days pass
+    int i;
+    for (i=index; i<n && days[i]<days[index]+7; i++);
+    int Seven_day = cost[1] + Recursion(n, days, cost, i);
+    // 30 days pass
+    for (i=index; i<n && days[i]<days[index]+30; i++);
+    int Thirty_day = cost[2] + Recursion(n,days, cost, i);
+    return min(One_day, min(Seven_day, Thirty_day));
+}
+int minimumCoins(int n, vector<int> days, vector<int> cost)
+{
+    return Recursion(n, days, cost, 0);
+}
+
+// Recursion+Memoization
+int RecurMemo(int n, vector<int> &days, vector<int> &cost, int index, vector<int> &dp){
+    // base case
+    if (index >= n){
+        return 0;
+    }
+    if (dp[index] != -1) return dp[index];
+    // 1 days pass
+    int One_day = cost[0] + RecurMemo(n, days, cost, index+1, dp);
+    // 7 days pass
+    int i;
+    for (i=index; i<n && days[i]<days[index]+7; i++);
+    int Seven_day = cost[1] + RecurMemo(n, days, cost, i, dp);
+    // 30 days pass
+    for (i=index; i<n && days[i]<days[index]+30; i++);
+    int Thirty_day = cost[2] + RecurMemo(n,days, cost, i, dp);
+    dp[index] = min(One_day, min(Seven_day, Thirty_day));
+    return dp[index];
+}
+int minimumCoins(int n, vector<int> days, vector<int> cost)
+{
+    vector<int> dp(n+1, -1);
+    return RecurMemo(n, days, cost, 0, dp);
+}
+
+// Tabulation
+int Tabulation(int n, vector<int> &days, vector<int> &cost){
+    vector<int> dp(n+1, INT_MAX);
+    dp[n] = 0;
+    for (int k=n-1; k>=0; k--) {
+        // 1 days pass
+        int One_day = cost[0] + dp[k+1];
+        // 7 days pass
+        int i;
+        for (i=k; i<n && days[i]<days[k]+7; i++);
+        int Seven_day = cost[1] + dp[i];
+        // 30 days pass
+        for (i=k; i<n && days[i]<days[k]+30; i++);
+        int Thirty_day = cost[2] + dp[i];
+        dp[k] = min(One_day, min(Seven_day, Thirty_day));
+    }
+    return dp[0];
+}
+int minimumCoins(int n, vector<int> days, vector<int> cost)
+{
+    return Tabulation(n, days, cost);
+}
+
+// Space Optimized
+int Space_Optimize(int n, vector<int> &days, vector<int> &cost){
+    int ans = 0;
+    queue<pair<int, int>> month;
+    queue<pair<int, int>> week;
+    for (int day: days){
+        // Step 1 - remove the expired days from queue
+        while(!month.empty() && month.front().first+30 <= day){
+            month.pop();
+        }
+        while(!week.empty() && week.front().first+7 <= day){
+            week.pop();
+        }
+        // Step 2- Add cost for current days
+        month.push(make_pair(day, ans+cost[2]));
+        week.push(make_pair(day, ans+cost[1]));
+        // Step 3 - Store the ans
+        ans = min(ans+cost[0], min(month.front().second, week.front().second));
+    }
+    return ans;
+}
+int minimumCoins(int n, vector<int> days, vector<int> cost)
+{
+    return Space_Optimize(n, days, cost);
+}
+
+// Maximum Square Area
+
+int maximumAreaSquare(vector<vector<int>>& MAT, int n, int m)
+{
+    int maxSquareSide = 0;
+    for (int i = 0; i < n; i++)
+    {
+        if (MAT[i][0] == 1)
+        {
+            maxSquareSide = 1;
+            break;
+        }
+    }
+    for (int j = 0; j < m; j++)
+    {
+        if (MAT[0][j] == 1)
+        {
+            maxSquareSide = 1;
+            break;
+        }
+    }
+    for (int i = 1; i < n; i++)
+    {
+        for (int j = 1; j < m; j++)
+        {
+            if (MAT[i][j] == 1)
+            {
+                MAT[i][j] = 1 + min(MAT[i - 1][j], min(MAT[i][j - 1], MAT[i - 1][j - 1]));
+                maxSquareSide = max(maxSquareSide, MAT[i][j]);
+            }
+        }
+    }
+    return maxSquareSide * maxSquareSide;
+}
+
+// Maximal Square 2D DP
+
+// Brute Force
+// To start with brute-force approach, we can simply consider each possible starting cell (row, col) and side length (sideLen) of square starting at that cell.
+// For each cell and sideLen, we will check if the corresponding square inside the matrix is valid or not (i.e, all cells are "1" or not). 
+// After checking each possible squares, we will return the one with maximum area.
+class Solution {
+public:
+    int maximalSquare(vector<vector<char>>& M) {
+        auto isValidSquare = [&](int i, int j, int side) {
+            return all_of(begin(M)+i, begin(M)+i+side, [&](auto& R){
+                return all_of(begin(R)+j, begin(R)+j+side, [&](auto cell) { return cell == '1'; });
+            });
+        };
+        int m = size(M), n = size(M[0]), ans = 0;
+        for(int row = 0; row < m; row++)
+            for(int col = 0; col < n; col++)
+                for(int sideLen = 1; sideLen <= min(m-row, n-col); sideLen++) 
+                    if(isValidSquare(row, col, sideLen))
+                        ans = ans = max(ans, sideLen*sideLen);
+        return ans;
+    }
+};
+
+// We can slightly optimize the code by running from sideLen = min(m, n) down to 1 instead of the other way around. 
+// This ensures that we can return the area of sqaure as soon as we find the 1st valid square since that square would be the 1st valid square of maximum side length.
+class Solution {
+public:
+    int maximalSquare(vector<vector<char>>& M) {
+        auto isValidSquare = [&](int i, int j, int side) {
+            return all_of(begin(M)+i, begin(M)+i+side, [&](auto& R){
+                return all_of(begin(R)+j, begin(R)+j+side, [&](auto cell) { return cell == '1'; });
+            });
+        };
+        int m = size(M), n = size(M[0]);
+        for(int sideLen = min(m, n); sideLen; sideLen--)
+            for(int row = 0; row <= m-sideLen; row++)
+                for(int col = 0; col <= n-sideLen; col++)
+                    if(isValidSquare(row, col, sideLen))
+                        return sideLen*sideLen;
+        return 0;
+    }
+};
+// Time Complexity : O(M*N*min(M,N)3)
+// Space Complexity : O(1), only constant extra space is being used
+
+// Optimized Brute Approach
+class Solution {
+public:
+    int getMaxSquareLen(vector<vector<char>>& M, int row, int col) {
+        int allOnesRowLen = min(size(M)-row, size(M[0])-col), sqLen = 0;
+        for(int i = 0, j; i < allOnesRowLen; i++) {
+            for(j = 0; j < allOnesRowLen && M[i+row][j+col] != '0'; j++);
+            allOnesRowLen = j;
+            sqLen = min(allOnesRowLen, i+1);
+        }
+        return sqLen;
+    }
+    int maximalSquare(vector<vector<char>>& M) {
+        int m = size(M), n = size(M[0]), ans = 0;
+        for(int row = 0; row < m; row++)
+            for(int col = 0; col < n; col++) 
+                ans = max(ans, getMaxSquareLen(M, row, col));
+        return ans * ans;
+    }
+};
+// Time Complexity : O(MN*min(M,N)2)
+// Space Complexity : O(1)
+
+// Dynamic Programming
+class Solution {
+public:
+    int getMaxSquareLen(vector<vector<char>>& M, vector<vector<int>>& ones, int row, int col) {
+        int allOnesRowLen = min(size(M)-row, size(M[0])-col), sqLen = 0;
+        for(int i = 0, j; i < allOnesRowLen; i++) 
+            allOnesRowLen = min(allOnesRowLen, ones[i+row][col]),
+            sqLen = min(allOnesRowLen, i+1);
+        return sqLen;
+    }
+    int maximalSquare(vector<vector<char>>& M) {
+        int m = size(M), n = size(M[0]), ans = 0;
+        vector<vector<int>> ones(m, vector<int>(n+1));
+        for(int i = m-1; ~i; i--)
+            for(int j = n-1; ~j; j--)
+                ones[i][j] = (M[i][j] == '1' ? 1 + ones[i][j+1] : 0);
+        
+        for(int row = 0; row < m; row++)
+            for(int col = 0; col < n; col++) 
+                ans = max(ans, getMaxSquareLen(M, ones, row, col));
+        return ans * ans;
+    }
+};
+//Time Complexity : O(MN*min(M,N))
+// Space Complexity : O(1)
+
+// Dynamic Programming
+class Solution {
+public:
+    int maximalSquare(vector<vector<char>>& M) {
+        int m = size(M), n = size(M[0]), ans = 0;
+        vector<vector<int>> dp(m+1, vector<int>(n+1));
+        for(int i = m-1; ~i; i--)
+            for(int j = n-1; ~j; j--) 
+                dp[i][j] = (M[i][j] == '1' ? 1 + min({dp[i+1][j], dp[i][j+1], dp[i+1][j+1]}) : 0),
+                ans = max(ans, dp[i][j]);
+
+        return ans * ans;
+    }
+};
+// Time Complexity : O(MN)
+// Space Complexity : O(MN)
+
+// Optimized
+class Solution {
+public:
+    int maximalSquare(vector<vector<char>>& M) {
+        int m = size(M), n = size(M[0]), ans = 0;
+        vector<vector<int>> dp(2, vector<int>(n+1));
+        for(int i = m-1; ~i; i--)
+            for(int j = n-1; ~j; j--) 
+                dp[i&1][j] = (M[i][j] == '1' ? 1 + min({dp[(i+1)&1][j], dp[i&1][j+1], dp[(i+1)&1][j+1]}) : 0),
+                ans = max(ans, dp[i&1][j]);
+
+        return ans * ans;
+    }
+};
+// Time Complexity : O(MN)
+// Space Complexity : O(N), this can be further optimized to O(min(M, N)) as well.
+
+// Minimum square Triangulation 2D DP
+
+// Recursion
+#include <bits/stdc++.h>
+using namespace std;
+int minimumTriangleScoreHelper(vector<int> &vertex, int i, int j)
+{
+    // if triangle can't be formed
+    if (j - i < 2)
+    {
+        return 0;
+    }
+    // initialize result as infinite
+    int res = INT_MAX;
+    // loop over all vertices between i and j
+    for (int k = i + 1; k < j; k++)
+    {
+        res = min(res, minimumTriangleScoreHelper(vertex, i, k) +
+                          minimumTriangleScoreHelper(vertex, k, j) +
+                          vertex[i] * vertex[k] * vertex[j]);
+    }
+    return res;
+}
+int minimumTriangleScore(vector<int> &vertex, int n)
+{
+    int ans = minimumTriangleScoreHelper(vertex, 0, n - 1);
+    return ans;
+}
+int main()
+{
+    int n = 5; // number of vertices of polygon
+    vector<int> vertex = {2, 4, 2, 5, 1}; // values of the vertices
+    cout << "Minimum score triangulation of the polygon is: " << minimumTriangleScore(vertex, n) << endl;
+}
+
+// Recursion+Memoization
+#include <bits/stdc++.h>
+using namespace std;
+int minimumTriangleScoreHelper(vector<vector<int>> &memo, vector<int> &vertex, int i, int j)
+{
+    if (memo[i][j] == 0)
+    {
+        /* iterate over all the vertices between i and j */
+        for (int k = i + 1; k < j; k++)
+        {
+            int curr_score = vertex[i] * vertex[k] * vertex[j];
+            // Left sub polygon
+            int left_polygon = minimumTriangleScoreHelper(memo, vertex, i, k);
+            // Right subpolygon
+            int right_polygon = minimumTriangleScoreHelper(memo, vertex, k, j);
+            memo[i][j] = min(memo[i][j] == 0 ? INT_MAX : memo[i][j], left_polygon + curr_score + right_polygon);
+        }
+    }
+    return memo[i][j];
+}
+int minimumTriangleScore(vector<int> &vertex, int n)
+{
+    // If array size is zero, then return 0.
+    if (vertex.empty())
+    {
+        return 0;
+    }
+    // Creating a 2D DP table to store the results
+    vector<vector<int>> memo(n, vector<int>(n, 0));
+    return minimumTriangleScoreHelper(memo, vertex, 0, n - 1);
+}
+int main()
+{
+    int n = 5;                            // number of vertices of polygon
+    vector<int> vertex = {2, 4, 2, 5, 1}; // values of the vertices
+    cout << "Minimum score triangulation of the polygon is: " << minimumTriangleScore(vertex, n) << endl;
+}
+
+// Tabulation
+#include <bits/stdc++.h>
+using namespace std;
+int minimumTriangleScore(vector<int> &vertex, int n)
+{
+    vector<vector<int>> dp(n, vector<int>(n));
+    /*
+        each dp[i][j] denotes the minimum score to triangulate the polygon
+        from vertex i to vertex j
+    */
+    for (int j = 2; j < n; ++j)
+    {
+        for (int i = j - 2; i >= 0; --i)
+        {
+            dp[i][j] = INT_MAX;
+            for (int k = i + 1; k < j; ++k)
+                dp[i][j] = min(dp[i][j], dp[i][k] + dp[k][j] + vertex[i] * vertex[j] * vertex[k]);
+        }
+    }
+    return dp[0][n - 1];
+}
+int main()
+{
+    int n = 5;                            // number of vertices of polygon
+    vector<int> vertex = {2, 4, 2, 5, 1}; // values of the vertices
+    cout << "Minimum score triangulation of the polygon is: " << minimumTriangleScore(vertex, n) << endl;
+}
+
+// Minimum sideways jump 2D DP
+
+// Recursion+Memoization
+// Time complexity:O(2^n);
+// Space complexity:O(4*n);
+class Solution {
+public:
+    int solve(int n,vector<int>&obstacles,int lane,int pos,vector<vector<int>>&dp)
+    {
+        if(pos == n-1)
+        return 0;
+        if(dp[lane][pos]!= -1)
+            return dp[lane][pos];
+        if(obstacles[pos+1]!= lane)
+            return solve(n,obstacles,lane,pos+1,dp
+        int ans =1e9;
+            for(int k = 1;k<=3;k++)
+            {
+                if(lane != k && obstacles[pos]!=k)
+                {
+                    ans = min(ans,1+solve(n,obstacles,k,pos,dp));
+                }   
+            }
+            dp[lane][pos] = ans;
+            return ans;
+    }
+    int minSideJumps(vector<int>& obstacles) {
+        int n = obstacles.size();
+    vector<vector<int>>dp(4,vector<int>(n,-1));
+        return solve(n,obstacles,2,0,dp);
+    }
+};
+
+// Tabulation
+// Time Complexity -> O(n)
+// Space compllexity -> O(1)
+class Solution{
+  public:
+  int minSideJumps(vector<int>& obstacles) {
+        int n = obstacles.size();
+        // vector<vector<int>>dp(4,vector<int>(n,1e9));
+        vector<int>curr(4,1e9);
+        vector<int>next(4,1e9);
+        next[0] = 0;
+        next[1] = 0;
+        next[2] = 0;
+        next[3] = 0;
+        for(int pos = n-2;pos>=0;pos--)
+        {
+            for(int lane=1;lane<=3;lane++)
+            {
+                if(obstacles[pos+1]!= lane)
+                    curr[lane] =  next[lane];
+                else{
+                    int ans =1e9;
+                    for(int k = 1;k<=3;k++)
+                    {
+                        if(lane != k && obstacles[pos]!=k)
+                        {
+                            ans = min(ans,1+next[k]);
+                        }   
+                    }
+                    curr[lane] = ans;
+                }
+            }
+            next = curr;
+        }
+        return min(curr[2],min(curr[1]+1,curr[3]+1));
+    }
+};
+
+// Reducing Dishes 2D DP
+
+// Approach
+// The first approach is a brute-force method where we try all possible starting points and calculate the satisfaction of each subarray. This approach is 
+// simple and easy to understand, but it is very slow and inefficient for large input arrays.
+// The second approach is a recursive algorithm that computes the maximum satisfaction by including or excluding each element of the input array. 
+// This approach is more efficient than the brute-force method.
+// The third approach uses memoization to optimize the recursive algorithm by caching the results of the computed subproblems. This approach is faster than the 
+// second approach because it avoids recomputing the same subproblems multiple times. It is also easier to implement because we only need to add a memoization 
+// table to store the results of the computed subproblems.
+// Complexity
+// Time complexity: O(N^2), for all approaches.
+// Space complexity:
+// O(1) for iterative approach
+// O(N) for recursion
+// O(N^2) for Memoization
+
+// Brute Force (iterative)
+class Solution {
+public:
+    int maxSatisfaction(vector<int>& satisfaction) {
+        sort(satisfaction.begin(),satisfaction.end());
+        int max_sat=0;
+        int st=0; // to test all starting points
+        while(st<satisfaction.size()){
+            int temp=0;
+            for(int i=st;i<satisfaction.size();++i){
+                temp+=satisfaction[i]*(i-st+1);
+            }
+            max_sat=max(max_sat,temp);
+            ++st;
+        }
+        return max_sat;
+    }
+};
+
+// Recursive
+class Solution {
+public:
+    int helper(vector<int>& sat, int curr){
+        if(curr==sat.size()) return 0; 
+        int coeff=0; // store the results when we include current index
+        for(int i=curr;i<sat.size();++i){
+            coeff+=sat[i]*(i-curr+1);
+        }
+        return max(coeff,helper(sat,curr+1)); // recursion to check for next indexes
+    }
+    int maxSatisfaction(vector<int>& satisfaction) {
+        sort(satisfaction.begin(),satisfaction.end());
+        return helper(satisfaction,0);
+    }
+};
+
+// Memoization
+class Solution {
+public:
+    int helper(vector<int>& sat, vector<vector<int>>& memo, int curr,int t){
+        if(curr==sat.size()) return 0;
+        if(memo[curr][t]!=-1) return memo[curr][t]; // if the value is already computed
+        
+        int excluded = helper(sat,memo,curr+1,t); // when we don't include the current index
+        int included = sat[curr]*t + helper(sat,memo,curr+1,t+1); // when we include the current index
+        return memo[curr][t]=max(included,excluded);
+    }
+    int maxSatisfaction(vector<int>& satisfaction) {
+        sort(satisfaction.begin(),satisfaction.end());
+        int n=satisfaction.size();
+        vector<vector<int>>memo(n+1,vector<int>(n+1,-1));
+        return helper(satisfaction,memo,0,1);
+    }
+};
+
+// Cooking Ninjas
+
+#include <bits/stdc++.h> 
+using namespace std;
+// to find maximum ranked chef 
+int maxiOf(vector<int> &rank){
+    int maximum = -1;
+    for(int i = 0; i < rank.size(); i++){
+        maximum = max(maximum, rank[i]);
+    }
+    return maximum;
+}
+// to get maximum time taken by a highest rank chef
+int maxTime(vector<int> &rank, int m){    
+    int maximum = maxiOf(rank);
+    int maximumTimeValue = 0;
+    for(int i = 1; i <= m; i++){
+        maximumTimeValue += (maximum * i);
+    }
+    return maximumTimeValue;
+}
+// to check if it is possible to cook m dishes among n chef in mid time interval
+bool isPossible(vector<int> &rank, int m, int mid){
+    // maintain chefcount
+    int chefCount = 1;
+    // maintain time taken by current chef
+    int currSum = 0;
+    // counter to increase time 
+    int counter = 1;
+    for(int i = 1; i <= m; i++){
+        // if chef can cook curr i dish as well within mid interval then add 
+        // to currSum and increase counter
+        if(currSum + (counter * rank[chefCount-1]) <= mid){
+            currSum += (counter * rank[chefCount-1]);
+            counter++;
+        }
+        // if cook was not able to cook ith dish
+        else {
+            // check for next rank cook
+            chefCount++;
+            // if all cooks are checked
+            // or if current cook take more time to cook 1st dish > mid interval
+            // return false
+            if(chefCount > rank.size() || ( i <= m && rank[chefCount-1] > mid)){
+                return false;
+            }
+            // update currSum with time to prepaper 1st dish by cook
+            currSum = rank[chefCount-1];
+            // to go to second one set counter as 2
+            counter = 2;
+        }
+    }
+    // if we exceed the check of the available cook then returnn false
+    if(chefCount > rank.size()){
+        return false;
+    }
+    // else we manage to cook all dishes and thus return true
+    return true;
+}
+// to calculate the minimum time require to cook m dishes
+int minCookTime(vector<int> &rank, int m)
+{
+    sort(rank.begin(), rank.end());   
+    // minimum time to cook would be 0
+    // maximum time to cook would be Time consumed by Highest rank chef
+    int start = 0, end = maxTime(rank, m);
+    int mid = start + (end - start) / 2;
+    int ans = -1;
+    while(start <= end){
+        // if cooking in mid times interval for each chef
+        // make m dishes within n cook then
+        if(isPossible(rank, m, mid)){
+            // save the mid time interval
+            ans = mid;
+            // move to find lesser time interval to do the same
+            end = mid - 1;
+        }
+        // if mid time interval is not enough
+        else {
+            // then move to search for larger interval
+            start = mid + 1;
+        }
+        mid = start + (end - start) / 2;
+    }
+    return ans;
+}
+
+// Lis and Russian Dolls DP + Binary Search
+
+// Intuition - LONGEST INCREASING SUBSEQUENCE SAME
+// Approach - 
+// Russian dolls hai unko envelops me dalna hai to sort kardia width wise but agar width same hui kisi ki toh kya kre?
+// to hmne HIEGHT ko sort krdia but descending order me an descending order me kyu kara ?
+// beacuse hum LIS lga sake uspr agar hum normal karenge to mja n aaega..(Complex hoega)
+// Complexity
+// Time complexity:RECURSION->exponential (TLE)
+// MEMOIZATION-> O(N*N) (TLE)
+// TOP-DOWN-> O(N*N) (TLE)
+// Binary search ->O(N*LOG(N)) (optimised)
+// Space complexity:
+// MEMOIZATION-> O(N*N)
+// TOP-DOWN-> O(N*N)
+// Binary search ->O(N)
+
+// Recursion
+class Solution {
+public:
+    int solve(int n, vector<vector<int>>& envelopes,int curr,int prev)
+    {
+        if(curr == n)
+        {
+            return 0;
+        }
+        int include=0;
+        if(prev == -1 or (envelopes[prev][0] < envelopes[curr][0] and 
+        envelopes[prev][1] < envelopes[curr][1]))
+        {
+            // check with and heigth both
+            include = 1 + solve(n,envelopes,curr+1,curr);
+        }
+        int exclude = 0 + solve(n,envelopes, curr+1, prev);
+        return max(include,exclude);
+    }
+    int maxEnvelopes(vector<vector<int>>& envelopes) {
+        sort(envelopes.begin(),envelopes.end());
+        for(int i=0;i<envelopes.size();i++)
+        {
+          for(int j=0;j<envelopes[0].size();j++)
+          {
+            cout<<"envelopes[i][j]"<<envelopes[i][j]<<" ";
+          }
+            cout<<endl;
+        }
+             return solve(envelopes.size(), envelopes, 0, -1);
+    }
+};
+
+// Memoization
+class Solution{
+public:
+  int solve_mem(int n, vector<vector<int>>& envelopes,int curr,int prev,vector<vector<int>> &dp)
+    {
+        if(curr == n)
+        {
+            return 0;
+        }
+        if(dp[curr][prev+1] != -1)
+            return dp[curr][prev+1];
+        int include=0;
+        if(prev == -1 or (envelopes[prev][0] < envelopes[curr][0] and 
+        envelopes[prev][1] < envelopes[curr][1]))
+        {
+            include = 1 + solve_mem(n,envelopes,curr+1,curr,dp);
+        }
+        int exclude = 0 + solve_mem(n,envelopes, curr+1, prev,dp);
+        dp[curr][prev+1] = max(include,exclude);
+        return dp[curr][prev+1];
+    }
+    int maxEnvelopes(vector<vector<int>>& envelopes) {
+            sort(envelopes.begin(),envelopes.end());
+            for(int i=0;i<envelopes.size();i++)
+            {
+                for(int j=0;j<envelopes[0].size();j++)
+                {
+                    cout<<"envelopes[i][j]"<<envelopes[i][j]<<" ";
+                }
+                cout<<endl;
+             }
+             vector<vector<int>> dp(envelopes.size()+1,vector<int>(envelopes.size()+1,-1));
+             return solve_mem(envelopes.size(), envelopes, 0, -1,dp);
+        }  
+};
+
+// Tabulation
+class Solution {
+public:
+    int maxEnvelopes(vector<vector<int>>& envelopes) {
+          sort(envelopes.begin(),envelopes.end());
+          for(int i=0;i<envelopes.size();i++)
+          {
+              for(int j=0;j<envelopes[0].size();j++)
+              {
+                  cout<<"envelopes[i][j]"<<envelopes[i][j]<<" ";
+              }
+              cout<<endl;
+          }
+        vector<vector<int>> dp(envelopes.size()+1,vector<int>(envelopes.size()+1,0));
+        int n=envelopes.size();
+        for(int curr = n-1; curr>=0; curr--)
+        {
+            for(int prev= curr-1; prev>=-1; prev--)
+            {
+                    int include=0;
+                    if(prev == -1 or (envelopes[prev][0] < envelopes[curr][0] and 
+                    envelopes[prev][1] < envelopes[curr][1]))
+                    {
+                        include = 1 + dp[curr+1][curr+1];
+                    }
+                    int exclude = 0 + dp[curr+1][prev+1];
+                    dp[curr][prev+1] = max(include,exclude);
+            }
+        }
+        return dp[0][0];
+    }
+};
+
+// Binary Search
+class Solution {
+public:
+    static bool cmp(const vector<int>& v1, const vector<int>& v2)
+    {
+      if(v1[0] == v2[0]) return v1[1] > v2[1];
+            return v1[0]<v2[0];
+    }
+    int maxEnvelopes(vector<vector<int>>& envelopes) {
+        int n = envelopes.size();
+        sort(envelopes.begin(),envelopes.end(),cmp);
+        vector<int>arr;
+        for(int i =0;i<n;i++)
+        {
+            if(arr.empty() || arr.back()<envelopes[i][1])
+                arr.push_back(envelopes[i][1]);
+            else
+            {
+                int index = lower_bound(arr.begin(),arr.end(),envelopes[i][1]) - arr.begin();
+                arr[index] = envelopes[i][1];
+            }
+        }
+        return arr.size();
+    }
+};
+
+// Max Height By stacking Cuboids lis variant
+
+// T->O(nlogn x 2^n) + S->O(n) [Recursion Stack Space]
+class Solution {
+public:
+	int maxh(int i,int prev,vector<vector<int>>& cubo,int n){
+		if(i==n) return 0;
+		int pick=INT_MIN;
+		if(prev==-1 || (cubo[prev][1]<=cubo[i][1] && cubo[prev][2]<=cubo[i][2])){
+			pick=cubo[i][2]+maxh(i+1,i,cubo,n);
+		}
+		int notpick=maxh(i+1,prev,cubo,n);
+		return max(pick,notpick);
+	}
+	int maxHeight(vector<vector<int>>& cubo) {
+		int n=cubo.size();
+		for(auto &i:cubo) sort(i.begin(),i.end());
+		sort(cubo.begin(),cubo.end());
+		return maxh(0,-1,cubo,n);
+	}
+};
+
+// Method - 2 [Memoization]
+// T->O(n^2) + S->O(n^2) + O(n) [Recursion Stack Space]
+class Solution {
+public:
+	int maxh(int i,int prev,vector<vector<int>>& cubo,int n,vector<vector<int>>& dp){
+		if(i==n) return 0;
+		if(dp[i][prev+1]!=-1) return dp[i][prev+1];
+		int pick=INT_MIN;
+		if(prev==-1 || (cubo[prev][1]<=cubo[i][1] && cubo[prev][2]<=cubo[i][2])){
+			pick=cubo[i][2]+maxh(i+1,i,cubo,n,dp);
+		}
+		int notpick=maxh(i+1,prev,cubo,n,dp);
+		return dp[i][prev+1]=max(pick,notpick);
+	}
+	int maxHeight(vector<vector<int>>& cubo) {
+		int n=cubo.size();
+		for(auto &i:cubo) sort(i.begin(),i.end());
+		sort(cubo.begin(),cubo.end());
+		vector<vector<int>> dp(n,vector<int>(n+1,-1));
+		return maxh(0,-1,cubo,n,dp);
+	}
+};
+
+// Method - 3 [Tabulation]
+// T->O(n^2) + S->O(n^2)
+class Solution {
+public:
+	int maxHeight(vector<vector<int>>& cubo) {
+		int n=cubo.size();
+		for(auto &i:cubo) sort(i.begin(),i.end());
+		sort(cubo.begin(),cubo.end());
+		vector<vector<int>> dp(n+1,vector<int>(n+1,0));
+		for(int i=n-1;i>=0;i--){
+			for(int prev=n-1;prev>=-1;prev--){
+				int pick=INT_MIN;
+				if(prev==-1 || (cubo[prev][1]<=cubo[i][1] && cubo[prev][2]<=cubo[i][2])){
+					pick=cubo[i][2]+dp[i+1][i+1];
+				}
+				int notpick=dp[i+1][prev+1];
+				dp[i][prev+1]=max(pick,notpick);
+			}
+		}
+		return dp[0][0];
+	}
+};
+
+//Method - 4 [SpaceOptimization]
+// T->O(n^2) + S->O(n)
+class Solution {
+public:
+	int maxHeight(vector<vector<int>>& cubo) {
+		int n=cubo.size();
+		for(auto &i:cubo) sort(i.begin(),i.end());
+		sort(cubo.begin(),cubo.end());
+		vector<int> last(n+1,0),curr(n+1,0);
+		for(int i=n-1;i>=0;i--){
+			for(int prev=n-1;prev>=-1;prev--){
+				int pick=INT_MIN;
+				if(prev==-1 || (cubo[prev][1]<=cubo[i][1] && cubo[prev][2]<=cubo[i][2])){
+					pick=cubo[i][2]+last[i+1];
+				}
+				int notpick=last[prev+1];
+				curr[prev+1]=max(pick,notpick);
+			}
+			last=curr;
+		}
+		return last[0];
+	}
+};
+
+// Pizza with 3N slices
+
+// Recursion
+#include <bits/stdc++.h> 
+int solve(int index,int endindex,int noofslices, vector<int> &arr){
+    if(index>endindex || noofslices==0)
+        return 0;
+    int include=arr[index]+solve(index+2,endindex,noofslices-1,arr);
+    int exclude=0+solve(index+1,endindex,noofslices,arr);
+    return max(include,exclude);
+
+}
+int pizzaSharing(int n, vector<int> &arr)
+{
+    int k=n/3;
+    int sol1=solve(0,n-2,k,arr);
+    int sol2=solve(1,n-1,k,arr);
+    return max(sol1,sol2);
+}
+
+// Recursion+Memoization
+#include <bits/stdc++.h> 
+int solve(int index,int endindex,int noofslices, vector<int> &arr){
+    if(index>endindex || noofslices==0)
+        return 0;
+    int include=arr[index]+solve(index+2,endindex,noofslices-1,arr);
+    int exclude=0+solve(index+1,endindex,noofslices,arr);
+    return max(include,exclude);
+
+}
+int pizzaSharing(int n, vector<int> &arr)
+{
+    int k=n/3;
+    int sol1=solve(0,n-2,k,arr);
+    int sol2=solve(1,n-1,k,arr);
+    return max(sol1,sol2);
+}
+
+// Tabulation
+#include <bits/stdc++.h> 
+int solve(vector<int> &arr,int k,int n){
+    vector<vector<int>>dp(n+2,vector<int>(n+2,0));
+    for(int index=n-1;index>=0;index--){
+        for(int noofslices=0;noofslices<k;noofslices++){
+            int include=arr[index]+dp[index+2][noofslices-1];
+            int exclude=0+dp[index+1][noofslices];
+            dp[index][noofslices]=max(include,exclude);
+        }
+    }
+    return dp[0][k-1];
+}
+int pizzaSharing(int n, vector<int> &arr)
+{
+    vector<int>first,last;
+    for(int i=0;i<n;i++){
+        if(i!=0){
+            last.push_back(arr[i]);
+        }
+        if(i!=n-1){
+            first.push_back(arr[i]);
+        }
+    }
+    int k=n/3;
+    int sol1=solve(first,k,n-1);
+    int sol2=solve(last,k,n-1);
+    return max(sol1,sol2);
+}
+
+// Space Optimized
+#include <bits/stdc++.h> 
+int solve(int n, vector<int> &arr){
+    int k=n/3;
+    vector<int>curr(k+1,0);
+    vector<int>next(k+1,0);
+    vector<int>next2(k+1,0);
+    for(int index=n-2;index>=0;index--){
+        for(int noofslices=0;noofslices<k;noofslices++){
+            int include=arr[index]+next2[noofslices-1];
+            int exclude=0+next[noofslices];
+            curr[noofslices]= max(include,exclude);
+        }
+        next2=next;
+        next=curr;
+    }
+    return next[k-1];
+}
+int pizzaSharing(int n, vector<int> &arr)
+{
+    vector<int>first,last;
+    for(int i=0;i<n;i++){
+        if(i!=0){
+            last.push_back(arr[i]);
+        }
+        if(i!=n-1){
+            first.push_back(arr[i]);
+        }
+    }
+    int sol1=solve(n,first);
+    int sol2=solve(n,last);
+    return max(sol1,sol2);
+}
+
+// Number of dice rolls with target sum ( DP  Distinct Ways Pattern )
+
+// Recursion
+#define MOD 1000000007
+#include<vector>
+int solve(int dice,int target,int faces){
+    //base cases
+    if(target<0)
+        return 0;
+    if(dice!=0 && target==0)
+        return 0;
+    if(target!=0 && dice==0)
+        return 0;
+    if(dice==0 && target==0)
+        return 1;
+    
+    int ans=0;
+    for(int i=1;i<=faces;i++){
+        if(target-i>=0)
+            ans=(ans+solve(dice-1,target-i,faces))%MOD;
+    }
+    return ans%MOD;
+}
+int diceThrows(int d, int f, int s) {
+   return solve(d,s,f)%MOD;
+}
+
+// Recursion+Memoization
+#define MOD 1000000007
+#include<vector>
+int solve(int dice,int target,int faces,vector<vector<int>>&dp){
+    //base cases
+    if(target<0)
+        return 0;
+    if(dice!=0 && target==0)
+        return 0;
+    if(target!=0 && dice==0)
+        return 0;
+    if(dice==0 && target==0)
+        return 1;
+    if(dp[dice][target]!=-1)
+        return dp[dice][target]%MOD;
+    int ans=0;
+    for(int i=1;i<=faces;i++){
+        if(target-i>=0)
+            ans=(ans+solve(dice-1,target-i,faces,dp))%MOD;
+    }
+     return dp[dice][target]=ans;
+}
+int diceThrows(int d, int f, int s) {
+   vector<vector<int>>dp(d+1,vector<int>(s+1,-1));
+   return solve(d,s,f,dp)%MOD;
+}
+
+// Tabulation
+#define MOD 1000000007
+#include<vector>
+int solve(int dice,int target,int faces){
+    vector<vector<int>>dp(dice+1,vector<int>(target+1,0));
+    dp[0][0]=1;
+    for(int d=1;d<=dice;d++){
+        for(int t=1;t<=target;t++){
+            int ans=0;
+            for(int i=1;i<=faces;i++){
+                if(t-i>=0)
+                    ans=(ans+dp[d-1][t-i])%MOD;
+            }
+            dp[d][t]=ans;
+        }
+    }
+     return dp[dice][target];
+}
+int diceThrows(int d, int f, int s) {
+  return solve(d,s,f)%MOD;
+}
+
+// Space Optimized
+#define MOD 1000000007
+#include<vector>
+int solve(int dice,int target,int faces){
+    vector<int>curr(target+1,0);
+    vector<int>prev(target+1,0);
+    prev[0]=1;
+    for(int d=1;d<=dice;d++){
+        for(int t=1;t<=target;t++){
+            int ans=0;
+            for(int i=1;i<=faces;i++){
+                if(t-i>=0)
+                    ans=(ans+prev[t-i])%MOD;
+            }
+            curr[t]=ans;
+        }
+        prev=curr;
+    }
+     return prev[target];
+}
+int diceThrows(int d, int f, int s) {
+  return solve(d,s,f)%MOD;
+}
+
+// Partition equal Subset Sum  ( DP  Distinct Ways Pattern )
+
+// Recursion
+bool solve(int index,int n,int half,vector<int>&arr){
+	//base case
+	if(index>=n)
+		return false;
+	if(half<0)
+		return false;
+	if(half==0)
+		return true;
+	bool include=solve(index+1,n,half-arr[index],arr);
+	bool exclude=solve(index+1,n,half,arr);
+	return include || exclude;
+	
+}
+bool canPartition(vector<int> &arr, int n)
+{
+	int total=0;
+	for(int i=0;i<n;i++){
+		total+=arr[i];
+	}
+	//if total is odd we cant divide it into eqaul parts
+	if(total&1==1)
+		return false;
+	int half=total/2;
+	return solve(0,n,half,arr);
+}
+
+// Recursion+Memoization
+bool solve(int index,int n,int half,vector<int>&arr,vector<vector<int>>&dp){
+	//base case
+	if(index>=n)
+		return false;
+	if(half<0)
+		return false;
+	if(half==0)
+		return true;
+	if(dp[index][half]!=-1)
+		return dp[index][half];
+	bool include=solve(index+1,n,half-arr[index],arr,dp);
+	bool exclude=solve(index+1,n,half,arr,dp);
+	return dp[index][half]=include || exclude;
+	
+}
+bool canPartition(vector<int> &arr, int n)
+{
+	int total=0;
+	for(int i=0;i<n;i++){
+		total+=arr[i];
+	}
+	//if total is odd we cant divide it into eqaul parts
+	if(total&1==1)
+		return false;
+	int half=total/2;
+	vector<vector<int>>dp(n+1,vector<int>(half+1,-1));
+	return solve(0,n,half,arr,dp);
+}
+
+// Tabulation
+bool solve(int n,int half,vector<int>&arr){
+
+	vector<vector<int>>dp(n+1,vector<int>(half+1,0));
+	//from base case we found that when half ==0 return true
+	//but we dont know at which index so all index's 0 is made true
+	for(int i=0;i<=n;i++){
+		dp[i][0]=1;
+	}
+
+	for(int index=n-1;index>=0;index--){
+		for(int h=0;h<=half;h++){
+			int include=0;
+			if(h-arr[index]>=0)
+				include=dp[index+1][h-arr[index]];
+			int exclude=dp[index+1][h];
+			dp[index][h]=include||exclude;
+		}
+	}
+	return dp[0][half];	
+}
+bool canPartition(vector<int> &arr, int n)
+{
+	int total=0;
+	for(int i=0;i<n;i++){
+		total+=arr[i];
+	}
+	//if total is odd we cant divide it into eqaul parts
+	if(total&1==1)
+		return false;
+	int half=total/2;
+	return solve(n,half,arr);
+}
+
+// Space Optimized
+bool solve(int n,int half,vector<int>&arr){
+
+	vector<int>curr(half+1,0);
+	vector<int>next(half+1,0);
+	//from base case we found that when half ==0 return true
+	//but we dont know at which index so all index's 0 is made true
+	next[0]=curr[0]=1;	
+
+	for(int index=n-1;index>=0;index--){
+		for(int h=0;h<=half;h++){
+			int include=0;
+			if(h-arr[index]>=0)
+				include=next[h-arr[index]];
+			int exclude=next[h];
+			curr[h]=include||exclude;
+		}
+		next=curr;
+	}
+	return next[half];	
+}
+bool canPartition(vector<int> &arr, int n)
+{
+	int total=0;
+	for(int i=0;i<n;i++){
+		total+=arr[i];
+	}
+	//if total is odd we cant divide it into eqaul parts
+	if(total&1==1)
+		return false;
+	int half=total/2;
+	return solve(n,half,arr);
+}
+
+// Minimum Swaps to make Sequences Increasing ( DP  Distinct Ways Pattern )
+
+
+
+// Longest Arithmetic Subsequence ( DP and Hashing )
+
+
+
+// Longest AP
+
+#include <bits/stdc++.h>
+int longestAP(vector<int> &arr, int n) {
+  if (n <= 2)
+    return n;
+  unordered_map<int, int> dp[n + 1];
+  int ans = 0;
+  for (int i = 1; i < n; i++) {
+    for (int j = 0; j < i; j++) {
+      int diff = arr[i] - arr[j];
+      int cnt = 1;
+      if (dp[j].count(diff))
+        cnt = dp[j][diff];
+      dp[i][diff] = 1 + cnt;
+      ans = max(ans, dp[i][diff]);
+    }
+  }
+  return ans;
+}
+
+// Longest Arithmetic Subsequence with given difference ( DP and Hashing )
+
+class Solution{   
+public:
+    int lengthOfLongestAP(int A[], int n) {
+       vector<vector<int>>dp(1001,vector<int>(10001,0));
+       int mx=0;
+       for(int i=1;i<n;i++){
+           for(int j=0;j<i;j++){
+               dp[i][A[i]-A[j]] = max(dp[i][A[i]-A[j]] , 1 + dp[j][A[i]-A[j]]);
+               mx=max(dp[i][A[i]-A[j]],mx);
+           }
+       }
+       return mx+1;
+   }
+};
+
+// Unique Binary Search Tree ( DP + Merge Interval )
+
+// Let C(i) denote the number of nodes on left side of root
+// -> C(n-i-1) denotes the number of nodes on right side of root
+// Hence the total number of BST possible will be : C(i) * C(n-i-1) for a given root
+// ->Total number of BST possible will be : m * C(i) * C(n-i-1) , where m: number of different root configurations
+// So, for example , the various BST for n=3:
+// C(0)*C(2) + C(2)*C(0) + C(1)* C(1) --> This is known as Catalan number
+// Hence, the given question is asking us to find the Catalan Number C of a number n:
+// C(n)= C(i) * C(n-i-1) => i varies from 0 to n-1
+
+1.) Recursion: Worst approach (results in TLE)
+
+class Solution {
+public:
+    int numTrees(int n) {
+        int result=0;
+        if(n==1 || n==0)
+            return 1;
+        for(int i=0;i<n;i++)
+            result+=numTrees(i)*numTrees(n-i-1);
+        return result;
+    }
+};
+// Time Complexity: O(3^n)
+
+2.) Dynamic Programming: Better than Recursion
+// Concept: Instead of doing recursive calls to calculate C(n-2).....C(1) every time, we store the results of previous iteration in an array result . 
+// Doing so results in making only one call per function as we already know the value of C(n-1),reducing overall runtime
+
+class Solution {
+public:
+    int numTrees(int n) {
+        vector<int>result(n+1,0); //Initializing vector with 0
+        result[1]=result[0]=1;
+        for(int i=2;i<=n;i++)
+        {
+            for(int j=0;j<i;j++)
+            {
+                result[i]+=result[j]*result[i-j-1]; //Calculating C(i) to use for C(i+1) and storing it in result
+            }
+        }
+        return result[n]; //return answer
+    }
+};
+// Time Complexity : O(n^2)
+// Space Complexity : O(n)
+
+3.) Binomial Coefficient: Best approach
+// Concept: Instead of doing it again and again like in DP and recursion, there is a well known formula to calculate Catalan Number, which is// 
+// C(n)=Ci(2n,n)/n+1
+// where Ci: Binomial Coefficient
+
+class Solution {
+public:
+    long CalculateCoeff(int n,int k) //Function to calculate Ci(n.k)
+    {
+        long res=1;
+        if(k>n-k)
+            k=n-k;                    //Since Ci(n,k)=Ci(n,n-k), property of binomial coefficients
+        for(int i=0;i<k;i++)
+        {
+            res*=(n-i);
+            res/=(i+1);
+        }
+        return res;
+    }
+    int numTrees(int n) {
+        return CalculateCoeff(2*n,n)/(n+1);
+    }
+};
+// Time Complexity : O(n)
+// Space Complexity : O(n)
+
+// Guess Number Higher or Lower II ( DP + Merge Interval )
+
+Approach-
+// Let's try to calculate what will be the maximum amount of money required when our window for guess starts with i and is of length l
+// If l = 1, then the number guessed will always be correct. So penalty will be 0.
+// If l = 2, let's take i = 3, so the range is [3, 4], the maximum amount will be required when our initial guess is wrong.
+// If the ans is 4, and we guessed 3 penalty is 3
+// If the ans is 3 and we guessed 4 penalty is 4
+// So to minimize penalty we should always guess the lower of two numbers.
+// For any other l, we can choose a number j in the range (i, i+l-1) and the cost will be -
+// j + maximum of money required for guaranteed win in two subranges - (i, j-1) , (j+1, i+l-1)
+// To minimize the maximum money, we need to find the optimal j.
+// Note: The number will be in either one of the two subranges, so we need to get only the maximum, not the summation of money in the two subranges.
+// Recursion+Memoization
+class Solution {
+public:
+    int getMoneyAmount(int n) {
+        vector<vector<int>> dp(n+1, vector<int>(n+1, 0));
+        //dp[i][j] - the amount of money needed for guaranteed win, when range is [i, j] (note: both are inclusive)
+        for(int l = 1; l <= n; l++)
+        {
+            for(int i = 0; i+l-1 <= n; i++)
+            { 
+                if(l==1)
+                {
+                    // if length = 1, then the only number guessed is correct, no penalty
+                    dp[i][i+l-1] = 0; 
+                }
+                else if(l==2)
+                {
+                    // if length = 2, guess the lower number, 
+		    // if it's not correct then the other number will be the correct one so max amount to guarantee win is the lower of two numbers
+                    dp[i][i+l-1] = i; 
+                }
+                else
+                {
+                    int ans = INT_MAX;
+                    // if you guess a number j between i, i+l-1 then cost will be j + max of the money required to guarantee win on the either side
+                    for(int j = i+1; j < i+l-1; j++)
+                    {
+                         ans = min(ans, j + max(dp[i][j-1], dp[j+1][i+l-1]));
+                    }           
+                    dp[i][i+l-1] = ans;
+                }
+            }
+        }
+        return dp[1][n];
+    }
+};
+
+// Iterative
+class Solution {
+public:
+    vector<vector<int>> dp;
+    int solve(int start, int end)
+    {
+        if(start>= end)
+            return 0;
+        if(dp[start][end] != -1)
+            return dp[start][end];
+        int ans = 0;
+        int result = INT_MAX;
+        for(int i=start; i<=end; i++)
+        {
+            int left = solve(start,i-1);
+            int right = solve(i+1,end);
+            ans = max(left,right) + i;      // this line gurantee to include the money that is needed to win higher values
+            result = min(ans,result);
+        }   
+        return dp[start][end] = result;
+    }
+    int getMoneyAmount(int n) {
+        int ans = 0;
+        dp = vector<vector<int>>(n+1,vector<int>(n+1,-1));
+        return solve(1,n);
+    }
+};
+
+// Minimum Cost From Leaf Values ( DP + Merge Interval )
+
+// Recursion
+#include<utility>
+#include<climits>
+/*
+	Return the pair of integers
+	The first one will be the max value of the leaf node in that subtree
+	The second one will be the minimum value of the sum of non-leaf nodes from left to right subtrees.
+*/
+pair<int, int> treeSum(vector<int>& arr, int st, int end) {
+	// Base case when there is a leaf node.
+	if (st == end) {
+		return {arr[st], 0};
+	}
+	/*
+	   Create a two variables minSum to store the minimum sum of non-leaf nodes
+	   and maxLeaf to store the maximum of leaf node
+	*/
+	int minSum = INT_MAX, maxLeaf = INT_MIN;
+	// Split the array at the every ith position.
+	for (int i = st; i < end; i++) {
+		// Calling on the left subarary.
+		pair<int, int> left = treeSum(arr, st, i);
+		// Calling on the right subarray.
+		pair<int, int> right = treeSum(arr, i + 1, end);
+		minSum = min(minSum, left.second + right.second + (left.first * right.first));
+		maxLeaf = max(left.first, right.first);
+	}
+	return {maxLeaf, minSum};
+}
+int minimumCostTreeFromLeafNodes(vector<int>& arr) {
+
+	// Return the minimum sum as the answer.
+	return treeSum(arr, 0, arr.size() - 1).second;
+}
+
+// Recursion+Memoization
+#include<utility>
+#include<climits>
+/*
+	Create a 2d vector of pairs dp intialise with zero.
+	The first one will be the max value of the leaf node in that subtree
+	The second one will be the minimum value of the sum of non-leaf nodes from left to right subtrees.
+*/
+pair<int, int> treeSum(vector<int>& arr, int st, int end , vector<vector<pair<int, int>>>& dp) {
+	// Base case to check for leaf node.
+	if (st == end) {
+		return {arr[st], 0};
+	}
+	// To check whether we have already calculated the solution of the subproblem.
+	if (dp[st][end].second != -1) {
+		return dp[st][end];
+	}
+	/*
+	   Create a two variables minSum to store the minimum sum of non-leaf nodes
+	   and maxLeaf to store the maximum of leaf node
+	*/
+	int minSum = INT_MAX, maxLeaf = INT_MIN;
+	// Split the array at the every ith position.
+	for (int i = st; i < end; i++) {
+		// Calling on the left subarary.
+		pair<int, int> left = treeSum(arr, st, i , dp);
+		// Calling on the right subarray.
+		pair<int, int> right = treeSum(arr, i + 1, end , dp);
+		minSum = min(minSum, left.second + right.second + (left.first * right.first));
+		maxLeaf = max(left.first, right.first);
+	}
+	// Storing the answer in the dp table before retuning the answer.
+	dp[st][end] = {maxLeaf, minSum};
+	return dp[st][end];
+}
+int minimumCostTreeFromLeafNodes(vector<int>& arr) {
+	/*
+	   Create a 2d Array of pairs 'DP' intialise with zero. The first one will be the
+	   max value of the leaf node in that subtree The second one will be the minimum
+	   value of the sum of non-leaf nodes from left to right subtrees.
+	*/
+	vector<vector<pair<int, int>>> dp = vector<vector<pair<int, int>>>(arr.size(), vector<pair<int, int>>(arr.size(), {INT_MIN, -1}));
+	// Return the minimum sum as the answer.
+	return treeSum(arr, 0, arr.size() - 1 , dp).second;
+}
+
+// Tabulation
+#include<utility>
+#include<climits>
+int minimumCostTreeFromLeafNodes(vector<int> &arr) {
+	int n = arr.size();
+	/*
+	  Create a 2d vector of pairs dp intialise with zero.
+	  The first one will be the max value of the leaf node in that subtree
+	  The second one will be the minimum value of the sum of non-leaf nodes from left to right subtrees.
+	*/
+	vector<vector<pair<int, int>>> dp(n, vector<pair<int, int>>(n, {0, 0}));
+	// Fill the base case when the length of each of the subarray is equal to 1.
+	for (int i = 0; i < n; i++){
+		dp[i][i].first = arr[i];
+		for (int j = i + 1; j < n; j++){
+			dp[i][j].first = max(dp[i][j - 1].first, arr[j]);
+		}
+	}
+	// For each of the subarray starting with length 2.
+	for (int l = 2; l <= n; l++) {
+		// Find the starting index of the subarray.
+		for (int i = 0; i < n - l + 1; i++) {
+			// Find the ending index of the subarray.
+			int j = i + l - 1;
+			dp[i][j].second = INT_MAX;
+			// Traverse over the subarray.
+			for (int k = i; k < j; k++) {
+				// Store the minimum sum.
+				if (dp[i][j].second > dp[i][k].second + dp[k + 1][j].second + dp[i][k].first * dp[k + 1][j].first) {
+					dp[i][j].second = dp[i][k].second + dp[k + 1][j].second + dp[i][k].first * dp[k + 1][j].first;
+				}
+			}
+		}
+	}
+	// Return the minimum sum.
+	return dp[0][n - 1].second;
+}
+
+// Space Optimized
+#include<stack>
+#include<climits>
+
+int minimumCostTreeFromLeafNodes(vector<int> &arr) {
+	// Create a variable to store the answer.
+	int ans = 0;
+
+	// Create a stack.
+	stack<int>st;
+
+	// Push INT_MAX intially in the stack to avoid any boundary value situations.
+	st.push(INT_MAX);
+
+	// Now Start travsering over the array.
+	for (auto x : arr) {
+		/*
+		   Till the top of the stack is less than equal to
+		   current element of the array do the following.
+		*/
+		while (st.top() <= x) {
+			int temp = st.top();
+			st.pop();
+			ans += temp * min(st.top() , x);
+		}
+		st.push(x);
+	}
+
+	// If still the size of stack is greater than 2.
+	while (st.size() > 2) {
+		int temp = st.top();
+		st.pop();
+		ans += (temp * st.top());
+	}
+	// Finally return the answer.
+	return ans;
+}
+
+// Buy and Sell Stock I ( DP + Decision Making )
+
+// Brute Force
+class Solution {
+public:
+    int maxProfit(vector<int>& price) {
+        int profit=0;
+    for(int i=0;i<price.size();i++){
+        if(price[i]-price[i-1]){
+            profit+=(price[i]-price[i-1]);
+        }
+    }
+    return profit;
+    }
+};
+
+// Recursion
+class Solution {
+public:
+    int solve(vector<int>& prices,int index,int buy){
+        if(index==prices.size()) return 0;
+        int profit=0;
+        if(buy){
+            int buykaro=(-prices[index])+solve(prices,index+1,0);
+            int skipkaro= 0 + solve(prices,index+1,1);
+            profit=max(buykaro,skipkaro);
+        }else{
+            int sellkaro=(prices[index])+solve(prices,index+1,1);
+            int skipkaro= 0 + solve(prices,index+1,0);
+            profit=max(sellkaro,skipkaro);
+        }
+        return profit;
+    }
+	int maxProfit(vector<int>& prices) {
+         return solve(prices,0,1);
+    }
+};
+    
+// Memoization
+class Solution {
+public:
+    int solveMem(vector<int>&prices,int index,int buy,vector<vector<int>>&dp){
+        if(index==prices.size()) return 0;
+        if(dp[index][buy]!=-1) return dp[index][buy];
+        int profit=0;
+        if(buy){
+            int buykaro=(-prices[index])+solveMem(prices,index+1,0,dp);
+            int skipkaro= 0 + solveMem(prices,index+1,1,dp);
+            profit=max(buykaro,skipkaro);
+        }else{
+            int sellkaro=(prices[index])+solveMem(prices,index+1,1,dp);
+            int skipkaro= 0 + solveMem(prices,index+1,0,dp);
+            profit=max(sellkaro,skipkaro);
+        }
+        return dp[index][buy]=profit;
+    }
+	int maxProfit(vector<int>& prices) {
+         int n=prices.size();
+         vector<vector<int>>dp(n,vector<int>(2,-1));
+         return solveMem(prices,0,1,dp);
+    }
+};
+
+// Tabulation
+class Solution {
+public:
+    int solveTab(vector<int>&prices){
+        int n=prices.size();
+        vector<vector<int>>dp(n+1,vector<int>(2,0));
+        for(int index=n-1;index>=0;index--){
+            for(int buy=0;buy<=1;buy++){
+           int profit=0;
+           if(buy){
+            int buykaro=(-prices[index])+dp[index+1][0];
+            int skipkaro= 0 + dp[index+1][1];
+            profit=max(buykaro,skipkaro);
+           }else{
+            int sellkaro=(prices[index])+dp[index+1][1];
+            int skipkaro= 0 + dp[index+1][0];
+            profit=max(sellkaro,skipkaro);
+            }
+             dp[index][buy]=profit;
+           }
+        }
+        return dp[0][1];
+    }
+	int maxProfit(vector<int>& prices) {
+        return solveTab(prices);
+    }
+};
+
+// Space Optimized
+class Solution {
+public:
+    int solveOpt(vector<int>& prices){
+        int n=prices.size();
+        vector<int>curr(2,0);
+        vector<int>next(2,0);
+        for(int index=n-1;index>=0;index--){
+            for(int buy=0;buy<=1;buy++){
+           int profit=0;
+           if(buy){
+            int buykaro=(-prices[index])+next[0];
+            int skipkaro= 0 + next[1];
+            profit=max(buykaro,skipkaro);
+           }else{
+            int sellkaro=(prices[index])+next[1];
+            int skipkaro= 0 + next[0];
+            profit=max(sellkaro,skipkaro);
+            }
+             curr[buy]=profit;
+           }
+           next=curr;
+        }
+        return next[1];
+    }
+	int maxProfit(vector<int>& prices) {
+        return solveOpt(prices);
+    }
+};
+
+// Buy and Sell Stock At Most 2 Times III 
+
+// Recursion
+class Solution {
+public:
+    int solve(vector<int>& prices, int index, bool buy, int limit){
+        if(index >= prices.size()) return 0;
+        int profit = 0;
+        if(buy && limit < 2){
+            int choose = -prices[index] + solve(prices, index+1, 0, limit+1);
+            int skip = 0 + solve(prices, index+1, 1, limit);
+            profit = max(choose, skip);
+        }
+        else if(buy == 0){
+            int choose = prices[index] + solve(prices, index+1, 1, limit);
+            int skip = 0 + solve(prices, index+1, 0, limit);
+            profit = max(choose, skip);
+        }
+        return profit;
+    }
+    int maxProfit(vector<int>& prices) {
+        int n = prices.size();
+        int index = 0;
+        bool buy = 1;
+        int limit = 0;
+        return solve(prices,index,buy,limit);
+    }
+};
+
+// Recursion+Memoization
+class Solution {
+public:
+    int solveMem(vector<int>& prices, int index, bool buy, int limit, vector<vector<vector<int>>> &dp){
+        if(index >= prices.size()) return 0;
+        if(dp[index][buy][limit] != -1){
+            return dp[index][buy][limit];
+        }
+        int profit = 0;
+        if(buy && limit < 2){
+            int choose = -prices[index] + solveMem(prices, index+1, 0, limit+1, dp);
+            int skip = 0 + solveMem(prices, index+1, 1, limit, dp);
+            profit = max(choose, skip);
+        }
+        else if(buy == 0){
+            int choose = prices[index] + solveMem(prices, index+1, 1, limit, dp);
+            int skip = 0 + solveMem(prices, index+1, 0, limit, dp);
+            profit = max(choose, skip);
+        }
+        return dp[index][buy][limit] = profit;
+    }
+    int maxProfit(vector<int>& prices) {
+        int n = prices.size();
+        int index = 0;
+        bool buy = 1;
+        int limit = 0;
+        vector<vector<vector<int>>> dp(n, vector<vector<int>>(2, vector<int>(3, -1)));
+        return solveMem(prices, index, buy, limit, dp);
+    }
+};
+
+// Tabulation
+
+class Solution {
+public:
+    int solveTab(vector<int>& prices){
+        int n = prices.size();
+        vector<vector<vector<int>>> dp(n+1, vector<vector<int>>(2, vector<int>(3, 0)));
+        for(int index = n-1; index >= 0; index--){
+            for(int buy = 0; buy <= 1; buy++){
+                for(int limit = 2; limit >= 0; limit--){
+                    int profit = 0;
+                    if(buy && limit < 2){
+                        int choose = -prices[index] + dp[index+1][0][limit+1];
+                        int skip = 0 + dp[index+1][1][limit];
+                        profit = max(choose, skip);
+                    }
+                    else if(buy == 0){
+                        int choose = prices[index] + dp[index+1][1][limit];
+                        int skip = 0 + dp[index+1][0][limit];
+                        profit = max(choose, skip);
+                    }
+                    dp[index][buy][limit] = profit;
+                }
+            }
+        }
+        return dp[0][1][0];
+    }
+    int maxProfit(vector<int>& prices) {
+        return solveTab(prices);
+    }
+};
+
+// Space Optimized
+class Solution {
+public:
+    int solveSO(vector<int> &prices){
+        int n = prices.size();
+        vector<vector<int>> curr(2, vector<int>(3, 0));
+        vector<vector<int>> next(2, vector<int>(3, 0));
+        for(int index = n-1; index >= 0; index--){
+            for(int buy = 0; buy <= 1; buy++){
+                for(int limit = 2; limit >= 0; limit--){
+                    int profit = 0;
+                    if(buy && limit < 2){
+                        int choose = -prices[index] + next[0][limit+1];
+                        int skip = 0 + next[1][limit];
+                        profit = max(choose, skip);
+                    }
+                    else if(buy == 0){
+                        int choose = prices[index] + next[1][limit];
+                        int skip = 0 + next[0][limit];
+                        profit = max(choose, skip);
+                    }
+                    curr[buy][limit] = profit;
+                }
+            }
+            next = curr;
+        }
+        return curr[1][0];
+    }
+    int maxProfit(vector<int>& prices) {
+        return solveSO(prices);
+    }
+};
+
+// Buy and Sell Stock K Times IV
+
+// Memoization
+class Solution {
+    int dfs(int i, int t, int k, int n, vector<int> & p, vector<vector<int>> &dp) {
+        if(i == n || t == 2 * k) return 0;
+        if(dp[i][t] != -1) return dp[i][t];
+
+        if(t % 2 == 0) {
+            return dp[i][t] = max(-p[i] + dfs(i + 1, t + 1, k, n, p, dp), 0 + dfs(i + 1, t, k, n, p, dp));
+        }
+        return dp[i][t] = max(p[i] + dfs(i + 1, t + 1, k, n, p, dp), 0 + dfs(i + 1, t, k, n, p, dp));
+    }
+public:
+    int maxProfit(int k, vector<int>& prices) {
+        int n = prices.size();
+        vector<vector<int>> dp(n, vector<int>(2 * k, -1));
+        
+        return dfs(0, 0, k, n, prices, dp);
+    }
+};
+
+// Tabulation
+class Solution {
+public:
+    int maxProfit(int k, vector<int>& p) {
+        int n = p.size();
+        vector<vector<int>> dp(n + 1, vector<int>(2 * k + 1));
+        
+        for(int i=n-1; i>=0; i--) {
+            for(int t=0; t<2 * k; t++) {
+                if(t % 2 == 0) {
+                    dp[i][t] = max(-p[i] + dp[i + 1][t + 1], 0 + dp[i + 1][t]);
+                }
+                else dp[i][t] = max(p[i] + dp[i + 1][t + 1], 0 + dp[i + 1][t]);
+            }
+        }
+        return dp[0][0];
+    }
+};
+
+// Space Optimized
+class Solution {
+public:
+    int maxProfit(int k, vector<int>& p) {
+        int n = p.size();
+        vector<int> dp(2 * k + 1), temp(2 * k + 1);
+        
+        for(int i=n-1; i>=0; i--) {
+            for(int t=0; t<2 * k; t++) {
+                if(t % 2 == 0) {
+                    temp[t] = max(-p[i] + dp[t + 1], 0 + dp[t]);
+                }
+                else temp[t] = max(p[i] + dp[t + 1], 0 + dp[t]);
+            }
+            dp = temp;
+        }
+        return dp[0];
+    }
+};
+
+// Buy and Sell Stock With Transaction Fee V
+
+// Memoization
+class Solution {
+    int dfs(int i, int buy, int n, vector<int> &p, vector<vector<int>> &dp, int fee) {
+        if(i == n) return 0;
+        if(dp[i][buy] != -1) return dp[i][buy];
+        if(buy) {
+            return dp[i][buy] = max(-p[i] + dfs(i + 1, 0, n, p, dp, fee), dfs(i + 1, 1, n, p, dp, fee));
+        }
+        return dp[i][buy] = max(p[i] - fee + dfs(i + 1, 1, n, p, dp, fee), dfs(i + 1, 0, n, p, dp, fee));
+    }
+public:
+    int maxProfit(vector<int>& p, int fee) {
+        int n = p.size(), cnt = 0;
+        vector<vector<int>> dp(n, vector<int>(2, -1));
+        return dfs(0, 1, n, p, dp, fee);
+    }
+};
+
+// Tabulation
+class Solution {
+public:
+    int maxProfit(vector<int>& p, int fee) {
+        int n = p.size();
+        vector<vector<int>> dp(n + 1, vector<int>(2));     
+        for(int i=n-1; i>=0; i--) {
+            for(int buy=0; buy<=1; buy++) {
+                if(buy) {
+                    dp[i][buy] = max(-p[i] + dp[i + 1][0], dp[i + 1][1]);
+                }
+                else dp[i][buy] = max(p[i] - fee + dp[i + 1][1], dp[i + 1][0]);
+            }
+        }
+        return dp[0][1];
+    }
+};
+
+// Space Optimization
+class Solution {
+public:
+    int maxProfit(vector<int>& p, int fee) {
+        int n = p.size();
+        vector<int> dp(2), temp(2);
+        
+        for(int i=n-1; i>=0; i--) {
+            for(int buy=0; buy<=1; buy++) {
+                if(buy) {
+                    temp[buy] = max(-p[i] + dp[0], dp[1]);
+                }
+                else temp[buy] = max(p[i] - fee + dp[1], dp[0]);
+            }
+            dp = temp;
+        }
+        return dp[1];
+    }
+};
+
+// Longest Common Subsequence [LCS] ( DP on Strings )
+
+// 1. Naive Recusive approach 
+// Time complexity: O(2^n)
+// Space complexity: Stack Space
+// (n = Size of strings text1 and text2)
+
+class Solution {
+public:
+    int helper(string text1, string text2, int m, int n){
+        if(m==0 || n==0) return 0;
+        else if(text1[m-1]==text2[n-1]) return 1+helper(text1, text2, m-1, n-1);
+        else return max(helper(text1, text2, m, n-1), helper(text1, text2, m-1, n));
+    }
+    int longestCommonSubsequence(string text1, string text2) {
+        int m= text1.size();
+        int n=text2.size();
+        return helper(text1, text2, m, n);
+    }
+};
+
+// 2. Memoization 
+// Time complexity: O(M*N)
+// Space complexity: O(M*N) + Stack Space
+// (M = Size of text1, N = Size of text2)
+
+class Solution {
+public:
+    int helper(string text1, string text2, int m, int n, vector<vector<int>>&dp){
+        if(m==0 || n==0) return 0;
+        else if(dp[m-1][n-1]!=-1) return dp[m-1][n-1];
+        else if(text1[m-1]==text2[n-1])
+                return dp[m-1][n-1]=1+helper(text1, text2, m-1, n-1, dp);
+        else return dp[m-1][n-1]=max(helper(text1, text2, m, n-1, dp), helper(text1, text2, m-1, n, dp));     
+    }
+    int longestCommonSubsequence(string text1, string text2) {
+        int m= text1.size();
+        int n=text2.size();
+        vector<vector<int>>dp(m, vector<int>(n, -1));
+        return helper(text1, text2, m, n, dp);
+    }
+};
+
+// 3. Tabulation
+// Time complexity: O(M*N)
+// Space complexity: O(M*N)
+// (M = Size of text1, N = Size of text2)
+
+class Solution {
+public:
+    int longestCommonSubsequence(string text1, string text2) {
+        int m= text1.size();
+        int n=text2.size();
+        vector<vector<int>>dp(m+1, vector<int>(n+1));
+        for(int i=0;i<=n;i++){
+            dp[0][i]=0;
+        }
+        for(int i=0;i<=m;i++){
+            dp[i][0]=0;
+        }
+        for(int i=1;i<=m;i++){
+            for(int j=1;j<=n;j++){
+                if(text1[i-1]==text2[j-1]){
+                    dp[i][j]=1+dp[i-1][j-1];
+                }
+                else{
+                    dp[i][j]=max(dp[i][j-1], dp[i-1][j]);
+                }
+            }
+        }
+        return dp[m][n];
+    }
+};
+
+// 4. Optimized space (but with 2 array)
+// Time complexity: O(M*N)
+// Space complexity: O(N) + O(N) = O(N)
+// (M = Size of text1, N = Size of text2)
+
+class Solution {
+public:
+    int longestCommonSubsequence(string text1, string text2) {
+        int m= text1.size();
+        int n=text2.size();
+        vector<int>prev(n+1, 0);
+        vector<int>curr(n+1, 0);
+        for(int i=1;i<=m;i++){
+            for(int j=1;j<=n;j++){
+                if(text1[i-1]==text2[j-1]){
+                    curr[j]=1+prev[j-1];
+                }
+                else{
+                    curr[j]=max(curr[j-1], prev[j]);
+                }
+            }
+            prev=curr;
+        }
+        return prev[n];
+    }
+};
+
+// 5. Optimized space (with only one array) 
+// Time complexity: O(M*N)
+// Space complexity: O(N)
+// (M = Size of text1, N = Size of text2)
+
+class Solution {
+public:
+    int longestCommonSubsequence(string text1, string text2) {
+        int m= text1.size();
+        int n=text2.size();
+        vector<int>prev(n+1, 0);
+        int temp=0, diag=0;
+        for(int i=1;i<=m;i++){
+            diag=0;
+            for(int j=1;j<=n;j++){
+                temp=prev[j];
+                if(text1[i-1]==text2[j-1]){
+                    prev[j]=1+diag;
+                }
+                else{
+                    prev[j]=max(prev[j], prev[j-1]);
+                }
+                diag=temp;
+            }
+        }
+        return prev[n];
+    }
+};
+
+// Longest Palindromic Subsequence ( DP on Strings )
+
+//RECURSION [TLE]
+class Solution {
+public:
+    int solve(string& s, int start, int end)
+    {
+        if (start == end) return 1;
+        if (start > end) return 0;
+        
+        if (s[start] == s[end]) return (2 + solve(s, start + 1, end - 1));
+        int leaveLeft = solve(s, start + 1, end);
+        int leaveRight = solve(s, start, end - 1);
+        return max(leaveLeft, leaveRight);
+    }
+    int longestPalindromeSubseq(string s) 
+    {
+        int ans = solve(s, 0, s.size() - 1);
+        return ans;
+    }
+};
+
+// TOP DOWN DP , MEMOIZATION
+class Solution {
+public:
+    int solve(string& s, vector<vector<int>>&dp, int start, int end)
+    {
+        if (start == end) return 1;
+        if (start > end) return 0;
+        if (dp[start][end] != -1) return dp[start][end];
+        
+        if (s[start] == s[end]) return (2 + solve(s, dp, start + 1, end - 1)); //directly return 
+        
+        int leaveLeft = solve(s, dp, start + 1, end);
+        int leaveRight = solve(s, dp, start, end - 1);
+        return dp[start][end] = max(leaveLeft, leaveRight); //store the ans
+    }
+    int longestPalindromeSubseq(string s) 
+    {
+        int n = s.size();
+        vector<vector<int>>dp(n, vector<int>(n, -1));
+        int ans = solve(s, dp, 0, n - 1);
+        return ans;
+    }
+};
+
+// BOTTOM UP DP 
+class Solution {
+public:
+    int longestPalindromeSubseq(string s) 
+    {
+        int n = s.size();
+        vector<vector<int>>dp(n, vector<int>(n, 0));
+        //for n length string we need LPS for string with length (n - 1) or (n - 2)
+        //We need to already have LPS for smaller lengths before moving to greater lengths
+        //so we need to go bottom up 
+        //Calculating LPS for all strings of length = 1 to length = n
+        for (int len = 1; len <= n; len++)
+        {
+            for (int start = 0; start <= (n - len); start++)
+            {
+                int end = start + len - 1; //[start, end] denotes the string under consideration
+                if (len == 1) { dp[start][end] = 1; continue; }
+                
+                if (s[start] == s[end]) dp[start][end] = 2 + dp[start + 1][end - 1];
+                else dp[start][end] = max(dp[start + 1][end], dp[start][end - 1]); 
+            }
+        }
+        return dp[0][n - 1];
+    }
+};
+
+// Edit distance ( DP on Strings )
+
+// 1. Naive Recursive approach (TLE)
+// Time complexity: O(2^N)
+// Space complexity: Stack Space
+class Solution {
+public:
+    int count(string word1, string word2, int m, int n){
+        if(m==0) return n;
+        if(n==0) return m;
+        if(word1[m-1]==word2[n-1]) return count(word1, word2, m-1, n-1);
+        else{
+            //preform operations on word2
+            int del= count(word1, word2, m, n-1);
+            int insert= count(word1, word2, m-1, n);
+            int replace= count(word1, word2, m-1, n-1);
+            int res=min(del, insert);
+            res=min(res, replace);
+            return 1+res;
+        }
+    }
+    int minDistance(string word1, string word2) {
+        int m=word1.size();
+        int n=word2.size();
+        return count(word1, word2, m, n);
+    }
+};
+
+// 2. Memoization(DP)
+// Time complexity: O(m*n)
+// Space complexity: O(m*n)+Stack Space
+class Solution {
+public:
+    int count(string word1, string word2, int m, int n, vector<vector<int>>&dp){
+        if(m==0) return n;
+        if(n==0) return m;
+        if(dp[m][n]!=-1) return dp[m][n];
+        if(word1[m-1]==word2[n-1]) return count(word1, word2, m-1, n-1, dp);
+        else{
+            //perform operations on word2
+            int del= count(word1, word2, m, n-1, dp);
+            int insert= count(word1, word2, m-1, n, dp);
+            int replace= count(word1, word2, m-1, n-1, dp);
+            int res=min(del, insert);
+            res=min(res, replace);
+            return dp[m][n]= 1+res;
+        }
+    }
+    int minDistance(string word1, string word2) {
+        int m=word1.size();
+        int n=word2.size();
+        vector<vector<int>>dp(m+1, vector<int>(n+1, -1));
+        return count(word1, word2, m, n, dp);
+    }
+};
+
+// 3. Tabulation(DP)
+// Time complexity: O(m*n)
+// Space complexity: O(m*n)
+class Solution {
+public:
+    int minDistance(string word1, string word2) {
+        int m=word1.size();
+        int n=word2.size();
+        vector<vector<int>>dp(m+1, vector<int>(n+1));
+        for(int i=0;i<=n;i++){
+            dp[0][i]=i;
+        }
+        for(int i=0;i<=m;i++){
+            dp[i][0]=i;
+        }
+        for(int i=1;i<=m;i++){
+            for(int j=1;j<=n;j++){
+                if(word1[i-1]==word2[j-1]) dp[i][j]=dp[i-1][j-1];
+                else{
+                    dp[i][j]=min(dp[i][j-1], dp[i-1][j]);
+                    dp[i][j]=1+min(dp[i][j], dp[i-1][j-1]);
+                }
+            }
+        }
+        return dp[m][n];
+    }
+};
+
+// 4. Optimized Space (Using 2 arrays)
+// Time complexity: O(m*n)
+// Space complexity: O(n)
+class Solution {
+public:
+    int minDistance(string word1, string word2) {
+        int m=word1.size();
+        int n=word2.size();
+        vector<int>curr(n+1), prev(n+1);
+        for(int i=0;i<=n;i++){
+            prev[i]=i;
+        }
+        for(int i=1;i<=m;i++){
+            curr[0]=i;
+            for(int j=1;j<=n;j++){
+                if(word1[i-1]==word2[j-1]) curr[j]=prev[j-1];
+                else{
+                    curr[j]=min(curr[j-1], prev[j]);
+                    curr[j]=1+min(curr[j], prev[j-1]);
+                }
+            }
+            prev=curr;
+        }
+        return prev[n];
+    }
+};
+
+// 5. Optimized Space (Using only 1 array- BEST Approach)
+// Time complexity: O(m*n)
+// Space complexity: O(n)
+class Solution {
+public:
+    int minDistance(string word1, string word2) {
+        int m=word1.size();
+        int n=word2.size();
+        vector<int>dp(n+1);
+        for(int i=0;i<=n;i++){
+            dp[i]=i;
+        }
+        for(int i=1;i<=m;i++){
+            int prev=dp[0];
+            dp[0]=i;
+            for(int j=1;j<=n;j++){
+                int curr=dp[j];
+                if(word1[i-1]==word2[j-1]) dp[j]=prev;
+                else{
+                    dp[j]=min(dp[j-1], prev);
+                    dp[j]=1+min(dp[j], curr);
+                }
+                prev=curr;
+            }
+        }
+        return dp[n];
+    }
+};
+
+// Max Rectangle with all 1's
+
+class Solution {
+public:
+    int area_under_histogram(int histogram[], int cols) {
+        if (cols == 0) {
+            return 0;
+        }
+        stack<int>st;
+        st.push(0);
+        int area, res = 0, i;
+        for (i = 1; i<cols; i++) {
+            if (histogram[i] >= histogram[st.top()]) {
+                st.push(i);
+                continue;
+            }
+            
+            while(!st.empty() and histogram[i] < histogram[st.top()]) {
+                int current_bar = st.top();
+                st.pop();
+                if (st.empty()) {
+                    area = histogram[current_bar] * i;
+                }
+                else {
+                    area = histogram[current_bar] * (i - st.top() - 1);
+                 }
+                res = max(res, area);
+            }
+            st.push(i);
+        }
+        while(!st.empty()) {
+             int current_bar = st.top();
+                st.pop();
+                if (st.empty()) {
+                    area = histogram[current_bar] * i;
+                }
+                else {
+                    area = histogram[current_bar] * (i - st.top() - 1);
+                }
+            res = max(res, area);
+        }
+        return max(area, res);
+    }
+    int maximalRectangle(vector<vector<char>>& matrix) {
+        int rows = matrix.size();
+        if (rows == 0) {
+            return 0;
+        }
+        int cols = matrix[0].size();
+        if (cols == 0) {
+            return 0;
+        }
+        int histogram[cols];
+        memset(histogram, 0, sizeof(histogram));
+        int res = 0;
+        for (int i = 0; i<rows; i++) {
+            for (int j = 0; j<cols; j++) {
+                if (matrix[i][j] == '0') {
+                    histogram[j] = 0;
+                }
+                else {
+                    histogram[j] += (matrix[i][j] - '0');
+                }
+            }
+            int area = area_under_histogram(histogram, cols);
+            res = max(area, res);
+        }
+        return res;
+    }
+};
+
+// Wildcard Pattern Matching
+
+// RECURSION (TLE)
+class Solution {
+public:
+    bool f(int i,int j, string &s,string &p)
+    {
+        if(i<0 && j<0) return true;
+        if(j<0 && i>=0) return false;
+        if(i<0 && j>=0)
+        {
+            while(j>=0)
+            {
+                if(p[j]=='*') j--;
+                else return false;
+            }
+            return true;
+        }
+        if(s[i]==p[j] || p[j]=='?') return f(i-1,j-1,s,p);
+        if(p[j]=='*')
+        {
+            return f(i-1,j,s,p) || f(i,j-1,s,p);
+            //Two cases
+            //Consider * as len=0
+            //Give one charcter to * and remain at *
+            //at next step it will again be decided from both these cases
+        }
+        return false;   
+    }
+    bool isMatch(string s, string p) {
+        int n=s.length(),m=p.length();
+        return f(n-1,m-1,s,p);
+    }
+};
+
+// Memoization
+class Solution {
+public:
+    int f(int i,int j, string &s,string &p,vector<vector<int>> &dp)
+    {
+        if(dp[i][j]!=-1) return dp[i][j];
+        if(i==0 && j==0) return dp[i][j]=1;
+        if(j==0 && i>0) return dp[i][j]=0;
+        if(i==0 && j>0)
+        {
+            while(j>0)
+            {
+                if(p[j-1]=='*') j--;
+                else return dp[i][j]=0;
+            }
+            return dp[i][j]=1;
+        }
+        
+        if(s[i-1]==p[j-1] || p[j-1]=='?') return dp[i][j]=f(i-1,j-1,s,p,dp);
+        
+        if(p[j-1]=='*')
+        {
+            return dp[i][j] = f(i-1,j,s,p,dp) || f(i,j-1,s,p,dp) ? 1:0;
+            //Two cases
+            //Consider * as len=0
+            //Give one charcter to * and remain at *
+            //at next step it will again be decided from both these cases
+        }
+        return dp[i][j]=0;
+        
+    }
+    
+    bool isMatch(string s, string p) {
+        int n=s.length(),m=p.length();
+        vector<vector<int>> dp(n+1,vector<int>(m+1,-1));
+        return f(n,m,s,p,dp);
+    }
+};
+
+// Tabulation
+class Solution {
+public:
+    bool isMatch(string s, string p) {
+        int n=s.length(),m=p.length();
+        vector<vector<bool>> dp(n+1,vector<bool>(m+1));
+        dp[0][0]=true;
+        for(int i=1;i<=n;i++) dp[i][0]=false;
+        
+        bool flag=true;
+        for(int i=1;i<=m;i++)
+        {
+            if(p[i-1]!='*')
+                flag=false;
+            dp[0][i]=flag;
+        }
+        for(int i=1;i<=n;i++)
+        {
+            for(int j=1;j<=m;j++)
+            {
+                if(s[i-1]==p[j-1] || p[j-1]=='?')
+                    dp[i][j]=dp[i-1][j-1];
+                else if(p[j-1]=='*')
+                    dp[i][j] = dp[i-1][j] || dp[i][j-1];
+                else dp[i][j]=false;
+            }
+        }
+        return dp[n][m];
+    }
+};
+
+// Space Optimized
+class Solution {
+public:
+    bool isMatch(string s, string p) {
+        int n=s.length(),m=p.length();
+        // vector<vector<bool>> dp(n+1,vector<bool>(m+1));
+        
+        vector<bool> prev(m+1);
+        //Initially prev is for n=0
+        prev[0]=true;
+        
+        bool flag=true;
+        for(int i=1;i<=m;i++)
+        {
+            if(p[i-1]!='*')
+                flag=false;
+            prev[i]=flag;
+        }
+        vector<bool> curr(m+1);
+        
+        
+        for(int i=1;i<=n;i++)
+        {
+            curr[0]=false;
+            for(int j=1;j<=m;j++)
+            {
+                if(s[i-1]==p[j-1] || p[j-1]=='?')
+                    curr[j]=prev[j-1];
+                else if(p[j-1]=='*')
+                    curr[j] = prev[j] || curr[j-1];
+                else curr[j]=false;
+            }
+            prev=curr;
+        }
+        return prev[m];
+    }
+};
+
+// Greedy Algorithms
+
