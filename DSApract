@@ -14355,4 +14355,34 @@ class Solution
     }
 };
 
-// 
+// Shop in candy store
+
+class Solution
+{
+public:
+    vector<int> candyStore(int candies[], int N, int K)
+    {
+        sort(candies, candies + N);
+        int buyCandy = 0;
+        int freeCandy = N-1;
+        int minAmount = 0;
+        while(buyCandy <= freeCandy)
+        {
+            minAmount = minAmount + candies[buyCandy++];
+            freeCandy = freeCandy - K; 
+        }
+        int maxAmount = 0;
+        buyCandy = N-1;
+        freeCandy = 0;
+        while(freeCandy <= buyCandy)
+        {
+            maxAmount = maxAmount + candies[buyCandy--];
+            freeCandy = freeCandy + K;
+        }
+        return {minAmount, maxAmount};
+    }
+};
+
+// Check if it is possible to survive on island
+
+
